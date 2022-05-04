@@ -9,20 +9,18 @@ public class GraphTests
 {
     // A Test behaves as an ordinary method
     [Test]
-    public void TestDFS() {
+    public void TestTrivialGraph() {
         Graph<bool> trivialGraph = new Graph<bool>( new Dictionary<int, List<int>> {
             {0, new List<int>()}
         });
-        Assert.AreEqual(expected:new List<int>{0},actual:trivialGraph.DFS(0));
+        Assert.AreEqual(expected:new List<GraphNode<bool>>{trivialGraph.Nodes[0]},actual:trivialGraph.DFS(0));
     }
-
-    // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-    // `yield return null;` to skip a frame.
-    [UnityTest]
-    public IEnumerator GraphTestsWithEnumeratorPasses()
-    {
-        // Use the Assert class to test conditions.
-        // Use yield to skip a frame.
-        yield return null;
+    [Test]
+    public void TestTrivialCycle() {
+        Graph<bool> trivialCycle = new Graph<bool>( new Dictionary<int, List<int>> {
+            {0, new List<int>{1}},
+            {1, new List<int>{0}}
+        });
+        Assert.AreEqual(expected:new List<GraphNode<bool>>{trivialCycle.Nodes[0],trivialCycle.Nodes[1]},actual:trivialCycle.DFS(0));
     }
 }
