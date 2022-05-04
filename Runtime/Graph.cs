@@ -68,15 +68,16 @@ namespace SadSapphicGames.CustomGraphs{
                 idStack.Push(id);
             }
             while(idStack.TryPop(out int nextID)) {
+                bool inClass = false;
                 if(equivalenceClasses == new List<List<GraphNode<TGraphType>>>()) { //? if this was the first node in the stack just search
                     equivalenceClasses.Add(DFS(nextID)); //?either search works
                     continue;
                 }
                 foreach (var _class in equivalenceClasses) { //? if this node is in one of the equiv classes we have already searched move on to the next
                     if(_class.Contains(Nodes[nextID])) 
-                        {continue;}
+                        {inClass = true;}
                 }
-                equivalenceClasses.Add(DFS(nextID)); //? if it isnt in any of them add a new one by searching from it
+                if(!inClass) equivalenceClasses.Add(DFS(nextID)); //? if it isnt in any of them add a new one by searching from it
             }
             return equivalenceClasses;
         }
