@@ -1,12 +1,41 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Graph<TGraphType> {
-    private Dictionary<int , GraphNode<TGraphType>> Nodes;
+namespace SadSapphicGames.CustomGraphs{
+    public class Graph<TGraphType> {
+        private Dictionary<int , GraphNode<TGraphType>> Nodes;
 
-    public Graph(Dictionary<int,List<int>> adjacencyList) {
-        foreach (int id in adjacencyList.Keys) {
-            Nodes.Add(id, new GraphNode<TGraphType>(id, adjacencyList[id]));
+        public Graph(Dictionary<int,List<int>> adjacencyList) {
+            foreach (int id in adjacencyList.Keys) {
+                Nodes.Add(id, new GraphNode<TGraphType>(id, adjacencyList[id]));
+            }
+        }
+        public List<GraphNode<TGraphType>> DFS(int nodeID) {
+            return DFS(Nodes[nodeID]);
+        }
+        public List<GraphNode<TGraphType>> DFS(GraphNode<TGraphType> node) {
+            List<GraphNode<TGraphType>> connectedNodes = new List<GraphNode<TGraphType>>{node};
+            List<int> visitedIDs = new List<int>{node.ID};
+            Stack<int> idsToVisit = new Stack<int>(node.NeighborIDs);
+            while (idsToVisit.TryPop(out int nextID)) {        
+                if(VisitNode(nextID,visitedIDs)) {
+                    foreach (int id in Nodes[nextID].NeighborIDs) {
+                        idsToVisit.Push(id);
+                    }
+                } else {
+                    //? incase I need to do anything when reaching a visited node in the future
+                } 
+            }
+            return connectedNodes;
+        }
+
+        private bool VisitNode(int id, List<int> visitedIDs) { //? may be usefull for future functionality
+            if(visitedIDs.Contains(id)) return false;
+            else {
+                visitedIDs.Add(id);
+                return true;
+            } 
         }
     }
 }
