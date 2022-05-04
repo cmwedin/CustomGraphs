@@ -41,7 +41,7 @@ public class GraphTests
                 graph.Nodes[2],
                 graph.Nodes[4],
                 graph.Nodes[1],
-                graph.Nodes[3],},
+                graph.Nodes[3]},
             actual:graph.DFS(0));
         Assert.AreEqual(
             expected:new List<GraphNode<bool>>{
@@ -49,7 +49,7 @@ public class GraphTests
                 graph.Nodes[1],
                 graph.Nodes[2],
                 graph.Nodes[3],
-                graph.Nodes[4],},
+                graph.Nodes[4]},
             actual:graph.BFS(0));
         
     }

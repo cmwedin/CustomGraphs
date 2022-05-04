@@ -25,8 +25,8 @@ namespace SadSapphicGames.CustomGraphs{
                 if(VisitNode(nextID,visitedIDs)) {
                     foreach (int id in Nodes[nextID].NeighborIDs) {
                         idsToVisit.Push(id);
-                        connectedNodes.Add(Nodes[nextID]);
                     }
+                    connectedNodes.Add(Nodes[nextID]);
                 } else {
                     //? incase I need to do anything when reaching a visited node in the future
                 } 
@@ -48,8 +48,8 @@ namespace SadSapphicGames.CustomGraphs{
                 if(VisitNode(nextID,visitedIDs)) {
                     foreach (int id in Nodes[nextID].NeighborIDs) {
                         idsToVisit.Enqueue(id);
-                        connectedNodes.Add(Nodes[nextID]);
                     }
+                    connectedNodes.Add(Nodes[nextID]);
                 } else {
                     //? incase I need to do anything when reaching a visited node in the future
                 } 
