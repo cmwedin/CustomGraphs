@@ -34,6 +34,31 @@ namespace SadSapphicGames.CustomGraphs{
             return connectedNodes;
         }
 
+        public List<GraphNode<TGraphType>> BFS(int nodeID)
+        {
+            return BFS(Nodes[nodeID]);
+        }
+
+        private List<GraphNode<TGraphType>> BFS(GraphNode<TGraphType> node)
+        {
+            List<GraphNode<TGraphType>> connectedNodes = new List<GraphNode<TGraphType>>{node};
+            List<int> visitedIDs = new List<int>{node.ID};
+            Queue<int> idsToVisit = new Queue<int>(node.NeighborIDs);
+            while (idsToVisit.TryDequeue(out int nextID)) {        
+                if(VisitNode(nextID,visitedIDs)) {
+                    foreach (int id in Nodes[nextID].NeighborIDs) {
+                        idsToVisit.Enqueue(id);
+                        connectedNodes.Add(Nodes[nextID]);
+                    }
+                } else {
+                    //? incase I need to do anything when reaching a visited node in the future
+                } 
+            }
+            return connectedNodes;
+        }
+
+
+
         private bool VisitNode(int id, List<int> visitedIDs) { //? may be usefull for future functionality
             if(visitedIDs.Contains(id)) return false;
             else {
