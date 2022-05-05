@@ -60,26 +60,26 @@ namespace SadSapphicGames.CustomGraphs{
             return connectedNodes;
         }
         // * Get Connected component sets
-        // ? named based on my observation that graph connectivity forms an equivalence relation (a set theory concept for the unfamiliar)
-        public List<List<GraphNode<TGraphType>>> GetEquivalenceClasses(){ //? this type name is rather cumbersome
-            List<List<GraphNode<TGraphType>>> equivalenceClasses = new List<List<GraphNode<TGraphType>>>();
+        // ? a potentially usefull observation is in an undirected graph connectedness forms an equivalence relation
+        public List<List<GraphNode<TGraphType>>> GetConnectedComponents(){ //? this type name is rather cumbersome
+            List<List<GraphNode<TGraphType>>> connectedComponents = new List<List<GraphNode<TGraphType>>>();
             Stack<int> idStack = new Stack<int>();
             foreach (int id in Nodes.Keys) {
                 idStack.Push(id);
             }
             while(idStack.TryPop(out int nextID)) {
                 bool inClass = false;
-                if(equivalenceClasses == new List<List<GraphNode<TGraphType>>>()) { //? if this was the first node in the stack just search
-                    equivalenceClasses.Add(DFS(nextID)); //?either search works
+                if(connectedComponents == new List<List<GraphNode<TGraphType>>>()) { //? if this was the first node in the stack just search
+                    connectedComponents.Add(DFS(nextID)); //?either search works
                     continue;
                 }
-                foreach (var _class in equivalenceClasses) { //? if this node is in one of the equiv classes we have already searched move on to the next
+                foreach (var _class in connectedComponents) { //? if this node is in one of the equiv classes we have already searched move on to the next
                     if(_class.Contains(Nodes[nextID])) 
                         {inClass = true;}
                 }
-                if(!inClass) equivalenceClasses.Add(DFS(nextID)); //? if it isnt in any of them add a new one by searching from it
+                if(!inClass) connectedComponents.Add(DFS(nextID)); //? if it isnt in any of them add a new one by searching from it
             }
-            return equivalenceClasses;
+            return connectedComponents;
         }
         public bool HasPath(int node1ID, int node2ID){ //? this is identical to asking if two nodes are in the same equivalence class
             return HasPath(Nodes[node1ID],Nodes[node2ID]);

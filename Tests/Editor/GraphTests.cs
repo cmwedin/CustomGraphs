@@ -72,12 +72,12 @@ public class GraphTests
         
     }
     [Test]
-    public void TestEquivalenceClasses() {
+    public void TestConnectedComponents() {
         Assert.AreEqual(
             expected:new List<List<GraphNode<bool>>>{
                 new List<GraphNode<bool>> {islands.Nodes[3],islands.Nodes[2]},
                 new List<GraphNode<bool>> {islands.Nodes[1],islands.Nodes[0]}
             },
-            actual:islands.GetEquivalenceClasses());
+            actual:islands.GetConnectedComponents());
     }
 }
