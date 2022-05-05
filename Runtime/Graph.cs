@@ -85,8 +85,13 @@ namespace SadSapphicGames.CustomGraphs{
             return HasPath(Nodes[node1ID],Nodes[node2ID]);
         }
 
-        public bool HasPath(GraphNode<TGraphType> graphNode1, GraphNode<TGraphType> graphNode2)
-        {
+        public bool HasPath(GraphNode<TGraphType> node1, GraphNode<TGraphType> node2) {
+            return DFS(node1).Contains(node2); 
+            // ? this could be optimized by rewriting the search code to terminate when the destination node is reached 
+            // ? but thats still O(v+e) time so i don't really care to
+        }
+
+        public void TopSort() {
             throw new NotImplementedException();
         }
 
