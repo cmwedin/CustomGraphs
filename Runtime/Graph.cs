@@ -5,14 +5,37 @@ using System.Collections.Generic;
 namespace SadSapphicGames.CustomGraphs{
     public class Graph<TGraphType> {
         private Dictionary<int , GraphNode<TGraphType>> _nodes = new Dictionary<int, GraphNode<TGraphType>>();
+        public Dictionary<int, GraphNode<TGraphType>> Nodes { get => _nodes;}
 
-        public Graph(Dictionary<int,List<int>> adjacencyList) {
-            foreach (int id in adjacencyList.Keys) {
-                Nodes.Add(id, new GraphNode<TGraphType>(id, adjacencyList[id]));
+        private List<GraphEdge<TGraphType>> _edges = new List<GraphEdge<TGraphType>>();
+
+        // * Constructors
+        public Graph(Dictionary<int,List<int>> adjacencyList) { //? O(V+E) time
+            foreach (int id in adjacencyList.Keys) { 
+                Nodes.Add(id, new GraphNode<TGraphType>(id));
+            }
+            foreach (GraphNode<TGraphType> node in Nodes.Values) {
+                foreach (int adjID in adjacencyList[node.ID]) {
+                    AddEdge(node.ID,adjID);
+                }
+            }
+        }
+        public Graph(int V, List<int[]> E) { //? O(V+E) time
+            for (int id = 0; id < V; id++) {
+                Nodes.Add(id, new GraphNode<TGraphType>(id));
+            }
+            foreach (var edge in E) {
+                if(edge.Length != 2) throw new Exception("each edges array length must be exactly 2");
+                this.AddEdge(edge[0],edge[1]);
             }
         }
 
-        public Dictionary<int, GraphNode<TGraphType>> Nodes { get => _nodes;}
+        private void AddEdge(int v1, int v2) {
+            if(!Nodes.ContainsKey(v1)) throw new NotInGraphException(v1);
+            if(!Nodes.ContainsKey(v2)) throw new NotInGraphException(v2);
+            _edges.Add(new GraphEdge<TGraphType>(Nodes[v1],Nodes[v2]));
+        }
+
 
         
         // * Depth First Search
@@ -88,7 +111,11 @@ namespace SadSapphicGames.CustomGraphs{
         public bool HasPath(GraphNode<TGraphType> node1, GraphNode<TGraphType> node2) {
             return DFS(node1).Contains(node2); 
             // ? this could be optimized by rewriting the search code to terminate when the destination node is reached 
-            // ? but thats still O(v+e) time so i don't really care to
+            // ? but thats still O(v+e) time so i don't really care to until it becomes a problem
+        }
+        public bool TarjanSCCSolver(out List<List<GraphNode<TGraphType>>> sccList) {
+            sccList = new List<List<GraphNode<TGraphType>>>();
+            return false;
         }
 
         public void TopSort() {

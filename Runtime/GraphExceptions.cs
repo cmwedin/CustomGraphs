@@ -9,4 +9,14 @@ namespace SadSapphicGames.CustomGraphs {
             System.Runtime.Serialization.SerializationInfo info,
             System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
+    [System.Serializable]
+    public class NotAttachedToEdgeException : System.Exception
+    {
+        public NotAttachedToEdgeException() : base("node not attached to edge") { }
+        public NotAttachedToEdgeException(string message) : base(message) { }
+        public NotAttachedToEdgeException(string message, System.Exception inner) : base(message, inner) { }
+        protected NotAttachedToEdgeException(
+            System.Runtime.Serialization.SerializationInfo info,
+            System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+    }
 }
