@@ -11,7 +11,7 @@ namespace SadSapphicGames.CustomGraphs {
         private TGraphType value;
         public TGraphType Value { get => value;}
 
-        private List<GraphEdge<TGraphType>> edges;
+        private List<GraphEdge<TGraphType>> edges = new List<GraphEdge<TGraphType>>();
         public List<GraphEdge<TGraphType>> Edges { get => edges;}
         //private List<int> neighborIDs; 
         public List<int> NeighborIDs { get {

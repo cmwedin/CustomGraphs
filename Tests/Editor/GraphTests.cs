@@ -80,6 +80,7 @@ public class GraphTests
             },
             actual:islands.GetConnectedComponents());
     }
+    [Test]
     public void TestHasPath() {
     Assert.AreEqual(
         expected:false,

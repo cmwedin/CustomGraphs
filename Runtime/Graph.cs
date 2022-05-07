@@ -12,17 +12,17 @@ namespace SadSapphicGames.CustomGraphs{
         // * Constructors
         public Graph(Dictionary<int,List<int>> adjacencyList) { //? O(V+E) time
             foreach (int id in adjacencyList.Keys) { 
-                Nodes.Add(id, new GraphNode<TGraphType>(id));
+                _nodes.Add(id, new GraphNode<TGraphType>(id));
             }
-            foreach (GraphNode<TGraphType> node in Nodes.Values) {
-                foreach (int adjID in adjacencyList[node.ID]) {
-                    AddEdge(node.ID,adjID);
+            foreach (int id in Nodes.Keys) {
+                foreach (int adjID in adjacencyList[id]) {
+                    AddEdge(id,adjID);
                 }
             }
         }
         public Graph(int V, List<int[]> E) { //? O(V+E) time
             for (int id = 0; id < V; id++) {
-                Nodes.Add(id, new GraphNode<TGraphType>(id));
+                _nodes.Add(id, new GraphNode<TGraphType>(id));
             }
             foreach (var edge in E) {
                 if(edge.Length != 2) throw new Exception("each edges array length must be exactly 2");
@@ -100,7 +100,7 @@ namespace SadSapphicGames.CustomGraphs{
                     if(_class.Contains(Nodes[nextID])) 
                         {inClass = true;}
                 }
-                if(!inClass) connectedComponents.Add(DFS(nextID)); //? if it isnt in any of them add a new one by searching from it
+                if(!inClass) connectedComponents.Add(DFS(nextID)); //? if it isn't in any of them add a new one by searching from it
             }
             return connectedComponents;
         }
