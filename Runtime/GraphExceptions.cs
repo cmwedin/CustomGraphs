@@ -19,4 +19,14 @@ namespace SadSapphicGames.CustomGraphs {
             System.Runtime.Serialization.SerializationInfo info,
             System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
+    [System.Serializable]
+    public class EmptyGraphException : System.Exception
+    {
+        public EmptyGraphException() : base("this graph must have at least one node"){ }
+        public EmptyGraphException(string message) : base(message) { }
+        public EmptyGraphException(string message, System.Exception inner) : base(message, inner) { }
+        protected EmptyGraphException(
+            System.Runtime.Serialization.SerializationInfo info,
+            System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+    }
 }

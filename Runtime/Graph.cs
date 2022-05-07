@@ -7,6 +7,8 @@ namespace SadSapphicGames.CustomGraphs{
         private Dictionary<int , GraphNode<TGraphType>> _nodes = new Dictionary<int, GraphNode<TGraphType>>();
         public Dictionary<int, GraphNode<TGraphType>> Nodes { get => _nodes;}
 
+        public int Size { get => Nodes.Keys.Count;}
+
         private List<GraphEdge<TGraphType>> _edges = new List<GraphEdge<TGraphType>>();
 
         // * Constructors
@@ -112,10 +114,6 @@ namespace SadSapphicGames.CustomGraphs{
             return DFS(node1).Contains(node2); 
             // ? this could be optimized by rewriting the search code to terminate when the destination node is reached 
             // ? but thats still O(v+e) time so i don't really care to until it becomes a problem
-        }
-        public bool TarjanSCCSolver(out List<List<GraphNode<TGraphType>>> sccList) {
-            sccList = new List<List<GraphNode<TGraphType>>>();
-            return false;
         }
 
         public void TopSort() {
