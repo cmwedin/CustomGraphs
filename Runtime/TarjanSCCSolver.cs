@@ -18,7 +18,7 @@ namespace SadSapphicGames.CustomGraphs{
         // * Constructor
         public TarjanSCCSolver(Graph<TGraphType> _graph) {
             if(_graph == null) throw new System.Exception("TarjanSolver's graph cannot be null");
-            if(graph.Size == 0) throw new EmptyGraphException();
+            if(_graph.Size == 0) throw new EmptyGraphException();
             this.graph = _graph;
         }
 
@@ -32,6 +32,8 @@ namespace SadSapphicGames.CustomGraphs{
             if(solved) return;
 
             lowlink = new int[graph.Size];
+            onStack = new Dictionary<GraphNode<TGraphType>, bool>();
+            tarjanIDs = new Dictionary<GraphNode<TGraphType>, int>();
 
             foreach (var node in graph.Nodes.Values) { //? this does take O(V) time however at sufficiently large arguments  O(V)+O(V+E) ~ O(V+E)
                 tarjanIDs.Add(node, -1);

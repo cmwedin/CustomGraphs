@@ -28,6 +28,16 @@ public class GraphTests
         {2, new List<int>{3}},
         {3, new List<int>{2}}
     });
+    Graph<bool> scc = new Graph<bool> ( new Dictionary<int, List<int>> { 
+        {0, new List<int>{1}},
+        {1, new List<int>{2}},
+        {2, new List<int>{0}},
+        {3, new List<int>{0,2,4}},
+        {4, new List<int>{5}},
+        {5, new List<int>{0,3}},
+        {6, new List<int>{4,7}},
+        {7, new List<int>{6,5}},
+    });
     Graph<bool> bottleNeck = new Graph<bool> ( new Dictionary<int, List<int>> {
         {0, new List<int>{3}},
         {1, new List<int>{3}},
@@ -82,16 +92,38 @@ public class GraphTests
     }
     [Test]
     public void TestHasPath() {
-    Assert.AreEqual(
-        expected:false,
-        actual:islands.HasPath(1,2));
-    Assert.AreEqual(
-        expected:true,
-        actual:islands.HasPath(1,0));
-    Assert.AreEqual(
-        expected:true,
-        actual:islands.HasPath(2,3));
-    Assert.AreEqual(
-        expected:false,
-        actual:islands.HasPath(0,3));}
+        Assert.AreEqual(
+            expected:false,
+            actual:islands.HasPath(1,2));
+        Assert.AreEqual(
+            expected:true,
+            actual:islands.HasPath(1,0));
+        Assert.AreEqual(
+            expected:true,
+            actual:islands.HasPath(2,3));
+        Assert.AreEqual(
+            expected:false,
+            actual:islands.HasPath(0,3));
+    }
+    [Test]
+    public void TarjanTest() {
+        TarjanSCCSolver<bool> solver = new TarjanSCCSolver<bool>(scc);
+        var solution = solver.GetSolution();
+        Assert.AreEqual(
+            expected: 3,
+            actual: solution.Values.Count
+        );
+        Assert.AreEqual(
+            expected: new List<GraphNode<bool>> {scc.Nodes[2],scc.Nodes[1],scc.Nodes[0]},
+            actual: solution[0]
+        );
+        Assert.AreEqual(
+            expected: new List<GraphNode<bool>> {scc.Nodes[5],scc.Nodes[4],scc.Nodes[3]},
+            actual: solution[3]
+        );
+        Assert.AreEqual(
+            expected: new List<GraphNode<bool>> {scc.Nodes[7],scc.Nodes[6]},
+            actual: solution[6]
+        );
+    }
 }
