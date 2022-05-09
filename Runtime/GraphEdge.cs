@@ -10,13 +10,13 @@ namespace SadSapphicGames.CustomGraphs{
             sinkNode = _sinkNode;
 
             sourceNode.AddEdge(this);
-            //? sinkNode.AddEdge(this); in an undirected edge this could be uncommented
+            sinkNode.AddEdge(this);
         }
 
         public GraphNode<TGraphType> GetOppositeNode(GraphNode<TGraphType> node) {
             if(node != sourceNode && node != sinkNode) throw new NotAttachedToEdgeException();
             else if(node == sourceNode) return sinkNode;
-            else return sourceNode; // ? if neither of the previous conditions are true we know node is the sink node
+            else return node; // ? in directed graphs we identify incoming edges by edges who's opposite nodes are the node itself   
         }
     }
 }

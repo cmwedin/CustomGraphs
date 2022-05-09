@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace SadSapphicGames.CustomGraphs{
     public class Graph<TGraphType> { //? the default type of graph is directed and unweighted
@@ -120,8 +121,29 @@ namespace SadSapphicGames.CustomGraphs{
             return (bool)isDAG;
         }
         //TODO
-        public void TopSort() {
-            throw new NotImplementedException();
+        public void TopSort() { //! this should be extracted to its own class - undirected graph would violate Liskov
+            if(!CheckDAG()) {
+                Debug.LogWarning("only a DAG can be Top-Sorted");
+                return;
+            }
+            Dictionary<int,int> nodeDegrees = new Dictionary<int, int>();
+            Dictionary<int,GraphNode<TGraphType>> SortedNodes = new Dictionary<int, GraphNode<TGraphType>>();
+            Queue<GraphNode<TGraphType>> sortQ = new Queue<GraphNode<TGraphType>>();
+            
+            foreach(var node in Nodes.Values) {
+                nodeDegrees.Add(node.ID,node.InEdges.Count);
+                if(nodeDegrees[node.ID] == 0) sortQ.Enqueue(node);
+            }
+            
+            int i = 0;
+            while(sortQ.TryDequeue(out GraphNode<TGraphType> nextNode)) {
+                SortedNodes.Add(i,nextNode);
+                foreach(var edge in nextNode.OutEdges) {
+                    var neighbor = edge.GetOppositeNode(nextNode);
+                    nodeDegrees[neighbor.ID]--;
+                    if(nodeDegrees[neighbor.ID] == 0) sortQ.Enqueue(neighbor);
+                }
+            }
         }
 
         private bool VisitNode(int id, List<int> visitedIDs) { //? may be usefull for future functionality

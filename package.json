@@ -1,0 +1,11 @@
+{
+  "Name" : "com.sadsapphicgames.custom-graphs",
+  "Version" : "0.0.2",
+  "DisplayName" : "Custom Graphs",
+  "description" : "this is a code library to implement graphs who nodes hold generic c# types to avoid the need to re-implement graph theory algorithms across projects",
+  "author" : {
+    "name" : "Chris Wedin",
+    "email" : "cmwedin@gmail.com",
+    "url" : "https://github.com/cmwedin"
+  }
+}
