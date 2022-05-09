@@ -31,12 +31,12 @@ public class GraphTests
     Graph<bool> scc = new Graph<bool> ( new Dictionary<int, List<int>> { 
         {0, new List<int>{1}},
         {1, new List<int>{2}},
-        {2, new List<int>{0}},
+        {2, new List<int>{0}}, //? end of scc 1
         {3, new List<int>{0,2,4}},
         {4, new List<int>{5}},
-        {5, new List<int>{0,3}},
+        {5, new List<int>{0,3}}, //? end of scc 2
         {6, new List<int>{4,7}},
-        {7, new List<int>{6,5}},
+        {7, new List<int>{6,5}}, //? end of scc 3
     });
     Graph<bool> bottleNeck = new Graph<bool> ( new Dictionary<int, List<int>> {
         {0, new List<int>{3}},
@@ -111,7 +111,8 @@ public class GraphTests
         var solution = solver.GetSolution();
         Assert.AreEqual(
             expected: 3,
-            actual: solution.Values.Count
+            // actual: solution.Values.Count
+            actual: solver.GetCycleNumber()
         );
         Assert.AreEqual(
             expected: new List<GraphNode<bool>> {scc.Nodes[2],scc.Nodes[1],scc.Nodes[0]},
@@ -125,5 +126,13 @@ public class GraphTests
             expected: new List<GraphNode<bool>> {scc.Nodes[7],scc.Nodes[6]},
             actual: solution[6]
         );
+
+        solver = new TarjanSCCSolver<bool>(childNodes);
+    }
+    [Test]
+    public void DAGTest() {
+        TarjanSCCSolver<bool> DAGsolver = new TarjanSCCSolver<bool>(childNodes);
+        Assert.AreEqual(0,DAGsolver.GetCycleNumber());
+        Assert.IsFalse(scc.CheckDAG());
     }
 }

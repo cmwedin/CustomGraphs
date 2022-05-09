@@ -15,7 +15,8 @@ namespace SadSapphicGames.CustomGraphs{
         private bool solved = false;
         private Dictionary<GraphNode<TGraphType>,int> finalLowLinks = new Dictionary<GraphNode<TGraphType>, int>();
         private Dictionary<int,List<GraphNode<TGraphType>>> solution = new Dictionary<int, List<GraphNode<TGraphType>>>();
-        // * Constructor
+
+       // * Constructor
         public TarjanSCCSolver(Graph<TGraphType> _graph) {
             if(_graph == null) throw new System.Exception("TarjanSolver's graph cannot be null");
             if(_graph.Size == 0) throw new EmptyGraphException();
@@ -27,6 +28,11 @@ namespace SadSapphicGames.CustomGraphs{
             Solve();
             return solution;
         }
+        public int GetCycleNumber() {
+            if (!solved) {Solve();}
+            return solution.Values.Count;
+        } 
+    
 
         private void Solve() {
             if(solved) return;
@@ -47,6 +53,7 @@ namespace SadSapphicGames.CustomGraphs{
                 //? the start of tarjan can be random so we just use whatever node in the graph happens to have id 0
                 //? if i make node id's a generic type in the future I could pick a random element of graph.Nodes.Values
             }
+            solved = true;
         }
 
         private void TarjanDFS(
@@ -77,8 +84,8 @@ namespace SadSapphicGames.CustomGraphs{
                     sccList.Add(topNode);
                     finalLowLinks[topNode] = tarjanIDs[node];
                     if(tarjanIDs[topNode] == tarjanIDs[node]) break;
-                }
-                solution.Add(tarjanIDs[node],sccList);
+                } 
+                if(sccList.Count > 1) solution.Add(tarjanIDs[node],sccList); //? if this node was on the top of the stack we've reached a dead end not a SCC
             }
             outDepth = iterationDepth;
         }
