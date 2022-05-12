@@ -46,6 +46,11 @@ public class GraphTests
         {4, new List<int>{5}},
         {5, new List<int>{3}}
     });
+    Graph<bool> unsorted = new Graph<bool>( new Dictionary<int, List<int>> {
+        {0, new List<int>{}},
+        {1, new List<int>{0}},
+        {2, new List<int>{1}}
+    });
     // A Test behaves as an ordinary method
     [Test]
     public void TestTrivialGraph() {
@@ -132,7 +137,12 @@ public class GraphTests
     [Test]
     public void DAGTest() {
         TarjanSCCSolver<bool> DAGsolver = new TarjanSCCSolver<bool>(childNodes);
-        Assert.AreEqual(0,DAGsolver.GetCycleNumber());
+        Assert.AreEqual(expected: 0, actual: DAGsolver.GetCycleNumber());
         Assert.IsFalse(scc.CheckDAG());
+    }
+    [Test]
+    public void SortTest() {
+        var sortedNodes = unsorted.TopSort();
+        Assert.AreEqual(expected: unsorted.Nodes[2], actual: sortedNodes[0]);
     }
 }

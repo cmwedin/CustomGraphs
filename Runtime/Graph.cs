@@ -121,13 +121,13 @@ namespace SadSapphicGames.CustomGraphs{
             return (bool)isDAG;
         }
         //TODO
-        public void TopSort() { //! this should be extracted to its own class - undirected graph would violate Liskov
+        public Dictionary<int,GraphNode<TGraphType>> TopSort() { //! this should be extracted to its own class - undirected graph would violate Liskov
             if(!CheckDAG()) {
                 Debug.LogWarning("only a DAG can be Top-Sorted");
                 return;
             }
             Dictionary<int,int> nodeDegrees = new Dictionary<int, int>();
-            Dictionary<int,GraphNode<TGraphType>> SortedNodes = new Dictionary<int, GraphNode<TGraphType>>();
+            Dictionary<int,GraphNode<TGraphType>> sortedNodes = new Dictionary<int, GraphNode<TGraphType>>();
             Queue<GraphNode<TGraphType>> sortQ = new Queue<GraphNode<TGraphType>>();
             
             foreach(var node in Nodes.Values) {
@@ -137,13 +137,14 @@ namespace SadSapphicGames.CustomGraphs{
             
             int i = 0;
             while(sortQ.TryDequeue(out GraphNode<TGraphType> nextNode)) {
-                SortedNodes.Add(i,nextNode);
+                sortedNodes.Add(i,nextNode);
                 foreach(var edge in nextNode.OutEdges) {
                     var neighbor = edge.GetOppositeNode(nextNode);
                     nodeDegrees[neighbor.ID]--;
                     if(nodeDegrees[neighbor.ID] == 0) sortQ.Enqueue(neighbor);
                 }
             }
+            return sortedNodes;
         }
 
         private bool VisitNode(int id, List<int> visitedIDs) { //? may be usefull for future functionality
