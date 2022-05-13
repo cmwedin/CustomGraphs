@@ -142,7 +142,7 @@ public class GraphTests
     }
     [Test]
     public void SortTest() {
-        var sortedNodes = unsorted.TopSort();
+        var sortedNodes = TopologicalSort<bool>.Sort(unsorted);
         Assert.AreEqual(expected: unsorted.Nodes[2], actual: sortedNodes[0]);
     }
 }

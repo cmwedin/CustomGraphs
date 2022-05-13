@@ -120,32 +120,6 @@ namespace SadSapphicGames.CustomGraphs{
             isDAG = solver.GetCycleNumber() == 0;
             return (bool)isDAG;
         }
-        //TODO
-        public Dictionary<int,GraphNode<TGraphType>> TopSort() { //! this should be extracted to its own class - undirected graph would violate Liskov
-            if(!CheckDAG()) {
-                Debug.LogWarning("only a DAG can be Top-Sorted");
-                return;
-            }
-            Dictionary<int,int> nodeDegrees = new Dictionary<int, int>();
-            Dictionary<int,GraphNode<TGraphType>> sortedNodes = new Dictionary<int, GraphNode<TGraphType>>();
-            Queue<GraphNode<TGraphType>> sortQ = new Queue<GraphNode<TGraphType>>();
-            
-            foreach(var node in Nodes.Values) {
-                nodeDegrees.Add(node.ID,node.InEdges.Count);
-                if(nodeDegrees[node.ID] == 0) sortQ.Enqueue(node);
-            }
-            
-            int i = 0;
-            while(sortQ.TryDequeue(out GraphNode<TGraphType> nextNode)) {
-                sortedNodes.Add(i,nextNode);
-                foreach(var edge in nextNode.OutEdges) {
-                    var neighbor = edge.GetOppositeNode(nextNode);
-                    nodeDegrees[neighbor.ID]--;
-                    if(nodeDegrees[neighbor.ID] == 0) sortQ.Enqueue(neighbor);
-                }
-            }
-            return sortedNodes;
-        }
 
         private bool VisitNode(int id, List<int> visitedIDs) { //? may be usefull for future functionality
             if(visitedIDs.Contains(id)) return false;
