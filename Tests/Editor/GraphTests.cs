@@ -112,33 +112,30 @@ public class GraphTests
     }
     [Test]
     public void TarjanTest() {
-        TarjanSCCSolver<bool> solver = new TarjanSCCSolver<bool>(scc);
-        var solution = solver.GetSolution();
+        var tarjanSolution = TarjanSCCSolver<bool>.Solve(scc);
         Assert.AreEqual(
             expected: 3,
             // actual: solution.Values.Count
-            actual: solver.GetCycleNumber()
+            actual: tarjanSolution.Count
         );
         Assert.AreEqual(
             expected: new List<GraphNode<bool>> {scc.Nodes[2],scc.Nodes[1],scc.Nodes[0]},
-            actual: solution[0]
+            actual: tarjanSolution[0]
         );
         Assert.AreEqual(
             expected: new List<GraphNode<bool>> {scc.Nodes[5],scc.Nodes[4],scc.Nodes[3]},
-            actual: solution[3]
+            actual: tarjanSolution[1]
         );
         Assert.AreEqual(
             expected: new List<GraphNode<bool>> {scc.Nodes[7],scc.Nodes[6]},
-            actual: solution[6]
+            actual: tarjanSolution[2]
         );
-
-        solver = new TarjanSCCSolver<bool>(childNodes);
     }
+
     [Test]
     public void DAGTest() {
-        TarjanSCCSolver<bool> DAGsolver = new TarjanSCCSolver<bool>(childNodes);
-        Assert.AreEqual(expected: 0, actual: DAGsolver.GetCycleNumber());
-        Assert.IsFalse(scc.CheckDAG());
+        Assert.IsTrue(TarjanSCCSolver<bool>.CheckDAG(childNodes));
+        Assert.IsFalse(TarjanSCCSolver<bool>.CheckDAG(scc));
     }
     [Test]
     public void SortTest() {

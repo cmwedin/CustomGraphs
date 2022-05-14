@@ -9,7 +9,6 @@ namespace SadSapphicGames.CustomGraphs{
         public Dictionary<int, GraphNode<TGraphType>> Nodes { get => _nodes;}
 
         public int Size { get => Nodes.Keys.Count;}
-        private bool? isDAG = null;
         private List<GraphEdge<TGraphType>> _edges = new List<GraphEdge<TGraphType>>();
 
         // * Constructors
@@ -113,12 +112,6 @@ namespace SadSapphicGames.CustomGraphs{
             return DFS(node1).Contains(node2); 
             // ? this could be optimized by rewriting the search code to terminate when the destination node is reached 
             // ? but thats still O(v+e) time so i don't really care to until it becomes a problem
-        }
-        public bool CheckDAG() {
-            if(isDAG != null) return (bool)isDAG;
-            TarjanSCCSolver<TGraphType> solver = new TarjanSCCSolver<TGraphType>(this);
-            isDAG = solver.GetCycleNumber() == 0;
-            return (bool)isDAG;
         }
 
         private bool VisitNode(int id, List<int> visitedIDs) { //? may be usefull for future functionality

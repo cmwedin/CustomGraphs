@@ -4,7 +4,7 @@ using UnityEngine;
 namespace SadSapphicGames.CustomGraphs {
     public static class TopologicalSort<TGraphType> {
         public static Dictionary<int,GraphNode<TGraphType>> Sort(Graph<TGraphType> graph) {
-            if(!graph.CheckDAG()) {
+            if(!TarjanSCCSolver<TGraphType>.CheckDAG(graph)) {
                 Debug.LogWarning("only a DAG can be Top-Sorted");
                 return null;
             }
