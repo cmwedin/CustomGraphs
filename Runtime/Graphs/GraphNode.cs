@@ -13,7 +13,7 @@ namespace SadSapphicGames.CustomGraphs {
 
         private List<GraphEdge<TGraphType>> outEdges = new List<GraphEdge<TGraphType>>();
         public List<GraphEdge<TGraphType>> OutEdges { get => outEdges;}
-        private List<GraphEdge<TGraphType>> inEdges = new List<GraphEdge<TGraphType>>(); // ? undirected edges are always out edges
+        private List<GraphEdge<TGraphType>> inEdges = new List<GraphEdge<TGraphType>>(); // ? undirected edges are both inEdges and 
         public List<GraphEdge<TGraphType>> InEdges { get => inEdges;}
         public List<int> NeighborIDs { get {
             List<int> output = new List<int>();
@@ -32,8 +32,8 @@ namespace SadSapphicGames.CustomGraphs {
 
         public void AddEdge(GraphEdge<TGraphType> _edge) {
             if(OutEdges.Contains(_edge) || InEdges.Contains(_edge)) return;
-            if(_edge.GetOppositeNode(this) == this) InEdges.Add(_edge); //? this will also throw an exception when trying to add edges to nodes they aren't attached to
-            else {outEdges.Add(_edge);} //? this else is redundant but adds to readability
+            if(_edge.SinkNode == this) {InEdges.Add(_edge);} //? if this node is a sink add it to in edges
+            if(_edge.GetOppositeNode(this) != this){outEdges.Add(_edge);} //? if the other node is accesible add it to out edge (and undirected edge will be both) 
         } 
 
     }
