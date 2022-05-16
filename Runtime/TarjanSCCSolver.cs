@@ -32,12 +32,12 @@ namespace SadSapphicGames.CustomGraphs{
         //     if (!solved) {Solve();}
         //     return solution.Values.Count;
         // } 
-        public static bool CheckDAG(Graph<TGraphType> graph) {
+        public static bool CheckDAG(DirectedGraph<TGraphType> graph) {
             var sccList = Solve(graph);
             return sccList.Count == 0;
         }
 
-        public static List<List<GraphNode<TGraphType>>> Solve(Graph<TGraphType> graph) {
+        public static List<List<GraphNode<TGraphType>>> Solve(DirectedGraph<TGraphType> graph) {
             lowlink = new int[graph.Size];
             onStack = new Dictionary<GraphNode<TGraphType>, bool>();
             tarjanIDs = new Dictionary<GraphNode<TGraphType>, int>();

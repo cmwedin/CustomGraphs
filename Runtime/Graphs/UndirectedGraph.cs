@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace SadSapphicGames.CustomGraphs {
-    public class UndirectedGraph<TGraphType> : Graph<TGraphType> { 
+    public class UndirectedGraph<TGraphType> : AbstractGraph<TGraphType> { 
         public UndirectedGraph(Dictionary<int, List<int>> adjacencyList) : base(adjacencyList) {
         }
 

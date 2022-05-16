@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace SadSapphicGames.CustomGraphs{
-    public abstract class Graph<TGraphType> { //? the default type of graph is directed and unweighted
+    public abstract class AbstractGraph<TGraphType> { //? the default type of graph is directed and unweighted
         protected Dictionary<int , GraphNode<TGraphType>> nodes = new Dictionary<int, GraphNode<TGraphType>>();
         public Dictionary<int, GraphNode<TGraphType>> Nodes { get => nodes;}
 
@@ -14,7 +14,7 @@ namespace SadSapphicGames.CustomGraphs{
 
 
         // * Constructors
-        public Graph(Dictionary<int,List<int>> adjacencyList) { //? O(V+E) time
+        public AbstractGraph(Dictionary<int,List<int>> adjacencyList) { //? O(V+E) time
             foreach (int id in adjacencyList.Keys) { 
                 AddNode(new GraphNode<TGraphType>(id));
             }
@@ -24,7 +24,7 @@ namespace SadSapphicGames.CustomGraphs{
                 }
             }
         }
-        public Graph(int V, List<int[]> E) { //? O(V+E) time
+        public AbstractGraph(int V, List<int[]> E) { //? O(V+E) time
             for (int id = 0; id < V; id++) {
                 AddNode(new GraphNode<TGraphType>(id));
             }
@@ -99,16 +99,16 @@ namespace SadSapphicGames.CustomGraphs{
                 idStack.Push(id);
             }
             while(idStack.TryPop(out int nextID)) {
-                bool inClass = false;
+                bool inComponent = false;
                 if(connectedComponents == new List<List<GraphNode<TGraphType>>>()) { //? if this was the first node in the stack just search
                     connectedComponents.Add(DFS(nextID)); //?either search works
                     continue;
                 }
-                foreach (var _class in connectedComponents) { //? if this node is in one of the equiv classes we have already searched move on to the next
+                foreach (var _class in connectedComponents) { //? if this node is in one of the components we have already searched move on to the next
                     if(_class.Contains(Nodes[nextID])) 
-                        {inClass = true;}
+                        {inComponent = true;}
                 }
-                if(!inClass) connectedComponents.Add(DFS(nextID)); //? if it isn't in any of them add a new one by searching from it
+                if(!inComponent) connectedComponents.Add(DFS(nextID)); //? if it isn't in any of them add a new one by searching from it
             }
             return connectedComponents;
         }
