@@ -31,10 +31,9 @@ namespace SadSapphicGames.CustomGraphs{
                 this.AddEdge(edge[0],edge[1]);
             }
         }
-        private void AddEdge(int v1, int v2) {
+        public virtual void AddEdge(int v1, int v2) {
             if(!Nodes.ContainsKey(v1)) throw new NotInGraphException(v1);
             if(!Nodes.ContainsKey(v2)) throw new NotInGraphException(v2);
-            _edges.Add(new GraphEdge<TGraphType>(Nodes[v1],Nodes[v2]));
         }
 
 
