@@ -49,7 +49,7 @@ namespace SadSapphicGames.CustomGraphs{
             }
 
             nodeStack = new Stack<GraphNode<TGraphType>>();
-            int iterationDepth = -1; // TODO might be worthwhile to make this a prop that throws an excep if its value is greater than graph.Size
+            int iterationDepth = -1; // TODO might be worthwhile to make this a prop that throws an except if its value is greater than graph.Size
             for (int id = 0; id < graph.Size; id++) {
                 if(tarjanIDs[graph.Nodes[id]] == -1) TarjanDFS(sccList, graph.Nodes[id],iterationDepth,out iterationDepth); 
                 //? the start of tarjan can be random so we just use whatever node in the graph happens to have id 0

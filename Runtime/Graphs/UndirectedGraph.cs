@@ -10,9 +10,9 @@ namespace SadSapphicGames.CustomGraphs {
         public UndirectedGraph(int V, List<int[]> E) : base(V, E) {
         }
 
-        public override void AddEdge(int v1, int v2) {
+        public override void AddEdge(GraphNode<TGraphType> v1, GraphNode<TGraphType> v2) {
             base.AddEdge(v1, v2); //? just checks that v1 and v2 are in the graph
-            edges.Add(new UndirectedEdge<TGraphType>(Nodes[v1],Nodes[v2]));
+            edges.Add(new UndirectedEdge<TGraphType>(v1,v2));
         }
     }
 }

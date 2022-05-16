@@ -33,15 +33,46 @@ namespace SadSapphicGames.CustomGraphs{
                 this.AddEdge(edge[0],edge[1]);
             }
         }
-
-        private void AddNode(GraphNode<TGraphType> node) {
-            nodes.Add(node.ID,node);
+        //? copy constructor
+        public AbstractGraph(AbstractGraph<TGraphType> prevGraph) {
+            
         }
 
-        public virtual void AddEdge(int v1, int v2) {
-            if(!Nodes.ContainsKey(v1)) throw new NotInGraphException(v1);
-            if(!Nodes.ContainsKey(v2)) throw new NotInGraphException(v2);
-            //? subclasses ad the edge based on wether or not it should be undirected
+        // * Opperator Overloads
+        public static AbstractGraph<TGraphType> operator +(AbstractGraph<TGraphType> a,GraphNode<TGraphType> b) {
+            AbstractGraph<TGraphType> output = (AbstractGraph<TGraphType>)a.MemberwiseClone(); // ? this makes sure output is a new object not directly modifying a
+            output.AddNode(b); //! this adds b to output by reference, i.e. the same object potentially in two graphs
+            return output;
+        }
+        public static AbstractGraph<TGraphType> operator -(AbstractGraph<TGraphType> a,GraphNode<TGraphType> b) {
+            AbstractGraph<TGraphType> output = (AbstractGraph<TGraphType>)a.MemberwiseClone();
+            return output;
+        }
+        public static AbstractGraph<TGraphType> operator +(AbstractGraph<TGraphType> a,GraphEdge<TGraphType> b) {
+            AbstractGraph<TGraphType> output = (AbstractGraph<TGraphType>)a.MemberwiseClone();
+            return output;
+        }
+        public static AbstractGraph<TGraphType> operator -(AbstractGraph<TGraphType> a,GraphEdge<TGraphType> b) {
+            AbstractGraph<TGraphType> output = (AbstractGraph<TGraphType>)a.MemberwiseClone();
+            return output;
+        }
+
+
+        private void AddNode(GraphNode<TGraphType> node) {
+            if(Nodes.ContainsKey(node.ID)) throw new NonUniqueIDException(node.ID);
+            nodes.Add(node.ID,node);
+        }
+        public bool HasNode(GraphNode<TGraphType> node) {
+            return Nodes.ContainsValue(node); 
+        }
+        public void AddEdge(int id1, int id2) {
+            AddEdge(Nodes[id1],Nodes[id2]);
+        }
+
+        public virtual void AddEdge(GraphNode<TGraphType> v1, GraphNode<TGraphType> v2) {
+            if(!this.HasNode(v1)) throw new NotInGraphException(v1.ID);
+            if(!this.HasNode(v2)) throw new NotInGraphException(v2.ID);
+            //? subclasses override this and add the edge based on wether or not it should be undirected
         }
 
 

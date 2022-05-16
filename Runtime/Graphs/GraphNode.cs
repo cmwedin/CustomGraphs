@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace SadSapphicGames.CustomGraphs {
         public void AddEdge(GraphEdge<TGraphType> _edge) {
             if(OutEdges.Contains(_edge) || InEdges.Contains(_edge)) return;
             if(_edge.SinkNode == this) {InEdges.Add(_edge);} //? if this node is a sink add it to in edges
-            if(_edge.GetOppositeNode(this) != this){outEdges.Add(_edge);} //? if the other node is accesible add it to out edge (and undirected edge will be both) 
+            if(_edge.GetOppositeNode(this) != this){outEdges.Add(_edge);} //? if the other node is accessible add it to out edge (and undirected edge will be both) 
         } 
 
     }
