@@ -16,7 +16,7 @@ namespace SadSapphicGames.CustomGraphs{
         // * Constructors
         public Graph(Dictionary<int,List<int>> adjacencyList) { //? O(V+E) time
             foreach (int id in adjacencyList.Keys) { 
-                nodes.Add(id, new GraphNode<TGraphType>(id));
+                AddNode(new GraphNode<TGraphType>(id));
             }
             foreach (int id in Nodes.Keys) {
                 foreach (int adjID in adjacencyList[id]) {
@@ -26,16 +26,22 @@ namespace SadSapphicGames.CustomGraphs{
         }
         public Graph(int V, List<int[]> E) { //? O(V+E) time
             for (int id = 0; id < V; id++) {
-                nodes.Add(id, new GraphNode<TGraphType>(id));
+                AddNode(new GraphNode<TGraphType>(id));
             }
             foreach (var edge in E) {
                 if(edge.Length != 2) throw new Exception("each edges array length must be exactly 2");
                 this.AddEdge(edge[0],edge[1]);
             }
         }
+
+        private void AddNode(GraphNode<TGraphType> node) {
+            nodes.Add(node.ID,node);
+        }
+
         public virtual void AddEdge(int v1, int v2) {
             if(!Nodes.ContainsKey(v1)) throw new NotInGraphException(v1);
             if(!Nodes.ContainsKey(v2)) throw new NotInGraphException(v2);
+            //? subclasses ad the edge based on wether or not it should be undirected
         }
 
 
