@@ -8,27 +8,27 @@ using SadSapphicGames.CustomGraphs;
 public class GraphTests
 {
     // * Graphs to do tests with
-    Graph<bool> trivialGraph = new Graph<bool>( new Dictionary<int, List<int>> {
+    Graph<bool> trivialGraph = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
         {0, new List<int>()}
     });
-    Graph<bool> trivialCycle = new Graph<bool>( new Dictionary<int, List<int>> {
+    Graph<bool> trivialCycle = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
         {0, new List<int>{1}},
         {1, new List<int>{0}}
     });
-    Graph<bool> childNodes = new Graph<bool>( new Dictionary<int, List<int>> {
+    Graph<bool> childNodes = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
         {0, new List<int>{1,2}},
         {1, new List<int>{3}},
         {2, new List<int>{4}},
         {3, new List<int>{}},
         {4, new List<int>{}}
     });
-    Graph<bool> islands = new Graph<bool> ( new Dictionary<int, List<int>> {
+    Graph<bool> islands = new DirectedGraph<bool> ( new Dictionary<int, List<int>> {
         {0, new List<int>{1}},
         {1, new List<int>{0}},
         {2, new List<int>{3}},
         {3, new List<int>{2}}
     });
-    Graph<bool> scc = new Graph<bool> ( new Dictionary<int, List<int>> { 
+    Graph<bool> scc = new DirectedGraph<bool> ( new Dictionary<int, List<int>> { 
         {0, new List<int>{1}},
         {1, new List<int>{2}},
         {2, new List<int>{0}}, //? end of scc 1
@@ -38,7 +38,7 @@ public class GraphTests
         {6, new List<int>{4,7}},
         {7, new List<int>{6,5}}, //? end of scc 3
     });
-    Graph<bool> bottleNeck = new Graph<bool> ( new Dictionary<int, List<int>> {
+    Graph<bool> bottleNeck = new DirectedGraph<bool> ( new Dictionary<int, List<int>> {
         {0, new List<int>{3}},
         {1, new List<int>{3}},
         {2, new List<int>{3}},
@@ -46,7 +46,7 @@ public class GraphTests
         {4, new List<int>{5}},
         {5, new List<int>{3}}
     });
-    Graph<bool> unsorted = new Graph<bool>( new Dictionary<int, List<int>> {
+    Graph<bool> unsorted = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
         {0, new List<int>{}},
         {1, new List<int>{0}},
         {2, new List<int>{1}}

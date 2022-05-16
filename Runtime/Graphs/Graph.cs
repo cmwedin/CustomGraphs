@@ -4,17 +4,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace SadSapphicGames.CustomGraphs{
-    public class Graph<TGraphType> { //? the default type of graph is directed and unweighted
-        private Dictionary<int , GraphNode<TGraphType>> _nodes = new Dictionary<int, GraphNode<TGraphType>>();
-        public Dictionary<int, GraphNode<TGraphType>> Nodes { get => _nodes;}
+    public abstract class Graph<TGraphType> { //? the default type of graph is directed and unweighted
+        protected Dictionary<int , GraphNode<TGraphType>> nodes = new Dictionary<int, GraphNode<TGraphType>>();
+        public Dictionary<int, GraphNode<TGraphType>> Nodes { get => nodes;}
 
         public int Size { get => Nodes.Keys.Count;}
-        private List<GraphEdge<TGraphType>> _edges = new List<GraphEdge<TGraphType>>();
+        protected List<GraphEdge<TGraphType>> edges = new List<GraphEdge<TGraphType>>();
+        public List<GraphEdge<TGraphType>> Edges { get => edges;}
+
 
         // * Constructors
         public Graph(Dictionary<int,List<int>> adjacencyList) { //? O(V+E) time
             foreach (int id in adjacencyList.Keys) { 
-                _nodes.Add(id, new GraphNode<TGraphType>(id));
+                nodes.Add(id, new GraphNode<TGraphType>(id));
             }
             foreach (int id in Nodes.Keys) {
                 foreach (int adjID in adjacencyList[id]) {
@@ -24,7 +26,7 @@ namespace SadSapphicGames.CustomGraphs{
         }
         public Graph(int V, List<int[]> E) { //? O(V+E) time
             for (int id = 0; id < V; id++) {
-                _nodes.Add(id, new GraphNode<TGraphType>(id));
+                nodes.Add(id, new GraphNode<TGraphType>(id));
             }
             foreach (var edge in E) {
                 if(edge.Length != 2) throw new Exception("each edges array length must be exactly 2");
