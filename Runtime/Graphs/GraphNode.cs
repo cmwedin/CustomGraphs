@@ -11,6 +11,9 @@ namespace SadSapphicGames.CustomGraphs {
 
         private TGraphType value;
         public TGraphType Value { get => value;}
+        public void SetValue(TGraphType _value){
+            value = _value;
+        }
 
         private List<GraphEdge<TGraphType>> outEdges = new List<GraphEdge<TGraphType>>();
         public List<GraphEdge<TGraphType>> OutEdges { get => outEdges;}

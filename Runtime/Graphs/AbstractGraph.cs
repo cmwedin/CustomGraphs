@@ -33,15 +33,12 @@ namespace SadSapphicGames.CustomGraphs{
                 this.AddEdge(edge[0],edge[1]);
             }
         }
-        //? copy constructor
-        public AbstractGraph(AbstractGraph<TGraphType> prevGraph) {
-            
-        }
 
         // * Opperator Overloads
         public static AbstractGraph<TGraphType> operator +(AbstractGraph<TGraphType> a,GraphNode<TGraphType> b) {
-            AbstractGraph<TGraphType> output = (AbstractGraph<TGraphType>)a.MemberwiseClone(); // ? this makes sure output is a new object not directly modifying a
-            output.AddNode(b); //! this adds b to output by reference, i.e. the same object potentially in two graphs
+            AbstractGraph<TGraphType> output = ObjectExtensions.Copy(a);
+            GraphNode<TGraphType> bCopy = ObjectExtensions.Copy(b);
+            output.AddNode(bCopy);
             return output;
         }
         public static AbstractGraph<TGraphType> operator -(AbstractGraph<TGraphType> a,GraphNode<TGraphType> b) {
