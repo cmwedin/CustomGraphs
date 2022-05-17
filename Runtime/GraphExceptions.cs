@@ -30,6 +30,16 @@ namespace SadSapphicGames.CustomGraphs {
             System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
     [System.Serializable]
+    public class DifferentGraphsException : System.Exception
+    {
+        public DifferentGraphsException() : base("parent graphs do not match"){ }
+        public DifferentGraphsException(string message) : base(message) { }
+        public DifferentGraphsException(string message, System.Exception inner) : base(message, inner) { }
+        protected DifferentGraphsException(
+            System.Runtime.Serialization.SerializationInfo info,
+            System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+    }
+    [System.Serializable]
     public class NotATreeException : System.Exception
     {
         public NotATreeException() : base("this graph does not constitute a tree"){ }

@@ -1,3 +1,5 @@
+using System;
+
 namespace SadSapphicGames.CustomGraphs{
     public abstract class GraphEdge<TGraphType> {
         private GraphNode<TGraphType> sourceNode;
@@ -12,12 +14,10 @@ namespace SadSapphicGames.CustomGraphs{
         {
             sourceNode = _sourceNode;
             sinkNode = _sinkNode;
-
             sourceNode.AddEdge(this);
             sinkNode.AddEdge(this);
             this.weight = weight;
         }
-
 
         public virtual GraphNode<TGraphType> GetOppositeNode(GraphNode<TGraphType> node) {
             if(node != SourceNode && node != SinkNode) throw new NotAttachedToEdgeException();

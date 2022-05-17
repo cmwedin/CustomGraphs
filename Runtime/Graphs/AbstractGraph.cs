@@ -24,6 +24,7 @@ namespace SadSapphicGames.CustomGraphs{
                 }
             }
         }
+
         public AbstractGraph(int V, List<int[]> E) { //? O(V+E) time
             for (int id = 0; id < V; id++) {
                 AddNode(new GraphNode<TGraphType>(id));
@@ -37,22 +38,23 @@ namespace SadSapphicGames.CustomGraphs{
         // * Opperator Overloads
         public static AbstractGraph<TGraphType> operator +(AbstractGraph<TGraphType> a,GraphNode<TGraphType> b) {
             AbstractGraph<TGraphType> output = ObjectExtensions.Copy(a);
-            GraphNode<TGraphType> bCopy = ObjectExtensions.Copy(b);
+            GraphNode<TGraphType> bCopy = ObjectExtensions.Copy(b); 
             output.AddNode(bCopy);
             return output;
         }
         public static AbstractGraph<TGraphType> operator -(AbstractGraph<TGraphType> a,GraphNode<TGraphType> b) {
-            AbstractGraph<TGraphType> output = (AbstractGraph<TGraphType>)a.MemberwiseClone();
+            AbstractGraph<TGraphType> output = ObjectExtensions.Copy(a);
             return output;
         }
         public static AbstractGraph<TGraphType> operator +(AbstractGraph<TGraphType> a,GraphEdge<TGraphType> b) {
-            AbstractGraph<TGraphType> output = (AbstractGraph<TGraphType>)a.MemberwiseClone();
+            AbstractGraph<TGraphType> output = ObjectExtensions.Copy(a);
             return output;
         }
         public static AbstractGraph<TGraphType> operator -(AbstractGraph<TGraphType> a,GraphEdge<TGraphType> b) {
-            AbstractGraph<TGraphType> output = (AbstractGraph<TGraphType>)a.MemberwiseClone();
+            AbstractGraph<TGraphType> output = ObjectExtensions.Copy(a);
             return output;
         }
+        
 
 
         private void AddNode(GraphNode<TGraphType> node) {
@@ -72,7 +74,27 @@ namespace SadSapphicGames.CustomGraphs{
             //? subclasses override this and add the edge based on wether or not it should be undirected
         }
 
-
+        public void RemoveEdge(GraphEdge<TGraphType> edge) {
+            if(!Edges.Contains(edge)) return;
+            Edges.Remove(edge);
+            edge.SourceNode.RemoveEdge(edge);
+            edge.SinkNode.RemoveEdge(edge);
+            return;
+        }
+        public void RemoveNode(GraphNode<TGraphType> node) {
+            if(!HasNode(node)) return;
+            List<GraphEdge<TGraphType>> edgesToRemove = new List<GraphEdge<TGraphType>>();
+            foreach (var edge in node.InEdges) {
+                if(!edgesToRemove.Contains(edge)) edgesToRemove.Add(edge);
+            }
+            foreach (var edge in node.OutEdges) {
+                if(!edgesToRemove.Contains(edge)) edgesToRemove.Add(edge);
+            }
+            foreach (var edge in edgesToRemove) {
+                RemoveEdge(edge);
+            }
+            Nodes.Remove(node.ID);
+        }        
         
         // * Depth First Search
         public List<GraphNode<TGraphType>> DFS(int nodeID) {

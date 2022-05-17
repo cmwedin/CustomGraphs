@@ -5,7 +5,6 @@ using System.Linq;
 
 namespace SadSapphicGames.CustomGraphs {
     public class GraphNode<TGraphType> {
-        
         private int id;
         public int ID { get => id;}
 
@@ -15,6 +14,8 @@ namespace SadSapphicGames.CustomGraphs {
             value = _value;
         }
 
+        //! because these properties are reference type list the values within the list can be easily be modified from outside the class
+        //! access protection should instead be implemented through methods
         private List<GraphEdge<TGraphType>> outEdges = new List<GraphEdge<TGraphType>>();
         public List<GraphEdge<TGraphType>> OutEdges { get => outEdges;}
         private List<GraphEdge<TGraphType>> inEdges = new List<GraphEdge<TGraphType>>(); // ? undirected edges are both inEdges and 
@@ -38,7 +39,13 @@ namespace SadSapphicGames.CustomGraphs {
             if(OutEdges.Contains(_edge) || InEdges.Contains(_edge)) return;
             if(_edge.SinkNode == this) {InEdges.Add(_edge);} //? if this node is a sink add it to in edges
             if(_edge.GetOppositeNode(this) != this){outEdges.Add(_edge);} //? if the other node is accessible add it to out edge (and undirected edge will be both) 
-        } 
+        }     
 
+        internal void RemoveEdge(GraphEdge<TGraphType> edge) {
+            //? this should only be called from AbstractGraph.RemoveEdge(edge)
+            //? which will make sure both nodes of an edge have it removed
+            InEdges.Remove(edge);
+            OutEdges.Remove(edge);
+        }
     }
 }
