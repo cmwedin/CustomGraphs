@@ -73,7 +73,7 @@ namespace SadSapphicGames.CustomGraphs{
 
 
             //? for all the edges on the start node, recursively call the function and update the value of low-link value of that node 
-            foreach (var edge in node.OutEdges) {
+            foreach (var edge in node.GetOutEdges()) {
                 GraphNode<TGraphType> neighbor = edge.GetOppositeNode(node);
                 if(tarjanIDs[neighbor] == -1) {
                     TarjanDFS(sccList, neighbor, iterationDepth, out iterationDepth); } //? call this function for my neighbor

@@ -13,14 +13,14 @@ namespace SadSapphicGames.CustomGraphs {
             Queue<GraphNode<TGraphType>> sortQ = new Queue<GraphNode<TGraphType>>();
             
             foreach(var node in graph.Nodes.Values) {
-                nodeDegrees.Add(node.ID,node.InEdges.Count);
+                nodeDegrees.Add(node.ID,node.GetInEdges().Count);
                 if(nodeDegrees[node.ID] == 0) sortQ.Enqueue(node);
             }
             
             int i = 0;
             while(sortQ.TryDequeue(out GraphNode<TGraphType> nextNode)) {
                 sortedNodes.Add(i,nextNode);
-                foreach(var edge in nextNode.OutEdges) {
+                foreach(var edge in nextNode.GetOutEdges()) {
                     var neighbor = edge.GetOppositeNode(nextNode);
                     nodeDegrees[neighbor.ID]--;
                     if(nodeDegrees[neighbor.ID] == 0) sortQ.Enqueue(neighbor);

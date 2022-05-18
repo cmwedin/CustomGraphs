@@ -7,7 +7,7 @@ namespace SadSapphicGames.CustomGraphs {
         public override GraphNode<TGraphType> GetOppositeNode(GraphNode<TGraphType> node)
         {
             var output =  base.GetOppositeNode(node);
-            if(node == SinkNode) return node;
+            if(node == GetSinkNode()) return node;
             else return output;
         }
     }

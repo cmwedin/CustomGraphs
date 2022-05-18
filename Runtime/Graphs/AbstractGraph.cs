@@ -9,8 +9,7 @@ namespace SadSapphicGames.CustomGraphs{
         public Dictionary<int, GraphNode<TGraphType>> Nodes { get => nodes;}
 
         public int Size { get => Nodes.Keys.Count;}
-        protected List<GraphEdge<TGraphType>> edges = new List<GraphEdge<TGraphType>>();
-        public List<GraphEdge<TGraphType>> Edges { get => edges;}
+        protected Dictionary<string, GraphEdge<TGraphType>> edges = new Dictionary<string, GraphEdge<TGraphType>>();
 
 
         // * Constructors
@@ -70,26 +69,6 @@ namespace SadSapphicGames.CustomGraphs{
             if(Nodes.ContainsKey(node.ID)) throw new NonUniqueIDException(node.ID);
             nodes.Add(node.ID,node);
         }
-        public bool HasNode(GraphNode<TGraphType> node) {
-            return Nodes.ContainsValue(node); 
-        }
-        public void AddEdge(int id1, int id2) {
-            AddEdge(Nodes[id1],Nodes[id2]);
-        }
-
-        public virtual void AddEdge(GraphNode<TGraphType> v1, GraphNode<TGraphType> v2) {
-            if(!this.HasNode(v1)) throw new NotInGraphException(v1.ID);
-            if(!this.HasNode(v2)) throw new NotInGraphException(v2.ID);
-            //? subclasses override this and add the edge based on wether or not it should be undirected
-        }
-
-        public void RemoveEdge(GraphEdge<TGraphType> edge) {
-            if(!Edges.Contains(edge)) return;
-            Edges.Remove(edge);
-            edge.SourceNode.RemoveEdge(edge);
-            edge.SinkNode.RemoveEdge(edge);
-            return;
-        }
         public void RemoveNode(GraphNode<TGraphType> node) {
             if(!HasNode(node)) return;
             List<GraphEdge<TGraphType>> edgesToRemove = new List<GraphEdge<TGraphType>>();
@@ -103,7 +82,36 @@ namespace SadSapphicGames.CustomGraphs{
                 RemoveEdge(edge);
             }
             Nodes.Remove(node.ID);
-        }        
+        }       
+        public bool HasNode(GraphNode<TGraphType> node) {
+            return Nodes.ContainsValue(node); 
+        }
+        public void AddEdge(int id1, int id2) {
+            AddEdge(Nodes[id1],Nodes[id2]);
+        }
+
+        public virtual void AddEdge(GraphNode<TGraphType> v1, GraphNode<TGraphType> v2) {
+            if(!this.HasNode(v1)) throw new NotInGraphException(v1.ID);
+            if(!this.HasNode(v2)) throw new NotInGraphException(v2.ID);
+            //? subclasses override this and add the edge based on wether or not it should be undirected
+        }
+        public GraphEdge<TGraphType> GetEdge(string ID) {
+            return edges[ID];
+        }
+        public List<GraphEdge<TGraphType>> GetEdgeList(List<string> IDs) {
+            List<GraphEdge<TGraphType>> output = new List<GraphEdge<TGraphType>>();
+            foreach(var ID in IDs) {output.Add(edges[ID]);}
+            return output;
+        }
+
+        public void RemoveEdge(GraphEdge<TGraphType> edge) {
+            if(!edges.ContainsValue(edge)) return;
+            edges.Remove(edge.ID);
+            edge.GetSourceNode().RemoveEdge(edge);
+            edge.GetSinkNode().RemoveEdge(edge);
+            return;
+        }
+ 
         
         // * Depth First Search
         public List<GraphNode<TGraphType>> DFS(int nodeID) {
