@@ -34,6 +34,11 @@ namespace SadSapphicGames.CustomGraphs{
 
         //? copy constructor
         public GraphEdge(GraphEdge<TGraphType> _edge) {
+            //? we ignore the only reference type member of an edge and consider the new edge to be an orphan
+            this.sinkNodeID = _edge.SinkNodeID;
+            this.sourceNodeID = _edge.SourceNodeID;
+            this.weight = _edge.Weight;
+            this.parentGraph = null; 
         }
         public GraphNode<TGraphType> GetSourceNode() {
             return parentGraph.Nodes[sourceNodeID];
