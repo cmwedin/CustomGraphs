@@ -59,4 +59,14 @@ namespace SadSapphicGames.CustomGraphs {
             System.Runtime.Serialization.SerializationInfo info,
             System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
+    [System.Serializable]
+    public class OrphanException : System.Exception
+    {
+        public OrphanException() : base("this object does no have a parent graph - this can occur when copying graph objects with the copy constructor. Did you forget to add the copy to a new graph?") { }
+        public OrphanException(string message) : base(message) { }
+        public OrphanException(string message, System.Exception inner) : base(message, inner) { }
+        protected OrphanException(
+            System.Runtime.Serialization.SerializationInfo info,
+            System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+    }
 }

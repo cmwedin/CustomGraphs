@@ -16,7 +16,7 @@ namespace SadSapphicGames.CustomGraphs{
         // * Constructors
         public AbstractGraph(Dictionary<int,List<int>> adjacencyList) { //? O(V+E) time
             foreach (int id in adjacencyList.Keys) { 
-                AddNode(new GraphNode<TGraphType>(id));
+                AddNode(new GraphNode<TGraphType>(id, this));
             }
             foreach (int id in Nodes.Keys) {
                 foreach (int adjID in adjacencyList[id]) {
@@ -27,7 +27,7 @@ namespace SadSapphicGames.CustomGraphs{
 
         public AbstractGraph(int V, List<int[]> E) { //? O(V+E) time
             for (int id = 0; id < V; id++) {
-                AddNode(new GraphNode<TGraphType>(id));
+                AddNode(new GraphNode<TGraphType>(id, this));
             }
             foreach (var edge in E) {
                 if(edge.Length != 2) throw new Exception("each edges array length must be exactly 2");
@@ -35,7 +35,16 @@ namespace SadSapphicGames.CustomGraphs{
             }
         }
 
-        // * Opperator Overloads
+        // * Operator Overloads
+        // ? the approach I am using here is space inefficient and creates unneeded copies of nodes in memory
+            //? if we add a non-new node to a graph the Copy method will created new copies of its edges in memory
+                //? these edges will in turn create new copies of their source and sink node (that haven't already been copied)
+                //? this in turn causes copying a non-new node to create a copy of its entire connected component
+            //? if the node is new we still create a new copy of it as there if it is or not
+                //? however in this case we only create one redundant node as a new node won't have any attached edges.
+        // ? this should be resolved in garbage collection as none of the redundant info created in memory should be used anywhere after we clear the copy nodes edges.
+            //? but its possible I'm misunderstanding how garbage collection works and the redundant objects referencing each other will prevent them from being marked for collection
+        //TODO regardless this seems like something that should be resolved in the future, probably bad practice representing nodes in such a way that causes this
         public static AbstractGraph<TGraphType> operator +(AbstractGraph<TGraphType> a,GraphNode<TGraphType> b) {
             AbstractGraph<TGraphType> output = ObjectExtensions.Copy(a);
             GraphNode<TGraphType> bCopy = ObjectExtensions.Copy(b); 
@@ -84,10 +93,10 @@ namespace SadSapphicGames.CustomGraphs{
         public void RemoveNode(GraphNode<TGraphType> node) {
             if(!HasNode(node)) return;
             List<GraphEdge<TGraphType>> edgesToRemove = new List<GraphEdge<TGraphType>>();
-            foreach (var edge in node.InEdges) {
+            foreach (var edge in node.GetInEdges()) {
                 if(!edgesToRemove.Contains(edge)) edgesToRemove.Add(edge);
             }
-            foreach (var edge in node.OutEdges) {
+            foreach (var edge in node.GetOutEdges()) {
                 if(!edgesToRemove.Contains(edge)) edgesToRemove.Add(edge);
             }
             foreach (var edge in edgesToRemove) {
@@ -141,7 +150,7 @@ namespace SadSapphicGames.CustomGraphs{
             return connectedNodes;
         }
         // * Get Connected component sets
-        // ? a potentially usefull observation is in an undirected graph connectedness forms an equivalence relation
+        // ? a potentially useful observation is in an undirected graph connectedness forms an equivalence relation
         public List<List<GraphNode<TGraphType>>> GetConnectedComponents(){ //? this type name is rather cumbersome
             List<List<GraphNode<TGraphType>>> connectedComponents = new List<List<GraphNode<TGraphType>>>();
             Stack<int> idStack = new Stack<int>();
@@ -171,7 +180,7 @@ namespace SadSapphicGames.CustomGraphs{
             // ? but thats still O(v+e) time so i don't really care to until it becomes a problem
         }
 
-        private bool VisitNode(int id, List<int> visitedIDs) { //? may be usefull for future functionality
+        private bool VisitNode(int id, List<int> visitedIDs) { //? may be useful for future functionality
             if(visitedIDs.Contains(id)) return false;
             else {
                 visitedIDs.Add(id);
