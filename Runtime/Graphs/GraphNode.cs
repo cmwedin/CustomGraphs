@@ -54,6 +54,16 @@ namespace SadSapphicGames.CustomGraphs
             this.value = default(TGraphType);
         }
 
+        //? copy constructor
+        public GraphNode(GraphNode<TGraphType> _node) {
+            this.id = _node.ID;
+            this.value = ObjectExtensions.Copy(_node.Value);
+            this.inEdgeIDs = ObjectExtensions.Copy(_node.inEdgeIDs);
+            this.outEdgeIDs = ObjectExtensions.Copy(_node.outEdgeIDs);
+            this.parentGraph = null;
+        }
+
+// * Modification Methods
         public void AddEdge(GraphEdge<TGraphType> _edge) {
             if(GetOutEdges().Contains(_edge) || GetInEdges().Contains(_edge)) return;
             if(_edge.GetSinkNode() == this) { inEdgeIDs.Add(_edge.ID);} //? if this node is a sink add it to in edges
