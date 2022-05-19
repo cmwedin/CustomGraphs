@@ -43,7 +43,7 @@ namespace SadSapphicGames.CustomGraphs{
             tarjanIDs = new Dictionary<GraphNode<TGraphType>, int>();
             List<List<GraphNode<TGraphType>>> sccList = new List<List<GraphNode<TGraphType>>>();
 
-            foreach (var node in graph.Nodes.Values) { //? this does take O(V) time however at sufficiently large arguments  O(V)+O(V+E) ~ O(V+E)
+            foreach (var node in graph.GetNodes()) { //? this does take O(V) time however at sufficiently large arguments  O(V)+O(V+E) ~ O(V+E)
                 tarjanIDs.Add(node, -1);
                 onStack.Add(node, false);
             }
@@ -51,7 +51,7 @@ namespace SadSapphicGames.CustomGraphs{
             nodeStack = new Stack<GraphNode<TGraphType>>();
             int iterationDepth = -1; // TODO might be worthwhile to make this a prop that throws an except if its value is greater than graph.Size
             for (int id = 0; id < graph.Size; id++) {
-                if(tarjanIDs[graph.Nodes[id]] == -1) TarjanDFS(sccList, graph.Nodes[id],iterationDepth,out iterationDepth); 
+                if(tarjanIDs[graph.GetNode(id)] == -1) TarjanDFS(sccList, graph.GetNode(id),iterationDepth,out iterationDepth); 
                 //? the start of tarjan can be random so we just use whatever node in the graph happens to have id 0
                 //? if i make node id's a generic type in the future I could pick a random element of graph.Nodes.Values
             }

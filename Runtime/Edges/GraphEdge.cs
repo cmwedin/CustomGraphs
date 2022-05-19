@@ -5,10 +5,11 @@ namespace SadSapphicGames.CustomGraphs{
 // * Value Types - Public
         public int SourceNodeID { get => sourceNodeID;}
         public int SinkNodeID { get => sinkNodeID;}
-        public string ID { get => $"{SourceNodeID},{SinkNodeID}";}
+        public string ID { get => id;}
         public float Weight { get => weight; }
 
         // * Value Types - Private
+        private string id;
         private int sourceNodeID;
         private int sinkNodeID;
         //? to avoid exponential proliferation of class types (adding a weighted version of all other graph classes) 
@@ -20,16 +21,16 @@ namespace SadSapphicGames.CustomGraphs{
 // * Reference Types - Private
         private AbstractGraph<TGraphType> parentGraph; //? set to null when copying an edge
 
-// * Constructors
+        // * Constructors
         public GraphEdge(GraphNode<TGraphType> _sourceNode, GraphNode<TGraphType> _sinkNode, float weight = 1)
         {
             sourceNodeID = _sourceNode.ID;
             sinkNodeID = _sinkNode.ID;
+            id = $"{sourceNodeID},{sinkNodeID}";
             this.parentGraph = _sourceNode.ParentGraph;
             GetSourceNode().AddEdge(this);
             GetSinkNode().AddEdge(this);
-            this.weight = weight;
-            
+            this.weight = weight;            
         }
 
         //? copy constructor
@@ -41,11 +42,11 @@ namespace SadSapphicGames.CustomGraphs{
             this.parentGraph = null; 
         }
         public GraphNode<TGraphType> GetSourceNode() {
-            return parentGraph.Nodes[sourceNodeID];
+            return parentGraph.GetNode(sourceNodeID);
         }
 
         public GraphNode<TGraphType> GetSinkNode() {
-            return parentGraph.Nodes[sinkNodeID];
+            return parentGraph.GetNode(sinkNodeID);
         }
 
         public virtual GraphNode<TGraphType> GetOppositeNode(GraphNode<TGraphType> node) {

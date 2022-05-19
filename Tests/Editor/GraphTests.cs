@@ -55,14 +55,14 @@ public class GraphTests
     [Test]
     public void TestTrivialGraph() {
 
-        Assert.AreEqual(expected:new List<GraphNode<bool>>{trivialGraph.Nodes[0]},actual:trivialGraph.DFS(0));
-        Assert.AreEqual(expected:new List<GraphNode<bool>>{trivialGraph.Nodes[0]},actual:trivialGraph.BFS(0));
+        Assert.AreEqual(expected:new List<GraphNode<bool>>{trivialGraph.GetNode(0)},actual:trivialGraph.DFS(0));
+        Assert.AreEqual(expected:new List<GraphNode<bool>>{trivialGraph.GetNode(0)},actual:trivialGraph.BFS(0));
     }
     [Test]
     public void TestTrivialCycle() {
 
-        Assert.AreEqual(expected:new List<GraphNode<bool>>{trivialCycle.Nodes[0],trivialCycle.Nodes[1]},actual:trivialCycle.DFS(0));
-        Assert.AreEqual(expected:new List<GraphNode<bool>>{trivialCycle.Nodes[0],trivialCycle.Nodes[1]},actual:trivialCycle.BFS(0));
+        Assert.AreEqual(expected:new List<GraphNode<bool>>{trivialCycle.GetNode(0),trivialCycle.GetNode(1)},actual:trivialCycle.DFS(0));
+        Assert.AreEqual(expected:new List<GraphNode<bool>>{trivialCycle.GetNode(0),trivialCycle.GetNode(1)},actual:trivialCycle.BFS(0));
         
     }
     [Test]
@@ -70,19 +70,19 @@ public class GraphTests
 
         Assert.AreEqual(
             expected:new List<GraphNode<bool>>{
-                childNodes.Nodes[0],
-                childNodes.Nodes[2],
-                childNodes.Nodes[4],
-                childNodes.Nodes[1],
-                childNodes.Nodes[3]},
+                childNodes.GetNode(0),
+                childNodes.GetNode(2),
+                childNodes.GetNode(4),
+                childNodes.GetNode(1),
+                childNodes.GetNode(3)},
             actual:childNodes.DFS(0));
         Assert.AreEqual(
             expected:new List<GraphNode<bool>>{
-                childNodes.Nodes[0],
-                childNodes.Nodes[1],
-                childNodes.Nodes[2],
-                childNodes.Nodes[3],
-                childNodes.Nodes[4]},
+                childNodes.GetNode(0),
+                childNodes.GetNode(1),
+                childNodes.GetNode(2),
+                childNodes.GetNode(3),
+                childNodes.GetNode(4)},
             actual:childNodes.BFS(0));
         
     }
@@ -90,8 +90,8 @@ public class GraphTests
     public void TestConnectedComponents() {
         Assert.AreEqual(
             expected:new List<List<GraphNode<bool>>>{
-                new List<GraphNode<bool>> {islands.Nodes[3],islands.Nodes[2]},
-                new List<GraphNode<bool>> {islands.Nodes[1],islands.Nodes[0]}
+                new List<GraphNode<bool>> {islands.GetNode(3),islands.GetNode(2)},
+                new List<GraphNode<bool>> {islands.GetNode(1),islands.GetNode(0)}
             },
             actual:islands.GetConnectedComponents());
     }
@@ -119,15 +119,15 @@ public class GraphTests
             actual: tarjanSolution.Count
         );
         Assert.AreEqual(
-            expected: new List<GraphNode<bool>> {scc.Nodes[2],scc.Nodes[1],scc.Nodes[0]},
+            expected: new List<GraphNode<bool>> {scc.GetNode(2),scc.GetNode(1),scc.GetNode(0)},
             actual: tarjanSolution[0]
         );
         Assert.AreEqual(
-            expected: new List<GraphNode<bool>> {scc.Nodes[5],scc.Nodes[4],scc.Nodes[3]},
+            expected: new List<GraphNode<bool>> {scc.GetNode(5),scc.GetNode(4),scc.GetNode(3)},
             actual: tarjanSolution[1]
         );
         Assert.AreEqual(
-            expected: new List<GraphNode<bool>> {scc.Nodes[7],scc.Nodes[6]},
+            expected: new List<GraphNode<bool>> {scc.GetNode(7),scc.GetNode(6)},
             actual: tarjanSolution[2]
         );
     }
@@ -140,6 +140,6 @@ public class GraphTests
     [Test]
     public void SortTest() {
         var sortedNodes = TopologicalSort<bool>.Sort(unsorted);
-        Assert.AreEqual(expected: unsorted.Nodes[2], actual: sortedNodes[0]);
+        Assert.AreEqual(expected: unsorted.GetNode(2), actual: sortedNodes[0]);
     }
 }

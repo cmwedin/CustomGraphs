@@ -65,7 +65,7 @@ namespace SadSapphicGames.CustomGraphs
 
 // * Modification Methods
         public void AddEdge(GraphEdge<TGraphType> _edge) {
-            if(GetOutEdges().Contains(_edge) || GetInEdges().Contains(_edge)) return;
+            if(outEdgeIDs.Contains(_edge.ID) || inEdgeIDs.Contains(_edge.ID)) return;
             if(_edge.GetSinkNode() == this) { inEdgeIDs.Add(_edge.ID);} //? if this node is a sink add it to in edges
             if(_edge.GetOppositeNode(this) != this){outEdgeIDs.Add(_edge.ID);} //? if the other node is accessible add it to out edge (and undirected edge will be both) 
         }     
