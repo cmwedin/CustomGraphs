@@ -2,6 +2,9 @@ namespace SadSapphicGames.CustomGraphs
 {
     public class UndirectedEdge<TGraphType> : GraphEdge<TGraphType>
     {
+        public UndirectedEdge(GraphEdge<TGraphType> _edge) : base(_edge) {
+        }
+
         public UndirectedEdge(GraphNode<TGraphType> _sourceNode, GraphNode<TGraphType> _sinkNode) : base(_sourceNode, _sinkNode) {
             //? no new code needed
         }

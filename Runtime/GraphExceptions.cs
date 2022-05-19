@@ -20,6 +20,16 @@ namespace SadSapphicGames.CustomGraphs {
             System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
     [System.Serializable]
+    public class IncompatibleEdgeException : System.Exception
+    {
+        public IncompatibleEdgeException() : base("Cannot mix directed and undirected edges") { }
+        public IncompatibleEdgeException(string message) : base(message) { }
+        public IncompatibleEdgeException(string message, System.Exception inner) : base(message, inner) { }
+        protected IncompatibleEdgeException(
+            System.Runtime.Serialization.SerializationInfo info,
+            System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+    }
+    [System.Serializable]
     public class EmptyGraphException : System.Exception
     {
         public EmptyGraphException() : base("this graph must have at least one node"){ }
@@ -52,7 +62,7 @@ namespace SadSapphicGames.CustomGraphs {
     [System.Serializable]
     public class NonUniqueIDException : System.Exception
     {
-        public NonUniqueIDException(int id) : base($"there is already a node with id {id} in the graph") { }
+        public NonUniqueIDException(int id) : base($"there is already a element with id {id} in the graph") { }
         public NonUniqueIDException(string message) : base(message) { }
         public NonUniqueIDException(string message, System.Exception inner) : base(message, inner) { }
         protected NonUniqueIDException(

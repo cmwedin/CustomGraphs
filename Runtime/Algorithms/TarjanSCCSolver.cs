@@ -43,7 +43,7 @@ namespace SadSapphicGames.CustomGraphs{
             tarjanIDs = new Dictionary<GraphNode<TGraphType>, int>();
             List<List<GraphNode<TGraphType>>> sccList = new List<List<GraphNode<TGraphType>>>();
 
-            foreach (var node in graph.GetNodes()) { //? this does take O(V) time however at sufficiently large arguments  O(V)+O(V+E) ~ O(V+E)
+            foreach (var node in graph.GetAllNodes()) { //? this does take O(V) time however at sufficiently large arguments  O(V)+O(V+E) ~ O(V+E)
                 tarjanIDs.Add(node, -1);
                 onStack.Add(node, false);
             }

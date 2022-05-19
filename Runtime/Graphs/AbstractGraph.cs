@@ -25,14 +25,17 @@ namespace SadSapphicGames.CustomGraphs{
         public GraphNode<TGraphType> GetNode(int ID) {
             return nodes[ID];
         }
-        public List<GraphNode<TGraphType>> GetNodes() {
+        public List<GraphNode<TGraphType>> GetAllNodes() {
             return nodes.Values.ToList();
         }
         public bool HasNode(GraphNode<TGraphType> node) {
-            return GetNodes().Contains(node); 
+            return GetAllNodes().Contains(node); 
         }
         public GraphEdge<TGraphType> GetEdge(string ID) {
             return edges[ID];
+        }
+        public List<GraphEdge<TGraphType>> GetAllEdges() {
+            return edges.Values.ToList();
         }
         public List<GraphEdge<TGraphType>> GetEdgeList(List<string> IDs) {
             List<GraphEdge<TGraphType>> output = new List<GraphEdge<TGraphType>>();
@@ -43,11 +46,11 @@ namespace SadSapphicGames.CustomGraphs{
         // ? adjacency list constructor
         public AbstractGraph(Dictionary<int,List<int>> adjList) { //? O(V+E) time
             foreach (int id in adjList.Keys) { 
-                AddNode(new GraphNode<TGraphType>(id, this));
+                AddNewNode(id);
             }
             foreach (int id in nodes.Keys) {
                 foreach (int adjID in adjList[id]) {
-                    AddEdge(id,adjID);
+                    AddNewEdge(id,adjID);
                 }
             }
             DebugMsg();
@@ -59,7 +62,7 @@ namespace SadSapphicGames.CustomGraphs{
             }
             foreach (var edge in E) {
                 if(edge.Length != 2) throw new Exception("each edges array length must be exactly 2");
-                this.AddEdge(edge[0],edge[1]);
+                this.AddNewEdge(edge[0],edge[1]);
             }
         }
         // TODO adjacency matrix constructor
@@ -68,17 +71,33 @@ namespace SadSapphicGames.CustomGraphs{
         }
         //? copy constructor
         public AbstractGraph(AbstractGraph<TGraphType> _graph) {
-            throw new NotImplementedException();
-        } 
-// * Modification Methods
-        public void AddEdge(int id1, int id2) {
-            AddEdge(GetNode(id1), GetNode(id2));
+            foreach (var _node in _graph.GetAllNodes()) {
+                this.AddNode(new GraphNode<TGraphType>(_node));
+            }
+            // ? edges are added in the non-abstract constructors
         }
 
-        public virtual void AddEdge(GraphNode<TGraphType> v1, GraphNode<TGraphType> v2) {
+
+        // * Modification Methods
+        public void AddNewEdge(int id1, int id2) {
+            AddNewEdge(GetNode(id1), GetNode(id2));
+        }
+        public virtual void AddNewEdge(GraphNode<TGraphType> v1, GraphNode<TGraphType> v2) {
             if(!this.HasNode(v1)) throw new NotInGraphException(v1.ID);
             if(!this.HasNode(v2)) throw new NotInGraphException(v2.ID);
             //? subclasses override this and add the edge based on wether or not it should be undirected
+        }
+        
+        protected virtual void AddEdge(GraphEdge<TGraphType> edgeToAdd) {
+            if(edges.ContainsKey(edgeToAdd.ID)) throw new NonUniqueIDException(edgeToAdd.ID);
+            if(edgeToAdd.ParentGraph != null) {
+                Debug.LogWarning("This edge is already attached to a graph, it must be removed from its parent before it can be added to another graph");
+                return;
+            }
+            if(!nodes.ContainsKey(edgeToAdd.SourceNodeID)) { AddNewNode(edgeToAdd.SourceNodeID); }
+            if(!nodes.ContainsKey(edgeToAdd.SinkNodeID)) { AddNewNode(edgeToAdd.SinkNodeID); }
+            edgeToAdd.SetParent(this);
+            edges.Add(edgeToAdd.ID, edgeToAdd);
         }
         public void RemoveEdge(GraphEdge<TGraphType> edge) {
             if(!edges.ContainsValue(edge)) return;
@@ -87,9 +106,26 @@ namespace SadSapphicGames.CustomGraphs{
             edge.GetSinkNode().RemoveEdge(edge);
             return;
         }
-        private void AddNode(GraphNode<TGraphType> node) {
-            if(nodes.ContainsKey(node.ID)) throw new NonUniqueIDException(node.ID);
-            nodes.Add(node.ID,node);
+        private void AddNewNode(int nodeID) {
+            nodes.Add(nodeID, new GraphNode<TGraphType>(nodeID,this));
+        }
+        private void AddNode(GraphNode<TGraphType> nodeToAdd) {
+            if(nodes.ContainsKey(nodeToAdd.ID)) throw new NonUniqueIDException(nodeToAdd.ID);
+            if(nodeToAdd.ParentGraph != null) {
+                Debug.LogWarning("This Node is already attached to a graph, it must be removed from its parent before it can be added to another graph");
+                return;
+            }
+            nodeToAdd.ClearEdges();
+            // ? old code before i decide it would be better to just clear out a nodes edges when adding it to a new graph
+            // foreach (var edgeID in nodeToAdd.edgeIDs) {
+            //         var edgeNodeIDs = edgeID.Split(",",2);
+            //         if(nodes.ContainsKey(Int32.Parse(edgeNodeIDs[1]))) {
+            //             AddEdge(Int32.Parse(edgeNodeIDs[0]),Int32.Parse(edgeNodeIDs[1]));
+            //         } else {
+            //             nodeToAdd.RemoveEdgeID(edgeID);
+            //     } }
+            nodeToAdd.SetParent(this);
+            nodes.Add(nodeToAdd.ID,nodeToAdd);
         }
         public void RemoveNode(GraphNode<TGraphType> node) {
             if(!HasNode(node)) return;
@@ -106,15 +142,6 @@ namespace SadSapphicGames.CustomGraphs{
             nodes.Remove(node.ID);
         }
 // * Operator Overloads
-        // ? the approach I am using here is space inefficient and creates unneeded copies of nodes in memory
-            //? if we add a non-new node to a graph the Copy method will created new copies of its edges in memory
-                //? these edges will in turn create new copies of their source and sink node (that haven't already been copied)
-                //? this in turn causes copying a non-new node to create a copy of its entire connected component
-            //? if the node is new we still create a new copy of it as there if it is or not
-                //? however in this case we only create one redundant node as a new node won't have any attached edges.
-        // ? this should be resolved in garbage collection as none of the redundant info created in memory should be used anywhere after we clear the copy nodes edges.
-            //? but its possible I'm misunderstanding how garbage collection works and the redundant objects referencing each other will prevent them from being marked for collection
-        //TODO regardless this seems like something that should be resolved in the future, probably bad practice representing nodes in such a way that causes this
         public static AbstractGraph<TGraphType> operator +(AbstractGraph<TGraphType> a,GraphNode<TGraphType> b) {
             AbstractGraph<TGraphType> output = ObjectExtensions.Copy(a);
             GraphNode<TGraphType> bCopy = ObjectExtensions.Copy(b); 

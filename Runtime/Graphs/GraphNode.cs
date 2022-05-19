@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable; // ? turns out we might not need this
 using System.Collections.ObjectModel;
 using System.Linq;
-
+using UnityEngine;
 
 namespace SadSapphicGames.CustomGraphs
 {
@@ -17,6 +17,16 @@ namespace SadSapphicGames.CustomGraphs
 // * Reference Types - Public
         public TGraphType Value { get => value;}
         public AbstractGraph<TGraphType> ParentGraph { get => parentGraph;}
+        public List<string> edgeIDs { get { // //? since the list is of value types modifications to this have no effect on the actual edges
+                List<string> output = new List<string>();
+                foreach (var id in inEdgeIDs) {
+                    output.Add(id);
+                }
+                foreach (var id in outEdgeIDs) {
+                    if(!output.Contains(id))output.Add(id);
+                }
+                return output;
+        }}
 
 // * Reference Types - Private
         private TGraphType value; // ? This could hypothetically be a value type
@@ -29,6 +39,13 @@ namespace SadSapphicGames.CustomGraphs
 // * Member Accessors 
         public void SetValue(TGraphType _value) {
             value = _value;
+        }
+        public void SetParent(AbstractGraph<TGraphType> newParent) {
+            if(parentGraph != null) {
+                Debug.LogWarning("You must orphan this node first before setting a new parent");
+                return;
+            }
+            parentGraph = newParent;
         }
         public ReadOnlyCollection<GraphEdge<TGraphType>> GetOutEdges() {
             List<GraphEdge<TGraphType>> output = ParentGraph.GetEdgeList(outEdgeIDs);
@@ -69,12 +86,15 @@ namespace SadSapphicGames.CustomGraphs
             if(_edge.GetSinkNode() == this) { inEdgeIDs.Add(_edge.ID);} //? if this node is a sink add it to in edges
             if(_edge.GetOppositeNode(this) != this){outEdgeIDs.Add(_edge.ID);} //? if the other node is accessible add it to out edge (and undirected edge will be both) 
         }     
-
         internal void RemoveEdge(GraphEdge<TGraphType> edge) {
             //? this should only be called from AbstractGraph.RemoveEdge(edge)
             //? which will make sure both nodes of an edge have it removed
             inEdgeIDs.Remove(edge.ID);
             outEdgeIDs.Remove(edge.ID);
+        }
+        internal void ClearEdges() { // ? this should only be used when moving a node from one graph to another;
+            inEdgeIDs = new List<string>();
+            outEdgeIDs = new List<string>();
         }
     }
 }

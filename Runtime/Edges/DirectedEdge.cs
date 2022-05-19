@@ -1,7 +1,11 @@
 namespace SadSapphicGames.CustomGraphs {
     public class DirectedEdge<TGraphType> : GraphEdge<TGraphType> {
+
+
         public DirectedEdge(GraphNode<TGraphType> _sourceNode, GraphNode<TGraphType> _sinkNode) : base(_sourceNode, _sinkNode) {
             //? no new code needed
+        }
+        public DirectedEdge(GraphEdge<TGraphType> _edge) : base(_edge) {
         }
 
         public override GraphNode<TGraphType> GetOppositeNode(GraphNode<TGraphType> node)

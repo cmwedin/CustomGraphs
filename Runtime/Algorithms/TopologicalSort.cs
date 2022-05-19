@@ -12,7 +12,7 @@ namespace SadSapphicGames.CustomGraphs {
             Dictionary<int,GraphNode<TGraphType>> sortedNodes = new Dictionary<int, GraphNode<TGraphType>>();
             Queue<GraphNode<TGraphType>> sortQ = new Queue<GraphNode<TGraphType>>();
             
-            foreach(var node in graph.GetNodes()) {
+            foreach(var node in graph.GetAllNodes()) {
                 nodeDegrees.Add(node.ID,node.GetInEdges().Count);
                 if(nodeDegrees[node.ID] == 0) sortQ.Enqueue(node);
             }

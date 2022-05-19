@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace SadSapphicGames.CustomGraphs{
     public abstract class GraphEdge<TGraphType> {
@@ -17,11 +18,20 @@ namespace SadSapphicGames.CustomGraphs{
         private float weight;
 
 // * Reference Types - Public
+        public AbstractGraph<TGraphType> ParentGraph { get => parentGraph;}
         
 // * Reference Types - Private
         private AbstractGraph<TGraphType> parentGraph; //? set to null when copying an edge
+// * Member Accessors
+        public void SetParent(AbstractGraph<TGraphType> newParent) {
+            if(parentGraph != null) {
+                Debug.LogWarning("You must orphan this edge first before setting a new parent");
+                return;
+            }
+            parentGraph = newParent;
+        }
 
-        // * Constructors
+// * Constructors
         public GraphEdge(GraphNode<TGraphType> _sourceNode, GraphNode<TGraphType> _sinkNode, float weight = 1)
         {
             sourceNodeID = _sourceNode.ID;
