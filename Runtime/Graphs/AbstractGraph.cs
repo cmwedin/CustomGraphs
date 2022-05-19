@@ -9,13 +9,11 @@ namespace SadSapphicGames.CustomGraphs{
 // ! Members -----
 // * Value Types - Public
         public int Size { get => nodes.Keys.Count;}
+// * Value Types - Private
 
+// * Reference Types - Public
 
-        // * Value Types - Private
-
-        // * Reference Types - Public
-
-        // * Reference Types -  Private
+// * Reference Types -  Private
         protected Dictionary<int , GraphNode<TGraphType>> nodes = new Dictionary<int, GraphNode<TGraphType>>();
         protected Dictionary<string, GraphEdge<TGraphType>> edges = new Dictionary<string, GraphEdge<TGraphType>>();
 
@@ -43,6 +41,9 @@ namespace SadSapphicGames.CustomGraphs{
             return output;
         }
 // * Constructors
+        // ? Empty Graph Constructor
+        public AbstractGraph() {
+        }
         // ? adjacency list constructor
         public AbstractGraph(Dictionary<int,List<int>> adjList) { //? O(V+E) time
             foreach (int id in adjList.Keys) { 
@@ -69,14 +70,8 @@ namespace SadSapphicGames.CustomGraphs{
         public AbstractGraph(int[][] adjMatrix) {
             throw new NotImplementedException();
         }
-        //? copy constructor
-        public AbstractGraph(AbstractGraph<TGraphType> _graph) {
-            foreach (var _node in _graph.GetAllNodes()) {
-                this.AddNode(new GraphNode<TGraphType>(_node));
-            }
-            // ? edges are added in the non-abstract constructors
-        }
-
+        //? copy "constructor"
+        public abstract AbstractGraph<TGraphType> Copy();
 
         // * Modification Methods
         public void AddNewEdge(int id1, int id2) {
@@ -106,10 +101,10 @@ namespace SadSapphicGames.CustomGraphs{
             edge.GetSinkNode().RemoveEdge(edge);
             return;
         }
-        private void AddNewNode(int nodeID) {
+        public void AddNewNode(int nodeID) {
             nodes.Add(nodeID, new GraphNode<TGraphType>(nodeID,this));
         }
-        private void AddNode(GraphNode<TGraphType> nodeToAdd) {
+        public void AddNode(GraphNode<TGraphType> nodeToAdd) {
             if(nodes.ContainsKey(nodeToAdd.ID)) throw new NonUniqueIDException(nodeToAdd.ID);
             if(nodeToAdd.ParentGraph != null) {
                 Debug.LogWarning("This Node is already attached to a graph, it must be removed from its parent before it can be added to another graph");
@@ -143,8 +138,8 @@ namespace SadSapphicGames.CustomGraphs{
         }
 // * Operator Overloads
         public static AbstractGraph<TGraphType> operator +(AbstractGraph<TGraphType> a,GraphNode<TGraphType> b) {
-            AbstractGraph<TGraphType> output = ObjectExtensions.Copy(a);
-            GraphNode<TGraphType> bCopy = ObjectExtensions.Copy(b); 
+            AbstractGraph<TGraphType> output = a.Copy();
+            GraphNode<TGraphType> bCopy = new GraphNode<TGraphType>(b); 
             output.AddNode(bCopy);
             return output;
         }

@@ -9,11 +9,19 @@ namespace SadSapphicGames.CustomGraphs {
 
         public UndirectedGraph(int V, List<int[]> E) : base(V, E) {
         }
-        public UndirectedGraph(AbstractGraph<TGraphType> _graph) : base(_graph) {
-            if(!(_graph is UndirectedGraph<TGraphType>)) throw new IncompatibleEdgeException();
-            foreach (var _edge in _graph.GetAllEdges()) {
-                this.AddEdge(new UndirectedEdge<TGraphType>(_edge));
+
+        public UndirectedGraph() : base () {
+        }
+
+        public override AbstractGraph<TGraphType> Copy() {
+            UndirectedGraph<TGraphType> copyGraph = new UndirectedGraph<TGraphType>();
+            foreach (var _node in this.GetAllNodes()) {
+                copyGraph.AddNode(new GraphNode<TGraphType>(_node));
+            }      
+            foreach (var _edge in this.GetAllEdges()) {
+                copyGraph.AddEdge(new UndirectedEdge<TGraphType>(_edge));
             }
+            return copyGraph;
         }
 
         public override void AddNewEdge(GraphNode<TGraphType> v1, GraphNode<TGraphType> v2) {
