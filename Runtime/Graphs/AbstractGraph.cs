@@ -144,10 +144,9 @@ namespace SadSapphicGames.CustomGraphs{
             return output;
         }
         public static AbstractGraph<TGraphType> operator -(AbstractGraph<TGraphType> a,GraphNode<TGraphType> b) {
-            AbstractGraph<TGraphType> output = ObjectExtensions.Copy(a);
-            // if(!a.HasNode(b)) return output;
-            // var bOut = output.Nodes[b.ID];
-            // output.Nodes.Remove(bOut.ID);
+            AbstractGraph<TGraphType> output = a.Copy();
+            if(!a.HasNode(b)) return output;
+            // Remove output.nodes[b.ID]
             return output;
         }
         public static AbstractGraph<TGraphType> operator +(AbstractGraph<TGraphType> a,GraphEdge<TGraphType> b) {

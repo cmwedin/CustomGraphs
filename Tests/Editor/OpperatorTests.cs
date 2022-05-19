@@ -14,6 +14,22 @@ internal class Bar {
 
 public class OperatorTests {
     [Test]
+    public void CopyTests() {
+        DirectedGraph<bool> graphA = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
+            {0, new List<int>{}} 
+        });
+        UndirectedGraph<bool> graphB = new UndirectedGraph<bool>( new Dictionary<int, List<int>> {
+            {1, new List<int>{}} 
+        });
+        var graphA2 = graphA.Copy();
+        var graphB2 = graphB.Copy();
+        Assert.IsTrue(graphA2 is DirectedGraph<bool>);
+        Assert.IsTrue(graphB2 is UndirectedGraph<bool>);
+        Assert.IsFalse(graphA.GetNode(0) == graphA2.GetNode(0));
+        Assert.IsFalse(graphB.GetNode(1) == graphB2.GetNode(1));
+
+    }
+    [Test]
     public void plusNodeValTypeTest() {
         DirectedGraph<bool> graphA = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
             {0, new List<int>{}} 
