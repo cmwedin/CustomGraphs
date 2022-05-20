@@ -104,10 +104,11 @@ namespace SadSapphicGames.CustomGraphs{
             edges.Add(edgeToAdd.ID, edgeToAdd);
         }
         public void RemoveEdge(GraphEdge<TGraphType> edge) {
-            if(!edges.ContainsValue(edge)) return;
+            if(!(edge.ParentGraph == this)) return;
+            GetNode(edge.SourceNodeID).RemoveEdge(edge);
+            GetNode(edge.SinkNodeID).RemoveEdge(edge);
             edges.Remove(edge.ID);
-            edge.GetSourceNode().RemoveEdge(edge);
-            edge.GetSinkNode().RemoveEdge(edge);
+            edge = null;
             return;
         }
         public void AddNewNode(int nodeID) {
@@ -132,18 +133,12 @@ namespace SadSapphicGames.CustomGraphs{
             nodes.Add(nodeToAdd.ID,nodeToAdd);
         }
         public void RemoveNode(GraphNode<TGraphType> node) {
-            if(!HasNode(node)) return;
-            List<GraphEdge<TGraphType>> edgesToRemove = new List<GraphEdge<TGraphType>>();
-            foreach (var edge in node.GetInEdges()) {
-                if(!edgesToRemove.Contains(edge)) edgesToRemove.Add(edge);
-            }
-            foreach (var edge in node.GetOutEdges()) {
-                if(!edgesToRemove.Contains(edge)) edgesToRemove.Add(edge);
-            }
-            foreach (var edge in edgesToRemove) {
-                RemoveEdge(edge);
+            if(!(node.ParentGraph == this)) return;
+            foreach (var edgeID in node.edgeIDs) {
+                RemoveEdge(GetEdge(edgeID));
             }
             nodes.Remove(node.ID);
+            node = null;
         }
 // * Operator Overloads
         public static AbstractGraph<TGraphType> operator +(AbstractGraph<TGraphType> a,GraphNode<TGraphType> b) {
@@ -155,7 +150,7 @@ namespace SadSapphicGames.CustomGraphs{
         public static AbstractGraph<TGraphType> operator -(AbstractGraph<TGraphType> a,GraphNode<TGraphType> b) {
             AbstractGraph<TGraphType> output = a.Copy();
             if(!a.HasNode(b)) return output;
-            // Remove output.nodes[b.ID]
+            output.RemoveNode(output.GetNode(b.ID));
             return output;
         }
         public static AbstractGraph<TGraphType> operator +(AbstractGraph<TGraphType> a,GraphEdge<TGraphType> b) {
