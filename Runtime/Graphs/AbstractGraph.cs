@@ -162,11 +162,16 @@ namespace SadSapphicGames.CustomGraphs{
             return output;
         }
         public static AbstractGraph<TGraphType> operator +(AbstractGraph<TGraphType> a,GraphEdge<TGraphType> b) {
-            AbstractGraph<TGraphType> output = ObjectExtensions.Copy(a);
+            AbstractGraph<TGraphType> output = a.Copy();
+            GraphEdge<TGraphType> bCopy = b.Copy();
+            output.AddEdge(bCopy);
             return output;
         }
         public static AbstractGraph<TGraphType> operator -(AbstractGraph<TGraphType> a,GraphEdge<TGraphType> b) {
-            AbstractGraph<TGraphType> output = ObjectExtensions.Copy(a);
+            AbstractGraph<TGraphType> output = a.Copy();
+            if(b.ParentGraph != a) return output;
+            GraphEdge<TGraphType> bCopy = b.Copy();
+            output.RemoveEdge(bCopy);
             return output;
         }
 // * Searches

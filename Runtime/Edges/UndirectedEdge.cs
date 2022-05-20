@@ -9,9 +9,14 @@ namespace SadSapphicGames.CustomGraphs
             //? no new code needed
         }
 
+        public override GraphEdge<TGraphType> Copy() {
+            return new UndirectedEdge<TGraphType>(this);
+        }
+
         public override GraphNode<TGraphType> GetOppositeNode(GraphNode<TGraphType> node) {
-            //? the base implementation assumes undirected graph
-            return base.GetOppositeNode(node);
+            if(node != GetSourceNode() && node != GetSinkNode()) throw new NotAttachedToEdgeException();
+            else if(node == GetSourceNode()) return GetSinkNode();
+            else return GetSourceNode();  
         }
     }
 }

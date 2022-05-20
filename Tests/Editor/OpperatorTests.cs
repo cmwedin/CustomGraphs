@@ -37,6 +37,18 @@ public class OperatorTests {
         Assert.IsTrue(graphB2.HasPath(2,3));
     }
     [Test]
+    public void MismatchedEdgesTest() {
+        DirectedGraph<bool> graphA = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
+            {0, new List<int>{1}}, 
+            {1, new List<int>{}} 
+        });
+        UndirectedGraph<bool> graphB = new UndirectedGraph<bool>( new Dictionary<int, List<int>> {
+            {2, new List<int>{}} ,
+            {3, new List<int>{2}} 
+        });
+
+    }
+    [Test]
     public void PlusNodeValTypeTest() {
         DirectedGraph<bool> graphA = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
             {0, new List<int>{}} 

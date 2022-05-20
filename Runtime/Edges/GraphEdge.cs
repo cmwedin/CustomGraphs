@@ -44,6 +44,7 @@ namespace SadSapphicGames.CustomGraphs{
         }
 
         //? copy constructor
+        public abstract GraphEdge<TGraphType> Copy(); //? so we can access the copy constructor of abstract graphs
         public GraphEdge(GraphEdge<TGraphType> _edge) {
             //? we ignore the only reference type member of an edge and consider the new edge to be an orphan
             this.sinkNodeID = _edge.SinkNodeID;
@@ -60,10 +61,6 @@ namespace SadSapphicGames.CustomGraphs{
             return parentGraph.GetNode(sinkNodeID);
         }
 
-        public virtual GraphNode<TGraphType> GetOppositeNode(GraphNode<TGraphType> node) {
-            if(node != GetSourceNode() && node != GetSinkNode()) throw new NotAttachedToEdgeException();
-            else if(node == GetSourceNode()) return GetSinkNode();
-            else return GetSourceNode();  
-        }
+        public abstract GraphNode<TGraphType> GetOppositeNode(GraphNode<TGraphType> node); //? this function is the main point of distinction between Directed and Undirected
     }
 }
