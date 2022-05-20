@@ -5,8 +5,11 @@ namespace SadSapphicGames.CustomGraphs
         public UndirectedEdge(GraphEdge<TGraphType> _edge) : base(_edge) {
         }
 
-        public UndirectedEdge(GraphNode<TGraphType> _sourceNode, GraphNode<TGraphType> _sinkNode) : base(_sourceNode, _sinkNode) {
+        public UndirectedEdge(GraphNode<TGraphType> _sourceNode, GraphNode<TGraphType> _sinkNode, float weight = 1) : base(_sourceNode, _sinkNode, weight) {
             //? no new code needed
+        }
+
+        public UndirectedEdge(int _sourceID, int _sinkID, float weight = 1) : base(_sourceID, _sinkID, weight) {
         }
 
         public override GraphEdge<TGraphType> Copy() {

@@ -102,6 +102,7 @@ namespace SadSapphicGames.CustomGraphs{
             if(edges.ContainsKey(edgeToAdd.ID)) throw new NonUniqueIDException(edgeToAdd.ID);
             if(edgeToAdd.ParentGraph != null) {
                 Debug.LogWarning("This edge is already attached to a graph, it must be removed from its parent before it can be added to another graph");
+                Debug.LogWarning("if it cannot be removed consider the copy method or orphan edge constructor");
                 return;
             }
             if(!nodes.ContainsKey(edgeToAdd.SourceNodeID)) { AddNewNode(edgeToAdd.SourceNodeID); }

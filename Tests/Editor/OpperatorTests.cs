@@ -116,4 +116,27 @@ public class OperatorTests {
         Assert.IsNull(resultB.GetEdge("3,4"));
         Assert.IsNull(resultB.GetEdge("4,5"));
     }
+    [Test]
+    public void PlusEdgeTest() {
+        DirectedGraph<bool> graphA = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
+            {0, new List<int>{1}}, 
+            {1, new List<int>{}},
+            {2, new List<int>{}} 
+        });
+        UndirectedGraph<bool> graphB = new UndirectedGraph<bool>( new Dictionary<int, List<int>> {
+            {3, new List<int>{4}},
+            {4, new List<int>{}},
+            {5, new List<int>{}} 
+        });
+        var result1 = graphA + new DirectedEdge<bool>(1,2);
+        var result2 = graphB + new UndirectedEdge<bool>(5,4);
+
+        Assert.IsTrue(result1.HasPath(0,2));
+        Assert.IsTrue(result2.HasPath(3,5));
+
+    }
+    [Test]
+    public void MinusEdgeTest() {
+
+    }
 }

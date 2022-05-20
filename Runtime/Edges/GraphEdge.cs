@@ -30,8 +30,26 @@ namespace SadSapphicGames.CustomGraphs{
             }
             parentGraph = newParent;
         }
+        public GraphNode<TGraphType> GetSourceNode() {
+            return parentGraph.GetNode(sourceNodeID);
+        }
+
+        public GraphNode<TGraphType> GetSinkNode() {
+            return parentGraph.GetNode(sinkNodeID);
+        }
+
+        public abstract GraphNode<TGraphType> GetOppositeNode(GraphNode<TGraphType> node); //? this function is the main point of distinction between Directed and Undirected
 
 // * Constructors
+        // ? orphan edge constructor (intended for use in adding edges by reference)
+        public GraphEdge(int _sourceID, int _sinkID, float weight = 1) {
+            sourceNodeID = _sourceID;
+            sinkNodeID = _sinkID;
+            id = $"{sourceNodeID},{sinkNodeID}";
+            this.parentGraph = null;
+            this.weight = weight; 
+        } 
+        // ? Standard constructor
         public GraphEdge(GraphNode<TGraphType> _sourceNode, GraphNode<TGraphType> _sinkNode, float weight = 1)
         {
             sourceNodeID = _sourceNode.ID;
@@ -53,14 +71,5 @@ namespace SadSapphicGames.CustomGraphs{
             this.weight = _edge.Weight;
             this.parentGraph = null; 
         }
-        public GraphNode<TGraphType> GetSourceNode() {
-            return parentGraph.GetNode(sourceNodeID);
-        }
-
-        public GraphNode<TGraphType> GetSinkNode() {
-            return parentGraph.GetNode(sinkNodeID);
-        }
-
-        public abstract GraphNode<TGraphType> GetOppositeNode(GraphNode<TGraphType> node); //? this function is the main point of distinction between Directed and Undirected
     }
 }
