@@ -16,18 +16,25 @@ public class OperatorTests {
     [Test]
     public void CopyTests() {
         DirectedGraph<bool> graphA = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
-            {0, new List<int>{}} 
+            {0, new List<int>{1}}, 
+            {1, new List<int>{}} 
         });
         UndirectedGraph<bool> graphB = new UndirectedGraph<bool>( new Dictionary<int, List<int>> {
-            {1, new List<int>{}} 
+            {2, new List<int>{}} ,
+            {3, new List<int>{2}} 
+
         });
         var graphA2 = graphA.Copy();
         var graphB2 = graphB.Copy();
         Assert.IsTrue(graphA2 is DirectedGraph<bool>);
+        Assert.IsFalse(graphA2 is UndirectedGraph<bool>);
         Assert.IsTrue(graphB2 is UndirectedGraph<bool>);
+        Assert.IsFalse(graphB2 is DirectedGraph<bool>);
         Assert.IsFalse(graphA.GetNode(0) == graphA2.GetNode(0));
-        Assert.IsFalse(graphB.GetNode(1) == graphB2.GetNode(1));
-
+        Assert.IsTrue(graphA.HasPath(0,1));
+        Assert.IsTrue(graphA2.HasPath(0,1));
+        Assert.IsFalse(graphB.GetNode(2) == graphB2.GetNode(2));
+        Assert.IsTrue(graphB2.HasPath(2,3));
     }
     [Test]
     public void plusNodeValTypeTest() {

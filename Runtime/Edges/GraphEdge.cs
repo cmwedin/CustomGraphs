@@ -48,6 +48,7 @@ namespace SadSapphicGames.CustomGraphs{
             //? we ignore the only reference type member of an edge and consider the new edge to be an orphan
             this.sinkNodeID = _edge.SinkNodeID;
             this.sourceNodeID = _edge.SourceNodeID;
+            this.id = _edge.ID;
             this.weight = _edge.Weight;
             this.parentGraph = null; 
         }
