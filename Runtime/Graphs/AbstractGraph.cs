@@ -26,6 +26,9 @@ namespace SadSapphicGames.CustomGraphs{
         public List<GraphNode<TGraphType>> GetAllNodes() {
             return nodes.Values.ToList();
         }
+        public List<int> GetAllNodeIDs() {
+            return nodes.Keys.ToList(); //? this should be a new object? 
+        }
         public bool HasNode(GraphNode<TGraphType> node) {
             return GetAllNodes().Contains(node); 
         }
@@ -34,6 +37,9 @@ namespace SadSapphicGames.CustomGraphs{
         }
         public List<GraphEdge<TGraphType>> GetAllEdges() {
             return edges.Values.ToList();
+        }
+        public List<string> GetAllEdgeIDs() {
+            return edges.Keys.ToList(); //? again, should be a new object with copied values
         }
         public List<GraphEdge<TGraphType>> GetEdgeList(List<string> IDs) {
             List<GraphEdge<TGraphType>> output = new List<GraphEdge<TGraphType>>();
@@ -81,6 +87,7 @@ namespace SadSapphicGames.CustomGraphs{
             if(!this.HasNode(v1)) throw new NotInGraphException(v1.ID);
             if(!this.HasNode(v2)) throw new NotInGraphException(v2.ID);
             //? subclasses override this and add the edge based on wether or not it should be undirected
+            //! this should probably be abstract
         }
         
         protected virtual void AddEdge(GraphEdge<TGraphType> edgeToAdd) {
@@ -92,6 +99,8 @@ namespace SadSapphicGames.CustomGraphs{
             if(!nodes.ContainsKey(edgeToAdd.SourceNodeID)) { AddNewNode(edgeToAdd.SourceNodeID); }
             if(!nodes.ContainsKey(edgeToAdd.SinkNodeID)) { AddNewNode(edgeToAdd.SinkNodeID); }
             edgeToAdd.SetParent(this);
+            GetNode(edgeToAdd.SourceNodeID).AddEdge(edgeToAdd);
+            GetNode(edgeToAdd.SinkNodeID).AddEdge(edgeToAdd);
             edges.Add(edgeToAdd.ID, edgeToAdd);
         }
         public void RemoveEdge(GraphEdge<TGraphType> edge) {
@@ -227,7 +236,7 @@ namespace SadSapphicGames.CustomGraphs{
             return HasPath(GetNode(node1ID), GetNode(node2ID));
         }
         public bool HasPath(GraphNode<TGraphType> node1, GraphNode<TGraphType> node2) {
-            return DFS(node1).Contains(node2); 
+            return BFS(node1).Contains(node2); 
             // ? this could be optimized by rewriting the search code to terminate when the destination node is reached 
             // ? but thats still O(v+e) time so i don't really care to until it becomes a problem
         }
@@ -238,7 +247,7 @@ namespace SadSapphicGames.CustomGraphs{
                 return true;
             } 
         }
-        private void DebugMsg() {
+        protected void DebugMsg() {
             Debug.Log($"this graph has nodes {string.Join("|", nodes.Keys.ToList())}");
             Debug.Log($"this graph has edges {string.Join("|",edges.Keys.ToList())}");
         }
