@@ -21,6 +21,10 @@ namespace SadSapphicGames.CustomGraphs{
 // * Member Accessors
 
         public GraphNode<TGraphType> GetNode(int ID) {
+            if(!nodes.ContainsKey(ID)) {
+                Debug.LogWarning($"node {ID} not found in graph");
+                return null;
+            }
             return nodes[ID];
         }
         public List<GraphNode<TGraphType>> GetAllNodes() {
@@ -33,6 +37,10 @@ namespace SadSapphicGames.CustomGraphs{
             return GetAllNodes().Contains(node); 
         }
         public GraphEdge<TGraphType> GetEdge(string ID) {
+            if(!edges.ContainsKey(ID)) {
+                Debug.LogWarning($"edge {ID} not found in graph");
+                return null;
+            }
             return edges[ID];
         }
         public List<GraphEdge<TGraphType>> GetAllEdges() {
@@ -79,7 +87,7 @@ namespace SadSapphicGames.CustomGraphs{
         //? copy "constructor"
         public abstract AbstractGraph<TGraphType> Copy();
 
-        // * Modification Methods
+// * Modification Methods
         public void AddNewEdge(int id1, int id2) {
             AddNewEdge(GetNode(id1), GetNode(id2));
         }

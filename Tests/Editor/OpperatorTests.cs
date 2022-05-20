@@ -37,7 +37,7 @@ public class OperatorTests {
         Assert.IsTrue(graphB2.HasPath(2,3));
     }
     [Test]
-    public void plusNodeValTypeTest() {
+    public void PlusNodeValTypeTest() {
         DirectedGraph<bool> graphA = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
             {0, new List<int>{}} 
         });
@@ -57,7 +57,7 @@ public class OperatorTests {
         Assert.IsTrue(result2.GetNode(1).Value);
     }
     [Test]
-    public void plusNodeRefTypeTest() {
+    public void PlusNodeRefTypeTest() {
         DirectedGraph<Foo> graphA = new DirectedGraph<Foo>( new Dictionary<int, List<int>> {
             {0, new List<int>{}} 
         });
@@ -78,5 +78,30 @@ public class OperatorTests {
         Assert.AreEqual(expected: 3, actual: result1.GetNode(1).Value.i);
         Assert.AreEqual(expected: 2, actual: graphA.GetNode(0).Value.bar.i);
         Assert.AreEqual(expected: 3, actual: result2.GetNode(0).Value.bar.i);
+    }
+    [Test]
+    public void MinusNodeTest() {
+        DirectedGraph<bool> graphA = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
+            {0, new List<int>{1}}, 
+            {1, new List<int>{2}},
+            {2, new List<int>{0}} 
+        });
+        UndirectedGraph<bool> graphB = new UndirectedGraph<bool>( new Dictionary<int, List<int>> {
+            {3, new List<int>{4}},
+            {4, new List<int>{5}},
+            {5, new List<int>{}} 
+        });
+        DirectedGraph<bool> resultA = (DirectedGraph<bool>)(graphA - graphA.GetNode(1));
+        UndirectedGraph<bool> resultB = (UndirectedGraph<bool>)(graphB - graphB.GetNode(4));
+
+        Assert.IsTrue(resultA.HasPath(2,0));
+        Assert.IsNull(resultA.GetNode(1));
+        Assert.IsNull(resultA.GetEdge("0,1"));
+        Assert.IsNull(resultA.GetEdge("1,2"));
+
+        Assert.IsFalse(resultB.HasPath(3,5));
+        Assert.IsNull(resultB.GetNode(4));
+        Assert.IsNull(resultB.GetEdge("3,4"));
+        Assert.IsNull(resultB.GetEdge("4,5"));
     }
 }
