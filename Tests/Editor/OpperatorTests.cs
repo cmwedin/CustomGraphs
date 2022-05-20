@@ -128,7 +128,7 @@ public class OperatorTests {
             {4, new List<int>{}},
             {5, new List<int>{}} 
         });
-        var result1 = graphA + new DirectedEdge<bool>(1,2);
+        var result1 = graphA + new DirectedEdge<bool>(1,2); // ? creating a copy of this edge inside the plus function is fine
         var result2 = graphB + new UndirectedEdge<bool>(5,4);
 
         Assert.IsTrue(result1.HasPath(0,2));
@@ -137,6 +137,27 @@ public class OperatorTests {
     }
     [Test]
     public void MinusEdgeTest() {
+        DirectedGraph<bool> graphA = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
+            {0, new List<int>{1}}, 
+            {1, new List<int>{2}},
+            {2, new List<int>{0}} 
+        });
+        UndirectedGraph<bool> graphB = new UndirectedGraph<bool>( new Dictionary<int, List<int>> {
+            {3, new List<int>{4}},
+            {4, new List<int>{}},
+            {5, new List<int>{4}} 
+        });
+        var result1 = graphA - graphA.GetEdge("0,1"); 
+        var result2 = graphB - graphB.GetEdge("3,4"); 
+        
+        Assert.IsTrue(graphA.HasPath(2,1));
+        Assert.IsFalse(result1.HasPath(2,1));
+
+        Assert.IsTrue(graphB.HasPath(5,3));
+        Assert.IsFalse(result2.HasPath(5,3));
+
+        Assert.IsNull(graphA - new DirectedEdge<bool>(0,2));
+        Assert.IsNull(graphB - new UndirectedEdge<bool>(0,2));
 
     }
 }

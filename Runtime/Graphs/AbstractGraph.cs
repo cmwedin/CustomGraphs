@@ -113,7 +113,10 @@ namespace SadSapphicGames.CustomGraphs{
             edges.Add(edgeToAdd.ID, edgeToAdd);
         }
         public void RemoveEdge(GraphEdge<TGraphType> edge) {
-            if(!(edge.ParentGraph == this)) return;
+            if(edge.ParentGraph != this) {
+                Debug.LogWarning("you are trying to remove and edge from a graph that isnt its parent");
+                return;
+            }
             GetNode(edge.SourceNodeID).RemoveEdge(edge);
             GetNode(edge.SinkNodeID).RemoveEdge(edge);
             edges.Remove(edge.ID);
@@ -157,6 +160,10 @@ namespace SadSapphicGames.CustomGraphs{
             return output;
         }
         public static AbstractGraph<TGraphType> operator -(AbstractGraph<TGraphType> a,GraphNode<TGraphType> b) {
+            if(b.ParentGraph != a) {
+                Debug.LogWarning("You cannot subtract a node from a graph that is not its parent, returning null");
+                return null;
+            }
             AbstractGraph<TGraphType> output = a.Copy();
             if(!a.HasNode(b)) return output;
             output.RemoveNode(output.GetNode(b.ID));
@@ -169,10 +176,12 @@ namespace SadSapphicGames.CustomGraphs{
             return output;
         }
         public static AbstractGraph<TGraphType> operator -(AbstractGraph<TGraphType> a,GraphEdge<TGraphType> b) {
+            if(b.ParentGraph != a) {
+                Debug.LogWarning("You cannot subtract an edge from a graph that is not its parent, returning null");
+                return null;
+            }
             AbstractGraph<TGraphType> output = a.Copy();
-            if(b.ParentGraph != a) return output;
-            GraphEdge<TGraphType> bCopy = b.Copy();
-            output.RemoveEdge(bCopy);
+            output.RemoveEdge(output.GetEdge(b.ID));
             return output;
         }
 // * Searches
