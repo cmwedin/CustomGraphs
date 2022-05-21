@@ -19,13 +19,13 @@ namespace SadSapphicGames.CustomGraphs {
             }
             List<GraphNode<TGraphType>> visitedNodes = null;
             foreach (var _node in _graph.GetAllNodes()) {
-                if(visitedNodes.Contains(_node)) { continue;
-                } else if(visitedNodes == null) {
+                if(visitedNodes == null) {
                     //? this is the first node we tested
                     if(CycleSolver<TGraphType>.FindCycleFrom(_node, out visitedNodes)) {
                         //? we found a cycle 
                         return false;
                     } // ? visitedNodes should now contain every node in the tree
+                } else if(visitedNodes.Contains(_node)) { continue;
                 } else {
                     //? this graph has a node that is not reachable from the first node
                     //? since we didn't find a cycle in the its connected component we visited all of it 
