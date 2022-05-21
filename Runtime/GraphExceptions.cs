@@ -79,4 +79,14 @@ namespace SadSapphicGames.CustomGraphs {
             System.Runtime.Serialization.SerializationInfo info,
             System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
+    [System.Serializable]
+    public class NotDAGException : System.Exception
+    {
+        public NotDAGException() : base("This is not a directed Acyclic graph") { }
+        public NotDAGException(string message) : base(message) { }
+        public NotDAGException(string message, System.Exception inner) : base(message, inner) { }
+        protected NotDAGException(
+            System.Runtime.Serialization.SerializationInfo info,
+            System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+    }
 }

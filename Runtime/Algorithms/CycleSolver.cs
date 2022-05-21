@@ -5,7 +5,7 @@ namespace SadSapphicGames.CustomGraphs {
         public static bool FindCycleFrom(
             // ? in
             GraphNode<TGraphType> currentNode, 
-            List<GraphEdge<TGraphType>> visitedEdges = null,
+            List<AbstractEdge<TGraphType>> visitedEdges = null,
             List<GraphNode<TGraphType>> visitedNodes = null
         ) {
             return FindCycleFrom(currentNode, out var empty, visitedEdges, visitedNodes);
@@ -25,11 +25,11 @@ namespace SadSapphicGames.CustomGraphs {
             // ? in
             GraphNode<TGraphType> currentNode, 
             out List<GraphNode<TGraphType>> touchedNodes, 
-            List<GraphEdge<TGraphType>> visitedEdges = null,
+            List<AbstractEdge<TGraphType>> visitedEdges = null,
             List<GraphNode<TGraphType>> visitedNodes = null
         ) {;
             visitedNodes ??= new List<GraphNode<TGraphType>>();
-            visitedEdges ??= new List<GraphEdge<TGraphType>>(); 
+            visitedEdges ??= new List<AbstractEdge<TGraphType>>(); 
             visitedNodes.Add(currentNode);
             touchedNodes = visitedNodes;
             foreach (var edge in currentNode.GetOutEdges()) {

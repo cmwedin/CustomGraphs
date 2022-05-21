@@ -33,7 +33,7 @@ namespace SadSapphicGames.CustomGraphs {
             edges.Add(edge.ID,edge);
         }
 
-        protected override void AddEdge(GraphEdge<TGraphType> edgeToAdd) {
+        protected override void AddEdge(AbstractEdge<TGraphType> edgeToAdd) {
             if(edgeToAdd is DirectedEdge<TGraphType>) base.AddEdge(edgeToAdd);
             else throw new IncompatibleEdgeException();
         }

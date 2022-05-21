@@ -47,13 +47,13 @@ namespace SadSapphicGames.CustomGraphs
             }
             parentGraph = newParent;
         }
-        public ReadOnlyCollection<GraphEdge<TGraphType>> GetOutEdges() {
-            List<GraphEdge<TGraphType>> output = ParentGraph.GetEdgeList(outEdgeIDs);
+        public ReadOnlyCollection<AbstractEdge<TGraphType>> GetOutEdges() {
+            List<AbstractEdge<TGraphType>> output = ParentGraph.GetEdgeList(outEdgeIDs);
             return output.AsReadOnly();
         }
 
-        public ReadOnlyCollection<GraphEdge<TGraphType>> GetInEdges() {
-            List<GraphEdge<TGraphType>> output = ParentGraph.GetEdgeList(inEdgeIDs);
+        public ReadOnlyCollection<AbstractEdge<TGraphType>> GetInEdges() {
+            List<AbstractEdge<TGraphType>> output = ParentGraph.GetEdgeList(inEdgeIDs);
             return output.AsReadOnly();
         }
         public List<int> NeighborIDs { get { 
@@ -81,12 +81,12 @@ namespace SadSapphicGames.CustomGraphs
         }
 
 // * Modification Methods
-        public void AddEdge(GraphEdge<TGraphType> _edge) {
+        public void AddEdge(AbstractEdge<TGraphType> _edge) {
             if(outEdgeIDs.Contains(_edge.ID) || inEdgeIDs.Contains(_edge.ID)) return;
             if(_edge.GetSinkNode() == this) { inEdgeIDs.Add(_edge.ID);} //? if this node is a sink add it to in edges
             if(_edge.GetOppositeNode(this) != this){outEdgeIDs.Add(_edge.ID);} //? if the other node is accessible add it to out edge (and undirected edge will be both) 
         }     
-        internal void RemoveEdge(GraphEdge<TGraphType> edge) {
+        internal void RemoveEdge(AbstractEdge<TGraphType> edge) {
             //? this should only be called from AbstractGraph.RemoveEdge(edge)
             //? which will make sure both nodes of an edge have it removed
             inEdgeIDs.Remove(edge.ID);

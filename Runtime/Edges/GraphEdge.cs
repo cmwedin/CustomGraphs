@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 namespace SadSapphicGames.CustomGraphs{
-    public abstract class GraphEdge<TGraphType> {
+    public abstract class AbstractEdge<TGraphType> {
 // * Value Types - Public
         public int SourceNodeID { get => sourceNodeID;}
         public int SinkNodeID { get => sinkNodeID;}
@@ -42,7 +42,7 @@ namespace SadSapphicGames.CustomGraphs{
 
 // * Constructors
         // ? orphan edge constructor (intended for use in adding edges by reference)
-        public GraphEdge(int _sourceID, int _sinkID, float weight = 1) {
+        public AbstractEdge(int _sourceID, int _sinkID, float weight = 1) {
             sourceNodeID = _sourceID;
             sinkNodeID = _sinkID;
             id = $"{sourceNodeID},{sinkNodeID}";
@@ -50,7 +50,7 @@ namespace SadSapphicGames.CustomGraphs{
             this.weight = weight; 
         } 
         // ? Standard constructor
-        public GraphEdge(GraphNode<TGraphType> _sourceNode, GraphNode<TGraphType> _sinkNode, float weight = 1)
+        public AbstractEdge(GraphNode<TGraphType> _sourceNode, GraphNode<TGraphType> _sinkNode, float weight = 1)
         {
             sourceNodeID = _sourceNode.ID;
             sinkNodeID = _sinkNode.ID;
@@ -62,8 +62,8 @@ namespace SadSapphicGames.CustomGraphs{
         }
 
         //? copy constructor
-        public abstract GraphEdge<TGraphType> Copy(); //? so we can access the copy constructor of abstract graphs
-        public GraphEdge(GraphEdge<TGraphType> _edge) {
+        public abstract AbstractEdge<TGraphType> Copy(); //? so we can access the copy constructor of abstract graphs
+        public AbstractEdge(AbstractEdge<TGraphType> _edge) {
             //? we ignore the only reference type member of an edge and consider the new edge to be an orphan
             this.sinkNodeID = _edge.SinkNodeID;
             this.sourceNodeID = _edge.SourceNodeID;

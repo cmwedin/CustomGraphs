@@ -15,7 +15,7 @@ namespace SadSapphicGames.CustomGraphs{
 
 // * Reference Types -  Private
         protected Dictionary<int , GraphNode<TGraphType>> nodes = new Dictionary<int, GraphNode<TGraphType>>();
-        protected Dictionary<string, GraphEdge<TGraphType>> edges = new Dictionary<string, GraphEdge<TGraphType>>();
+        protected Dictionary<string, AbstractEdge<TGraphType>> edges = new Dictionary<string, AbstractEdge<TGraphType>>();
 
 // ! Methods -----
 // * Member Accessors
@@ -36,21 +36,21 @@ namespace SadSapphicGames.CustomGraphs{
         public bool HasNode(GraphNode<TGraphType> node) {
             return GetAllNodes().Contains(node); 
         }
-        public GraphEdge<TGraphType> GetEdge(string ID) {
+        public AbstractEdge<TGraphType> GetEdge(string ID) {
             if(!edges.ContainsKey(ID)) {
                 Debug.LogWarning($"edge {ID} not found in graph");
                 return null;
             }
             return edges[ID];
         }
-        public List<GraphEdge<TGraphType>> GetAllEdges() {
+        public List<AbstractEdge<TGraphType>> GetAllEdges() {
             return edges.Values.ToList();
         }
         public List<string> GetAllEdgeIDs() {
             return edges.Keys.ToList(); //? again, should be a new object with copied values
         }
-        public List<GraphEdge<TGraphType>> GetEdgeList(List<string> IDs) {
-            List<GraphEdge<TGraphType>> output = new List<GraphEdge<TGraphType>>();
+        public List<AbstractEdge<TGraphType>> GetEdgeList(List<string> IDs) {
+            List<AbstractEdge<TGraphType>> output = new List<AbstractEdge<TGraphType>>();
             foreach(var ID in IDs) {output.Add(edges[ID]);}
             return output;
         }
@@ -98,7 +98,7 @@ namespace SadSapphicGames.CustomGraphs{
             //! this should probably be abstract
         }
         
-        protected virtual void AddEdge(GraphEdge<TGraphType> edgeToAdd) {
+        protected virtual void AddEdge(AbstractEdge<TGraphType> edgeToAdd) {
             if(edges.ContainsKey(edgeToAdd.ID)) throw new NonUniqueIDException(edgeToAdd.ID);
             if(edgeToAdd.ParentGraph != null) {
                 Debug.LogWarning("This edge is already attached to a graph, it must be removed from its parent before it can be added to another graph");
@@ -112,7 +112,7 @@ namespace SadSapphicGames.CustomGraphs{
             GetNode(edgeToAdd.SinkNodeID).AddEdge(edgeToAdd);
             edges.Add(edgeToAdd.ID, edgeToAdd);
         }
-        public void RemoveEdge(GraphEdge<TGraphType> edge) {
+        public void RemoveEdge(AbstractEdge<TGraphType> edge) {
             if(edge.ParentGraph != this) {
                 Debug.LogWarning("you are trying to remove and edge from a graph that isn't its parent");
                 return;
@@ -169,13 +169,13 @@ namespace SadSapphicGames.CustomGraphs{
             output.RemoveNode(output.GetNode(b.ID));
             return output;
         }
-        public static AbstractGraph<TGraphType> operator +(AbstractGraph<TGraphType> a,GraphEdge<TGraphType> b) {
+        public static AbstractGraph<TGraphType> operator +(AbstractGraph<TGraphType> a,AbstractEdge<TGraphType> b) {
             AbstractGraph<TGraphType> output = a.Copy();
-            GraphEdge<TGraphType> bCopy = b.Copy();
+            AbstractEdge<TGraphType> bCopy = b.Copy();
             output.AddEdge(bCopy);
             return output;
         }
-        public static AbstractGraph<TGraphType> operator -(AbstractGraph<TGraphType> a,GraphEdge<TGraphType> b) {
+        public static AbstractGraph<TGraphType> operator -(AbstractGraph<TGraphType> a,AbstractEdge<TGraphType> b) {
             if(b.ParentGraph != a) {
                 Debug.LogWarning("You cannot subtract an edge from a graph that is not its parent, returning null");
                 return null;

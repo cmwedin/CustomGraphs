@@ -29,7 +29,7 @@ namespace SadSapphicGames.CustomGraphs {
             var edge = new UndirectedEdge<TGraphType>(v1,v2); //? we do this first so we can access its ID when adding it to the dict 
             edges.Add(edge.ID, edge);
         }
-        protected override void AddEdge(GraphEdge<TGraphType> edgeToAdd) {
+        protected override void AddEdge(AbstractEdge<TGraphType> edgeToAdd) {
             if(edgeToAdd is UndirectedEdge<TGraphType>) base.AddEdge(edgeToAdd);
             else throw new IncompatibleEdgeException();
         }
