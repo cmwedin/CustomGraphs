@@ -63,7 +63,8 @@ public class GraphTests
 
         Assert.AreEqual(expected:new List<GraphNode<bool>>{trivialCycle.GetNode(0),trivialCycle.GetNode(1)},actual:trivialCycle.DFS(0));
         Assert.AreEqual(expected:new List<GraphNode<bool>>{trivialCycle.GetNode(0),trivialCycle.GetNode(1)},actual:trivialCycle.BFS(0));
-        
+
+        Assert.IsTrue(CycleSolver<bool>.FindCycleFrom(trivialCycle.GetNode(0)));  
     }
     [Test]
     public void TestBFSvsDFS() {
@@ -136,6 +137,10 @@ public class GraphTests
     public void DAGTest() {
         Assert.IsTrue(TarjanSCCSolver<bool>.CheckDAG(childNodes));
         Assert.IsFalse(TarjanSCCSolver<bool>.CheckDAG(scc));
+        Assert.IsTrue(CycleSolver<bool>.FindCycleFrom(scc.GetNode(1)));
+        Assert.IsTrue(CycleSolver<bool>.FindCycleFrom(scc.GetNode(4)));
+        Assert.IsTrue(CycleSolver<bool>.FindCycleFrom(scc.GetNode(6)));
+        Assert.IsFalse(CycleSolver<bool>.FindCycleFrom(childNodes.GetNode(0)));
     }
     [Test]
     public void SortTest() {

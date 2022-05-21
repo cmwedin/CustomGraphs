@@ -114,7 +114,7 @@ namespace SadSapphicGames.CustomGraphs{
         }
         public void RemoveEdge(GraphEdge<TGraphType> edge) {
             if(edge.ParentGraph != this) {
-                Debug.LogWarning("you are trying to remove and edge from a graph that isnt its parent");
+                Debug.LogWarning("you are trying to remove and edge from a graph that isn't its parent");
                 return;
             }
             GetNode(edge.SourceNodeID).RemoveEdge(edge);
