@@ -37,6 +37,12 @@ public class CyclesTests
         {1, new List<int>{2}},
         {2, new List<int>{}}
     } );
+    UndirectedGraph<bool> DirectedCycle = new UndirectedGraph<bool>( new Dictionary<int, List<int>> {
+        {0, new List<int>{1}},
+        {1, new List<int>{2}},
+        {2, new List<int>{0}},
+        {3, new List<int>{0}}
+    } );
     [Test]
     public void DAGTest() {
         Assert.IsTrue(TarjanSCCSolver<bool>.CheckDAG(childNodes));
@@ -69,6 +75,7 @@ public class CyclesTests
         Assert.IsTrue(CycleSolver<bool>.FindCycleFrom(scc.GetNode(4)));
         Assert.IsTrue(CycleSolver<bool>.FindCycleFrom(scc.GetNode(6)));
         Assert.IsTrue(CycleSolver<bool>.FindCycleFrom(undirectedCycle.GetNode(0)));
+        Assert.IsTrue(CycleSolver<bool>.FindCycleFrom(DirectedCycle.GetNode(3)));
         Assert.IsFalse(CycleSolver<bool>.FindCycleFrom(childNodes.GetNode(0)));
     }
     [Test]
