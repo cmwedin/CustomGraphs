@@ -15,6 +15,7 @@ namespace SadSapphicGames.CustomGraphs {
                 Debug.LogWarning("A tree is by definition undirected");
                 return false;
             }
+            
             return true;
         }
     }

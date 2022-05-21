@@ -71,4 +71,12 @@ public class CyclesTests
         Assert.IsTrue(CycleSolver<bool>.FindCycleFrom(undirectedCycle.GetNode(0)));
         Assert.IsFalse(CycleSolver<bool>.FindCycleFrom(childNodes.GetNode(0)));
     }
+    [Test]
+    public void CycleCallbackTest() {
+            CycleSolver<bool>.FindCycleFrom(scc.GetNode(0), out var callback);
+            Assert.AreEqual(
+            expected: new List<GraphNode<bool>> {scc.GetNode(0),scc.GetNode(1),scc.GetNode(2)},
+            actual: callback
+        );
+    }
 }
