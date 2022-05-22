@@ -14,7 +14,7 @@ namespace SadSapphicGames.CustomGraphs{
         private int sourceNodeID;
         private int sinkNodeID;
         //? to avoid exponential proliferation of class types (adding a weighted version of all other graph classes) 
-        //?"unweighted" graphs just ignore this variable
+        //?"unweighted" graphs use 1
         private float weight;
 
 // * Reference Types - Public
@@ -23,6 +23,9 @@ namespace SadSapphicGames.CustomGraphs{
 // * Reference Types - Private
         private AbstractGraph<TGraphType> parentGraph; //? set to null when copying an edge
 // * Member Accessors
+        public static explicit operator string(AbstractEdge<TGraphType> edge) {
+            return edge.ID;
+        }
         public void SetParent(AbstractGraph<TGraphType> newParent) {
             if(parentGraph != null) {
                 Debug.LogWarning("You must orphan this edge first before setting a new parent");

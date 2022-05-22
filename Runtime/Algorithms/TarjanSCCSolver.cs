@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace SadSapphicGames.CustomGraphs{
     public static class TarjanSCCSolver<TGraphType> {
@@ -33,6 +34,9 @@ namespace SadSapphicGames.CustomGraphs{
         //     return solution.Values.Count;
         // } 
         public static bool CheckDAG(DirectedGraph<TGraphType> graph) {
+            // if(graph is UndirectedGraph<TGraphType>) {
+            //     Debug.LogWarning("This graph is an undirected graph");
+            // }
             var sccList = Solve(graph);
             return sccList.Count == 0;
         }
