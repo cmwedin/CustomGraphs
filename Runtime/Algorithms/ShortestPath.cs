@@ -48,12 +48,13 @@ namespace SadSapphicGames.CustomGraphs
             Debug.Log("Starting new DAG shortest paths eval");
             if(!TarjanSCCSolver<TGraphType>.CheckDAG(graph)) throw new NotDAGException();
             Dictionary<int, List<DirectedEdge<TGraphType>>> bestPaths = new Dictionary<int, List<DirectedEdge<TGraphType>>>();
-            Dictionary<int, float?> bestPathWeight = new Dictionary<int, float?>();
+            Dictionary<int, float> bestPathWeight = new Dictionary<int, float>();
             List<DirectedEdge<TGraphType>> currentPath = new List<DirectedEdge<TGraphType>>();
         
             //? start the search
             foreach (var node in graph.GetAllNodes()) {
-                bestPathWeight.Add(node.ID,null);
+                Debug.Log($"Initializing node {node.ID} with cost -1");
+                bestPathWeight.Add(node.ID,-1);
             }
             DAGRecursion(startingNode, currentPath, bestPathWeight, bestPaths);
             return bestPaths;
@@ -63,29 +64,31 @@ namespace SadSapphicGames.CustomGraphs
         private static void DAGRecursion(
             GraphNode<TGraphType> currentNode,
             List<DirectedEdge<TGraphType>> currentPath,
-            Dictionary<int, float?> bestPathWeight,
+            Dictionary<int, float> bestPathWeight,
             Dictionary<int, List<DirectedEdge<TGraphType>>> bestPaths
         ) {
             Debug.Log($"DAG shortest path recursion called, current path: {string.Join("|",currentPath)}");
             foreach(DirectedEdge<TGraphType> edge in currentNode.GetOutEdges()) {
                 currentPath.Add(edge);
                 var oppNode = edge.GetOppositeNode(currentNode);
-                if(bestPathWeight[oppNode.ID] == null) {
-                    //? this is our first time reaching this node
+                if((bestPathWeight[oppNode.ID] != -1) && (bestPathWeight[oppNode.ID] > PathCost(currentPath))) {
+                    //? this path is better then whatever our pervious best path for this node was
                     bestPathWeight[oppNode.ID] = PathCost(currentPath);
                     bestPaths[oppNode.ID] = currentPath;
-                    //? this was our first time hear so continue searching from it
+                } else { //? bestPathWeight ==
+                    Debug.Log($"reached node {oppNode.ID} for first time"); //! the shows up for node 1
+                    Debug.Log("initializing best path");
+                    bestPaths[oppNode.ID] = currentPath;
+                    Debug.Log("initializing best cost");
+                    bestPathWeight[oppNode.ID] = PathCost(currentPath); //! presumably this breaks the if?
+                    Debug.Log("continuing recursion");  //! this code forward isn't running
                     DAGRecursion(
                         oppNode,
                         currentPath,
                         bestPathWeight,
                         bestPaths
                     );
-                } else if(bestPathWeight[oppNode.ID] > PathCost(currentPath)) {
-                    //? this path is better then whatever our pervious best path for this node was
-                    bestPathWeight[oppNode.ID] = PathCost(currentPath);
-                    bestPaths[oppNode.ID] = currentPath;
-                }
+                } 
                 currentPath.Remove(edge);
             }
         }
