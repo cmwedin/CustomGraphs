@@ -17,20 +17,16 @@ public class ShortestPathTests {
     // A Test behaves as an ordinary method
     [Test]
     public void DAGShortestPathTest() {
-        var shortestPaths = ShortestPath<bool>.DAGShortestPath(DAGraph, DAGraph.GetNode(0));
+        var shortestPathsCosts = ShortestPath<bool>.DAGShortestPath(DAGraph, DAGraph.GetNode(0),out var shortestPaths);
+
+        Assert.AreEqual(expected: 3, actual: shortestPathsCosts[3]);
+        Assert.AreEqual(expected: 2, actual: shortestPathsCosts[4]);
         Assert.AreEqual(
-            expected: new List<AbstractEdge<bool>> {
-                DAGraph.GetEdge("0,1"),
-                DAGraph.GetEdge("1,2"),
-                DAGraph.GetEdge("2,3")
-            },
+            expected: "0,1|1,2|2,3",
             actual: shortestPaths[3]
         );
         Assert.AreEqual(
-            expected: new List<AbstractEdge<bool>> {
-                DAGraph.GetEdge("0,1"),
-                DAGraph.GetEdge("1,4")
-            },
+            expected: "0,1|1,4",
             actual: shortestPaths[4]
         );
     }
