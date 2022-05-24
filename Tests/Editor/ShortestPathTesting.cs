@@ -17,7 +17,7 @@ public class ShortestPathTests {
     // A Test behaves as an ordinary method
     [Test]
     public void DAGShortestPathTest() {
-        var shortestPathsCosts = ShortestPath<bool>.DAGShortestPath(DAGraph, DAGraph.GetNode(0),out var shortestPaths);
+        var shortestPathsCosts = ShortestPath<bool>.DAGShortestPath(DAGraph, 0,out var shortestPaths);
 
         Assert.AreEqual(expected: 3, actual: shortestPathsCosts[3]);
         Assert.AreEqual(expected: 2, actual: shortestPathsCosts[4]);

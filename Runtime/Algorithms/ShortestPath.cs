@@ -7,57 +7,23 @@ using UnityEngine;
 namespace SadSapphicGames.CustomGraphs
 {
     public static class ShortestPath<TGraphType> {
-        // TODO this smells
-            //? why its like this:
-            //? I can cast a directed or undirected edge to an abstract edge
-            //? but a list of one type cannot be cast to a list of another type as easily 
-            //? these functions provide a work around for that   
-        //TODO all this repeated code makes me feel like there is a better way to do this
-        //TODO but this should work for now
-        private static float PathCost(List<DirectedEdge<TGraphType>> path) {
-            // List<AbstractEdge<TGraphType>> asAbstract = (List<AbstractEdge<TGraphType>>)path.Cast<AbstractEdge<TGraphType>>();
-            List<AbstractEdge<TGraphType>> asAbstract = new List<AbstractEdge<TGraphType>>();
-            foreach (var edge in path) { asAbstract.Add((AbstractEdge<TGraphType>)edge); }
-            return PathCost(asAbstract);
-        }
-        private static float PathCost(List<UndirectedEdge<TGraphType>> path) {
-            // List<AbstractEdge<TGraphType>> asAbstract = (List<AbstractEdge<TGraphType>>)path.Cast<AbstractEdge<TGraphType>>();
-            List<AbstractEdge<TGraphType>> asAbstract = new List<AbstractEdge<TGraphType>>();
-            foreach (var edge in path) { asAbstract.Add((AbstractEdge<TGraphType>)edge); }
-            return PathCost(asAbstract);
-        }
-        public static float PathCost(List<AbstractEdge<TGraphType>> path) {
+        public static float PathCost(IEnumerable<AbstractEdge<TGraphType>> path) {
             float cost = 0;
             foreach(var edge in path) {cost += edge.Weight;}
             return cost;
         }
-        private static string PathAsString(List<DirectedEdge<TGraphType>> path) {
-            //List<AbstractEdge<TGraphType>> asAbstract = (List<AbstractEdge<TGraphType>>)path.Cast<AbstractEdge<TGraphType>>();
-            List<AbstractEdge<TGraphType>> asAbstract = new List<AbstractEdge<TGraphType>>();
-            foreach (var edge in path) { asAbstract.Add((AbstractEdge<TGraphType>)edge); }
-            return PathAsString(asAbstract);
-            // List<string> asString = (List<string>)path.Cast<string>();
-            // return asString;
-        }
-        private static string PathAsString(List<UndirectedEdge<TGraphType>> path) {
-            // List<AbstractEdge<TGraphType>> asAbstract = (List<AbstractEdge<TGraphType>>)path.Cast<AbstractEdge<TGraphType>>();
-            List<AbstractEdge<TGraphType>> asAbstract = new List<AbstractEdge<TGraphType>>();
-            foreach (var edge in path) { asAbstract.Add((AbstractEdge<TGraphType>)edge); }
-            return PathAsString(asAbstract);
-            // List<string> asString = (List<string>)path.Cast<string>();
-            // return asString;
-        }
-        public static string PathAsString(List<AbstractEdge<TGraphType>> path) {
+        public static string PathAsString(IEnumerable<AbstractEdge<TGraphType>> path) {
             var asStrings = new List<string>(); 
             foreach(var edge in path) {asStrings.Add(edge.ID);}
             return string.Join("|",asStrings);
         }
         public static Dictionary<int,float> DAGShortestPath(
             DirectedGraph<TGraphType> graph,
-            GraphNode<TGraphType> startingNode,
+            int startingNodeID,
             //? we need to make sure our return values are primitive types so the reference dont become empty leaving the stack frame
             out Dictionary<int,string> bestPathIDsOut
         ) {
+            var startingNode = graph.GetNode(startingNodeID);
             Debug.Log("Starting new DAG shortest paths eval");
             if(!TarjanSCCSolver<TGraphType>.CheckDAG(graph)) throw new NotDAGException();
             Dictionary<int,string> bestPathIDs = new Dictionary<int,string>(); 
@@ -107,6 +73,13 @@ namespace SadSapphicGames.CustomGraphs
             }
             return bestPathIDs;
         }
+
+        // public static Dictionary<int,float> DijkstraShortestPath(AbstractGraph<TGraphType> graph, int startingNodeID,out Dictionary<int,string> bestPaths) {
+        //     var startingNode = graph.GetNode(startingNodeID);
+        //     var queue = new PriorityQueue<TElement,TPriority>(); 
+        //     Dictionary<int, float> output = null;
+        //     return output;
+        // }
 
     }
 }
