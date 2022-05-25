@@ -58,7 +58,7 @@ namespace SadSapphicGames.CustomGraphs{
             sourceNodeID = _sourceNode.ID;
             sinkNodeID = _sinkNode.ID;
             id = $"{sourceNodeID},{sinkNodeID}";
-            this.parentGraph = _sourceNode.ParentGraph;
+            this.parentGraph = _sourceNode.ParentGraph; //TODO this is insufficient
             GetSourceNode().AddEdge(this);
             GetSinkNode().AddEdge(this);
             this.weight = weight;            

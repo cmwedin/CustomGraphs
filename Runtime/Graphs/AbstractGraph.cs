@@ -89,7 +89,7 @@ namespace SadSapphicGames.CustomGraphs{
 
 // * Modification Methods
     // * abstract edge method
-        public bool TryAddEdge(int id1, int id2) { 
+        public virtual bool TryAddEdge(int id1, int id2) { 
             if(!nodes.ContainsKey(id1)) {
                 Debug.LogWarning($"A new node with id {id1} had to be created to add this edge");
                 AddNode(id1);
@@ -103,18 +103,6 @@ namespace SadSapphicGames.CustomGraphs{
         public abstract bool TryAddEdge(GraphNode<TGraphType> v1, GraphNode<TGraphType> v2);
         
         protected abstract bool TryAddEdge(AbstractEdge<TGraphType> edgeToAdd);
-            // if(edges.ContainsKey(edgeToAdd.ID)) throw new NonUniqueIDException(edgeToAdd.ID);
-            // if(edgeToAdd.ParentGraph != null) {
-            //     Debug.LogWarning("This edge is already attached to a graph, it must be removed from its parent before it can be added to another graph");
-            //     Debug.LogWarning("if it cannot be removed consider the copy method or orphan edge constructor");
-            //     return;
-            // }
-            // if(!nodes.ContainsKey(edgeToAdd.SourceNodeID)) { AddNewNode(edgeToAdd.SourceNodeID); }
-            // if(!nodes.ContainsKey(edgeToAdd.SinkNodeID)) { AddNewNode(edgeToAdd.SinkNodeID); }
-            // edgeToAdd.SetParent(this);
-            // GetNode(edgeToAdd.SourceNodeID).AddEdge(edgeToAdd);
-            // GetNode(edgeToAdd.SinkNodeID).AddEdge(edgeToAdd);
-            // edges.Add(edgeToAdd.ID, edgeToAdd);
         
         public void RemoveEdge(AbstractEdge<TGraphType> edge) {
             if(edge.ParentGraph != this) {

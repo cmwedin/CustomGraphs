@@ -65,7 +65,7 @@ namespace SadSapphicGames.CustomGraphs
         } }
 
 // * Constructors
-        public GraphNode(int _id, AbstractGraph<TGraphType> _parentGraph) { //? edges are to be initialized in graph constructors
+        public GraphNode(int _id, AbstractGraph<TGraphType> _parentGraph = null) { //? edges are to be initialized in graph constructors
             this.id = _id;
             this.parentGraph = _parentGraph;
             this.value = default(TGraphType);
