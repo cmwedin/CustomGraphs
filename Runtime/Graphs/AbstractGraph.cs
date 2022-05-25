@@ -61,11 +61,11 @@ namespace SadSapphicGames.CustomGraphs{
         // ? adjacency list constructor
         public AbstractGraph(Dictionary<int,List<int>> adjList) { //? O(V+E) time
             foreach (int id in adjList.Keys) { 
-                AddNewNode(id);
+                AddNode(id);
             }
             foreach (int id in nodes.Keys) {
                 foreach (int adjID in adjList[id]) {
-                    AddNewEdge(id,adjID);
+                    TryAddEdge(id,adjID);
                 }
             }
             DebugMsg();
@@ -75,9 +75,9 @@ namespace SadSapphicGames.CustomGraphs{
             for (int id = 0; id < V; id++) {
                 AddNode(new GraphNode<TGraphType>(id, this));
             }
-            foreach (var edge in E) {
-                if(edge.Length != 2) throw new Exception("each edges array length must be exactly 2");
-                this.AddNewEdge(edge[0],edge[1]);
+            foreach (var edgeIDs in E) {
+                if(edgeIDs.Length != 2) throw new Exception("each edges array length must be exactly 2");
+                this.TryAddEdge(edgeIDs[0],edgeIDs[1]);
             }
         }
         // TODO adjacency matrix constructor
@@ -88,30 +88,34 @@ namespace SadSapphicGames.CustomGraphs{
         public abstract AbstractGraph<TGraphType> Copy();
 
 // * Modification Methods
-        public void AddNewEdge(int id1, int id2) {
-            AddNewEdge(GetNode(id1), GetNode(id2));
-        }
-        public virtual void AddNewEdge(GraphNode<TGraphType> v1, GraphNode<TGraphType> v2) {
-            if(!this.HasNode(v1)) throw new NotInGraphException(v1.ID);
-            if(!this.HasNode(v2)) throw new NotInGraphException(v2.ID);
-            //? subclasses override this and add the edge based on wether or not it should be undirected
-            //! this should probably be abstract
-        }
-        
-        protected virtual void AddEdge(AbstractEdge<TGraphType> edgeToAdd) {
-            if(edges.ContainsKey(edgeToAdd.ID)) throw new NonUniqueIDException(edgeToAdd.ID);
-            if(edgeToAdd.ParentGraph != null) {
-                Debug.LogWarning("This edge is already attached to a graph, it must be removed from its parent before it can be added to another graph");
-                Debug.LogWarning("if it cannot be removed consider the copy method or orphan edge constructor");
-                return;
+    // * abstract edge method
+        public bool TryAddEdge(int id1, int id2) { 
+            if(!nodes.ContainsKey(id1)) {
+                Debug.LogWarning($"A new node with id {id1} had to be created to add this edge");
+                AddNode(id1);
             }
-            if(!nodes.ContainsKey(edgeToAdd.SourceNodeID)) { AddNewNode(edgeToAdd.SourceNodeID); }
-            if(!nodes.ContainsKey(edgeToAdd.SinkNodeID)) { AddNewNode(edgeToAdd.SinkNodeID); }
-            edgeToAdd.SetParent(this);
-            GetNode(edgeToAdd.SourceNodeID).AddEdge(edgeToAdd);
-            GetNode(edgeToAdd.SinkNodeID).AddEdge(edgeToAdd);
-            edges.Add(edgeToAdd.ID, edgeToAdd);
+            if(!nodes.ContainsKey(id2)) {
+                Debug.LogWarning($"A new node with id {id2} had to be created to add this edge");
+                AddNode(id2);
+            }
+            return TryAddEdge(GetNode(id1), GetNode(id2));
         }
+        public abstract bool TryAddEdge(GraphNode<TGraphType> v1, GraphNode<TGraphType> v2);
+        
+        protected abstract bool TryAddEdge(AbstractEdge<TGraphType> edgeToAdd);
+            // if(edges.ContainsKey(edgeToAdd.ID)) throw new NonUniqueIDException(edgeToAdd.ID);
+            // if(edgeToAdd.ParentGraph != null) {
+            //     Debug.LogWarning("This edge is already attached to a graph, it must be removed from its parent before it can be added to another graph");
+            //     Debug.LogWarning("if it cannot be removed consider the copy method or orphan edge constructor");
+            //     return;
+            // }
+            // if(!nodes.ContainsKey(edgeToAdd.SourceNodeID)) { AddNewNode(edgeToAdd.SourceNodeID); }
+            // if(!nodes.ContainsKey(edgeToAdd.SinkNodeID)) { AddNewNode(edgeToAdd.SinkNodeID); }
+            // edgeToAdd.SetParent(this);
+            // GetNode(edgeToAdd.SourceNodeID).AddEdge(edgeToAdd);
+            // GetNode(edgeToAdd.SinkNodeID).AddEdge(edgeToAdd);
+            // edges.Add(edgeToAdd.ID, edgeToAdd);
+        
         public void RemoveEdge(AbstractEdge<TGraphType> edge) {
             if(edge.ParentGraph != this) {
                 Debug.LogWarning("you are trying to remove and edge from a graph that isn't its parent");
@@ -123,7 +127,7 @@ namespace SadSapphicGames.CustomGraphs{
             edge = null;
             return;
         }
-        public void AddNewNode(int nodeID) {
+        protected void AddNode(int nodeID) {
             nodes.Add(nodeID, new GraphNode<TGraphType>(nodeID,this));
         }
         public void AddNode(GraphNode<TGraphType> nodeToAdd) {
@@ -172,7 +176,7 @@ namespace SadSapphicGames.CustomGraphs{
         public static AbstractGraph<TGraphType> operator +(AbstractGraph<TGraphType> a,AbstractEdge<TGraphType> b) {
             AbstractGraph<TGraphType> output = a.Copy();
             AbstractEdge<TGraphType> bCopy = b.Copy();
-            output.AddEdge(bCopy);
+            output.TryAddEdge(bCopy);
             return output;
         }
         public static AbstractGraph<TGraphType> operator -(AbstractGraph<TGraphType> a,AbstractEdge<TGraphType> b) {

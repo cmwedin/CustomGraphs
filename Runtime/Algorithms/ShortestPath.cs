@@ -20,7 +20,7 @@ namespace SadSapphicGames.CustomGraphs
         public static Dictionary<int,float> DAGShortestPath(
             DirectedGraph<TGraphType> graph,
             int startingNodeID,
-            //? we need to make sure our return values are primitive types so the reference dont become empty leaving the stack frame
+            //? we need to make sure our return values are primitive types so the reference don't become empty leaving the stack frame
             out Dictionary<int,string> bestPathIDsOut
         ) {
             var startingNode = graph.GetNode(startingNodeID);
