@@ -15,7 +15,7 @@ namespace SadSapphicGames.CustomGraphs {
                 }
             } else if(nodes.ContainsKey(id2)) {
                 //? we already know id doesnt contain id1
-                return TryAddEdge(new GraphNode<TGraphType>(id2), GetNode(id2));
+                return TryAddEdge(new GraphNode<TGraphType>(id1), GetNode(id2));
             } else {
                 //? neither node is a part of the tree
                 Debug.LogWarning("at least one node of the edge must already be a part of the tree as a tree only contains one connected component");
