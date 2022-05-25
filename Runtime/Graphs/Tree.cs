@@ -24,7 +24,7 @@ namespace SadSapphicGames.CustomGraphs {
         }
         public override bool TryAddEdge(GraphNode<TGraphType> v1, GraphNode<TGraphType> v2) {
             if(v1.ParentGraph == null && v2.ParentGraph == this) {
-                AddNode(v1); //TODO I dont like being able to do this, adding a node without adding an edge as well would break the tree condition
+                AddNode(v1); //TODO I don't like being able to do this, adding a node without adding an edge as well would break the tree condition
                 var _edge = new UndirectedEdge<TGraphType>(v1,v2);
                 edges.Add(_edge.ID,_edge);
                 return true;
@@ -77,7 +77,10 @@ namespace SadSapphicGames.CustomGraphs {
             if(!Tree<TGraphType>.VerifyTree(this)) throw new NotATreeException();
         }
 
-// * Static Methods
+        public Tree() {
+        }
+
+        // * Static Methods
         public static bool VerifyTree(AbstractGraph<TGraphType> _graph) {
             if(_graph is DirectedGraph<TGraphType>) {
                 // ? i feel in CS this is often overlooked do to the prevalence of rooted trees 
