@@ -63,11 +63,14 @@ namespace SadSapphicGames.CustomGraphs{
             foreach (int id in adjList.Keys) { 
                 AddNode(id);
             }
+            List<int[]> edgeList = new List<int[]>();
+            
             foreach (int id in nodes.Keys) {
                 foreach (int adjID in adjList[id]) {
-                    TryAddEdge(id,adjID);
+                    edgeList.Add(new int[2] {id,adjID});
                 }
             }
+            InitializeEdges(edgeList);
             DebugMsg();
         }
         // ? list of edges and size constructor
@@ -75,10 +78,7 @@ namespace SadSapphicGames.CustomGraphs{
             for (int id = 0; id < V; id++) {
                 AddNode(new GraphNode<TGraphType>(id, this));
             }
-            foreach (var edgeIDs in E) {
-                if(edgeIDs.Length != 2) throw new Exception("each edges array length must be exactly 2");
-                this.TryAddEdge(edgeIDs[0],edgeIDs[1]);
-            }
+            InitializeEdges(E);
         }
         // TODO adjacency matrix constructor
         public AbstractGraph(int[][] adjMatrix) {
@@ -88,7 +88,7 @@ namespace SadSapphicGames.CustomGraphs{
         public abstract AbstractGraph<TGraphType> Copy();
 
 // * Modification Methods
-    // * abstract edge method
+    // * abstract edge methods
         public virtual bool TryAddEdge(int id1, int id2) { 
             if(!nodes.ContainsKey(id1)) {
                 Debug.LogWarning($"A new node with id {id1} had to be created to add this edge");
@@ -103,6 +103,7 @@ namespace SadSapphicGames.CustomGraphs{
         public abstract bool TryAddEdge(GraphNode<TGraphType> v1, GraphNode<TGraphType> v2);
         
         protected abstract bool TryAddEdge(AbstractEdge<TGraphType> edgeToAdd);
+        protected abstract void InitializeEdges(List<int[]> edgeList);
         
         public void RemoveEdge(AbstractEdge<TGraphType> edge) {
             if(edge.ParentGraph != this) {

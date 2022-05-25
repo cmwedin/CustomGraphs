@@ -23,6 +23,13 @@ namespace SadSapphicGames.CustomGraphs {
             }
             return copyGraph;
         }
+        protected override void InitializeEdges(List<int[]> edgeList) {
+            foreach(var _edgeID in edgeList) {
+                if ((_edgeID.Length != 2) || !nodes.ContainsKey(_edgeID[0]) || !nodes.ContainsKey(_edgeID[1])) throw new System.Exception("invalid initial edge list");
+                var edge = new UndirectedEdge<TGraphType>(GetNode(_edgeID[0]),GetNode(_edgeID[1]));
+                edges.Add(edge.ID,edge);
+            }
+        }
 
         public override bool TryAddEdge(GraphNode<TGraphType> v1, GraphNode<TGraphType> v2) {
             if(v1.ParentGraph == null) {this.AddNode(v1);}
