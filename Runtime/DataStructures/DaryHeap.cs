@@ -50,11 +50,25 @@ namespace SadSapphicGames.DataStructures{
         public void DeleteAndReplaceRoot() {
             throw new NotImplementedException();
         }
-        public void IncreaseKey(THeapType obj) {
-            throw new NotImplementedException();
+        public void IncreaseKey(THeapType obj, float newValue) {
+            var node = GetHeapNode(obj);
+            if(node.Value >= newValue) {
+                Debug.LogWarning("this object already has a greater key in the heap");
+                return;
+            }
+            SiftDown(obj);
+            node.SetValue(newValue);
+            // throw new NotImplementedException();
         }
-        public void DecreaseKey(THeapType obj) {
-            throw new NotImplementedException();
+        public void DecreaseKey(THeapType obj, float newValue) {
+            var node = GetHeapNode(obj);
+            if(node.Value <= newValue) {
+                Debug.LogWarning("this object already has a lower key in the heap");
+                return;
+            }
+            node.SetValue(newValue);
+            SiftUp(obj);
+            // throw new NotImplementedException();
         }
         public void DeleteElement(THeapType obj) {
             throw new NotImplementedException();
@@ -66,6 +80,9 @@ namespace SadSapphicGames.DataStructures{
             throw new NotImplementedException();
         }
 
+        private GraphNode<float> GetHeapNode(THeapType obj) {
+            return heapTree.GetNode(objectIDs[obj]);
+        }
         private GraphNode<float> GetBottomNode(){
             throw new NotImplementedException();
         }
