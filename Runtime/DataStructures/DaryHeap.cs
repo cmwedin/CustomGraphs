@@ -9,7 +9,8 @@ namespace SadSapphicGames.DataStructures{
     // ! this is not intended to be an efficient implementation of a heap 
     // ! (well it is hopefully time efficient but a space efficient implementation would just use an array)
     // ! but rather use case to identify any additional behavior that might be needed for a extensibility of the tree class
-    // ! and provide a d-ary heap for myself to use in dijkstra and prim MST that could be replaced with a more efficient one in the future.  
+    // ! and provide a d-ary heap for myself to use in dijkstra and prim MST that could be replaced with a more efficient one in the future. 
+    // ? since this isnt intended for general use and I mostly need it for pathfinding I'm only going to implement a min heap 
     public class D_aryHeap<THeapType> : MonoBehaviour {
         private Tree<float> heapTree = new Tree<float>();
         private Dictionary<THeapType,int> objectIDs = new Dictionary<THeapType, int>();
@@ -27,9 +28,16 @@ namespace SadSapphicGames.DataStructures{
             throw new NotImplementedException();
         }
         public void Push(THeapType inObject, float key) {
+            if(objectIDs.ContainsKey(inObject)) {
+                Debug.LogWarning($"Heap already contains object");
+            }
             objectIDs.Add(inObject,IDcounter);
             IDcounter++;
-            heapTree.AddNode(new GraphNode<float>(objectIDs[inObject],null,key));
+            if(Size == 0) {
+                heapTree.AddNode(new GraphNode<float>(objectIDs[inObject],null,key));
+            } else {
+                heapTree.TryAddEdge(GetBottomNode(),new GraphNode<float>(objectIDs[inObject],null,key)); 
+            }
             SiftUp(inObject);
             throw new NotImplementedException();
         }
@@ -57,5 +65,10 @@ namespace SadSapphicGames.DataStructures{
         public void SiftDown(THeapType obj) {
             throw new NotImplementedException();
         }
+
+        private GraphNode<float> GetBottomNode(){
+            throw new NotImplementedException();
+        }
+        
     }
 }
