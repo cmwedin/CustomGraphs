@@ -34,7 +34,21 @@ public class TreeTests
 
         Assert.IsTrue(actualTree.TryAddEdge(3,5));
         Assert.IsTrue(actualTree.TryAddEdge(6,4));
+    }
+    [Test]
+    public void RootedTreeTest() {
+        Tree<bool> actualTree = new RootedTree<bool>( new Dictionary<int, List<int>> {
+            {0, new List<int>{1,2}},
+            {1, new List<int>{3}},
+            {2, new List<int>{4}},
+            {3, new List<int>{}},
+            {4, new List<int>{}}
+        });
+        Assert.IsFalse(actualTree.TryAddEdge(0,3));
+        Assert.IsFalse(actualTree.TryAddEdge(10,20));
+        Assert.IsFalse(actualTree.TryAddEdge(6,4));
 
 
+        Assert.IsTrue(actualTree.TryAddEdge(3,5));
     }
 }
