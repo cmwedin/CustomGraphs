@@ -96,7 +96,7 @@ namespace SadSapphicGames.CustomGraphs{
                 //! a potentially solution would be to add a replace edge method?
                 ParentGraph.TryAddEdge(Int32.Parse(nodeIDs[0]),Int32.Parse(nodeIDs[1])); 
             }
-            return true   
+            return true;   
         }
     }
 }
