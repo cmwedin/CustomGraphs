@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using SadSapphicGames.CustomGraphs;
 using System;
+using System.Linq;
 
 namespace SadSapphicGames.DataStructures{
     // ! IMPORTANT NOTE : 
@@ -61,7 +62,7 @@ namespace SadSapphicGames.DataStructures{
         public void DeleteRoot() {
             throw new NotImplementedException();
         }
-        public void DeleteAndReplaceRoot() {
+        public void DeleteAndReplaceRoot(THeapType inObject) {
             throw new NotImplementedException();
         }
         public void IncreaseKey(THeapType obj, float newValue) {
@@ -115,6 +116,16 @@ namespace SadSapphicGames.DataStructures{
         }
         private GraphNode<float> GetBottomNode(){
             throw new NotImplementedException();
+        }
+        private GraphNode<float> GetGreatestChild(GraphNode<float> node) {
+            var children = heapTree.GetChildren(node);
+            children = children.OrderBy(o => o.Value).ToList();
+            return children[0];
+        }
+        private GraphNode<float> GetSmallestChild(GraphNode<float> node) {
+            var children = heapTree.GetChildren(node);
+            children = children.OrderByDescending(o => o.Value).ToList();
+            return children[0];
         }
         
     }

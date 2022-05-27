@@ -23,6 +23,12 @@ namespace SadSapphicGames.CustomGraphs {
                 return node.GetInEdges()[0].GetOppositeNode(node);
             }
         }
+        public List<GraphNode<TGraphType>> GetChildren(GraphNode<TGraphType> node) {
+            if (node.ParentGraph != this) { throw new DifferentGraphsException();}
+            var children = new List<GraphNode<TGraphType>>();
+            foreach(var edge in node.GetOutEdges()) {children.Add(edge.GetOppositeNode(node));}
+            return children;
+        }
 // * Constructors
         public RootedTree(Dictionary<int, List<int>> adjacencyList) : base(adjacencyList) {
         }
