@@ -145,7 +145,7 @@ namespace SadSapphicGames.CustomGraphs{
         }
         public void RemoveNode(GraphNode<TGraphType> node) {
             if(!(node.ParentGraph == this)) return;
-            foreach (var edgeID in node.edgeIDs) {
+            foreach (var edgeID in node.EdgeIDs) {
                 RemoveEdge(GetEdge(edgeID));
             }
             nodes.Remove(node.ID);

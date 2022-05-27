@@ -17,7 +17,7 @@ namespace SadSapphicGames.CustomGraphs
 // * Reference Types - Public
         public TGraphType Value { get => value;}
         public AbstractGraph<TGraphType> ParentGraph { get => parentGraph;}
-        public List<string> edgeIDs { get { // //? since the list is of value types modifications to this have no effect on the actual edges
+        public List<string> EdgeIDs { get { // //? since the list is of value types modifications to this have no effect on the actual edges
                 List<string> output = new List<string>();
                 foreach (var id in inEdgeIDs) {
                     output.Add(id);

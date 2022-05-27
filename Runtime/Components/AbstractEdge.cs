@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace SadSapphicGames.CustomGraphs{
@@ -75,7 +77,26 @@ namespace SadSapphicGames.CustomGraphs{
         }
 // * Modification
         public bool TrySwapNodes() {
-            return false;
+            var oldSourceEdgeIDs = GetSourceNode().EdgeIDs;
+            oldSourceEdgeIDs.Remove(this.ID);
+            var oldSinkEdgeIDs = GetSinkNode().EdgeIDs;
+            oldSinkEdgeIDs.Remove(this.ID);
+            var newSourceEdgeIDs = new List<string>();
+            var newSinkEdgeIDs = new List<string>();
+            var edgesToRemove = ParentGraph.GetEdgeList(oldSourceEdgeIDs).Concat(ParentGraph.GetEdgeList(oldSinkEdgeIDs)).ToList();
+            foreach(var edge in edgesToRemove) ParentGraph.RemoveEdge(edge);
+            //TODO new edge id lists equal the old with SourceNodeID replaced with SinkNodeID and v.v.
+            (sourceNodeID, sinkNodeID) = (SinkNodeID, SourceNodeID);
+            //TODO id = id reversed
+            List<string> edgeIDsToAdd = newSourceEdgeIDs.Concat(newSinkEdgeIDs).ToList();
+            foreach(var edgeID in edgeIDsToAdd) {
+                string[] nodeIDs = edgeID.Split(",",2);
+                //! Problem - this wont work for tree's as it thinks adding an edge will introduce a cycle
+                //! which it usually would had we not just deleted edges from the tree
+                //! a potentially solution would be to add a replace edge method?
+                ParentGraph.TryAddEdge(Int32.Parse(nodeIDs[0]),Int32.Parse(nodeIDs[1])); 
+            }
+            return true   
         }
     }
 }

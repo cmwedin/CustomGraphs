@@ -53,7 +53,7 @@ namespace SadSapphicGames.DataStructures{
             // throw new NotImplementedException();
         }
         public bool TryPop(out THeapType outObject) {
-            if(Size == 0) {
+            if(isEmpty) {
                 outObject = default(THeapType);
                 return false;
             }
@@ -66,9 +66,30 @@ namespace SadSapphicGames.DataStructures{
             DeleteElement(reverseObjID[rootNode.ID]);
             rootNode = newRoot;
         }
-        public void DeleteAndReplaceRoot(THeapType inObject) {
+        public bool TryPopThenPush(THeapType inObject, float key, out THeapType outObject) {
             throw new NotImplementedException();
+            if(isEmpty) {
+                outObject = default(THeapType);
+                Push(inObject, key);
+                return false;
+            }
+            outObject = Peek();
+            ReplaceRoot(inObject,key);
+            return true;
         }
+
+        private void ReplaceRoot(THeapType inObject, float key) {
+            throw new NotImplementedException();
+            objectIDs.Add(inObject,IDcounter);
+            reverseObjID.Add(IDcounter,inObject);
+            IDcounter++;
+            //TODO if I want to add PopThenPush I just need to finish this function
+            //TODO seems like it might be more specialized than a class that admittedly isn't intended for broad use might warrant however
+            //TODO the reasoning for implementing something like this is that it eliminates the need to sort the heap twice
+            //TODO once when popping the root
+            //TODO and once when pushing the new object
+        }
+
         public void IncreaseKey(THeapType obj, float newValue) {
             var node = GetHeapNode(obj);
             if(node.Value >= newValue) {
