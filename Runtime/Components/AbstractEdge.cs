@@ -42,7 +42,6 @@ namespace SadSapphicGames.CustomGraphs{
         }
 
         public abstract GraphNode<TGraphType> GetOppositeNode(GraphNode<TGraphType> node); //? this function is the main point of distinction between Directed and Undirected
-
 // * Constructors
         // ? orphan edge constructor (intended for use in adding edges by reference)
         public AbstractEdge(int _sourceID, int _sinkID, float weight = 1) {
@@ -73,6 +72,10 @@ namespace SadSapphicGames.CustomGraphs{
             this.id = _edge.ID;
             this.weight = _edge.Weight;
             this.parentGraph = null; 
+        }
+// * Modification
+        public bool TrySwapNodes() {
+            return false;
         }
     }
 }

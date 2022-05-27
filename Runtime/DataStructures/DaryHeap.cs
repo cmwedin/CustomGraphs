@@ -88,7 +88,13 @@ namespace SadSapphicGames.DataStructures{
             // throw new NotImplementedException();
         }
         public void DeleteElement(THeapType obj) {
-            throw new NotImplementedException();
+            var objNode = GetHeapNode(obj);
+            while(heapTree.GetChildren(objNode).Count != 0) {
+                var smallestChild = GetSmallestChild(objNode);
+                heapTree.GetEdge($"{objNode.ID},{smallestChild.ID}").TrySwapNodes();
+            }
+            heapTree.RemoveNode(objNode);     
+            // throw new NotImplementedException();
         }
         public void SiftUp(THeapType obj) {
             var objNode = GetHeapNode(obj);
@@ -103,12 +109,12 @@ namespace SadSapphicGames.DataStructures{
         }
         public void SiftDown(THeapType obj) {
             var objNode = GetHeapNode(obj);
-            if( heapTree.GetParentNode(objNode) == null) {
-                Debug.LogWarning("object is already the root of the heap");
+            if( heapTree.GetChildren(objNode).Count == 0) {
+                Debug.LogWarning("object is already the bottom-most node");
                 return;
-            } else while (objNode.Value > heapTree.GetParentNode(objNode).Value) {
+            } else while (objNode.Value > GetSmallestChild(objNode).Value) {
                 //TODO not implemented
-                //TODO objNode.GetInEdges()[0].SwapNodes()
+                //TODO heapTree.GetEdge($"{objNode.ID},{GetSmallestChild(objNode).ID}").SwapNodes()
             }
             throw new NotImplementedException();
         }
@@ -130,6 +136,7 @@ namespace SadSapphicGames.DataStructures{
             int bottomLayer = Mathf.FloorToInt(Mathf.Log(Size + 1,childCapacity) - 1); // ? we add one to the size because we want to know what node to add the next one too
             List<GraphNode<float>> layerNodes = heapTree.GetLayer(bottomLayer);
             int index = 0;
+            //TODO NOT IMPLEMENTED
             GraphNode<float> currentNode = layerNodes[index];
             while(heapTree.GetChildren(currentNode).Count == childCapacity) {
                 index++;
