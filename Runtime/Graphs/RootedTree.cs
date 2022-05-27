@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -58,7 +59,7 @@ namespace SadSapphicGames.CustomGraphs {
                 Debug.LogWarning($"you are trying to add a new in edge to node {v2.ID}. A node in a rooted tree can only have one parent / in edge");
                 return false;
             } else if(v1.ParentGraph == this && v2.ParentGraph == null) {
-                AddNode(v2); //TODO dont like this - see tree class
+                AddNode(v2); //TODO don't like this - see tree class
                 var _edge = new UndirectedEdge<TGraphType>(v1,v2);
                 edges.Add(_edge.ID,_edge);
                 return true;
@@ -94,6 +95,10 @@ namespace SadSapphicGames.CustomGraphs {
                     return false;
                 }
             }
+        }
+
+        public List<GraphNode<float>> GetLayer(int bottomLayer) {
+            throw new NotImplementedException();
         }
     }
 }

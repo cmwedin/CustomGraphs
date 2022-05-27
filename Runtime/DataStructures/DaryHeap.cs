@@ -117,7 +117,6 @@ namespace SadSapphicGames.DataStructures{
             return heapTree.GetNode(objectIDs[obj]);
         }
         private GraphNode<float> GetBottomNode() {
-            var currentNode = rootNode;
             // ? we know the graph has size N nodes
             // ? and every node but the bottom node should have d children
             // ? if N > d + 1 the bottom is a child of the root
@@ -128,7 +127,16 @@ namespace SadSapphicGames.DataStructures{
                     // ? sanity check: if N = 1 evaluates to -1, 2 to 0, 3 to .58, 4 to 1,...
                         //? rounding down to int gives 1:-1, 2:0, 3:0, 4:1, 5:1, 6:1, 7:1, 8:2, 9:2...
             // ! hence FloorToInt(log_d(N)-1) gives the layer the bottom node should be in when attaching node #N to the heap
-            throw new NotImplementedException();
+            int bottomLayer = Mathf.FloorToInt(Mathf.Log(Size + 1,childCapacity) - 1); // ? we add one to the size because we want to know what node to add the next one too
+            List<GraphNode<float>> layerNodes = heapTree.GetLayer(bottomLayer);
+            int index = 0;
+            GraphNode<float> currentNode = layerNodes[index];
+            while(heapTree.GetChildren(currentNode).Count == childCapacity) {
+                index++;
+                if(index >= layerNodes.Count) {throw new Exception($"bottom node not found in layer {bottomLayer}");}
+                currentNode = layerNodes[index];
+            }
+            // throw new NotImplementedException();
             return currentNode;
         }
         private GraphNode<float> GetGreatestChild(GraphNode<float> node) {
