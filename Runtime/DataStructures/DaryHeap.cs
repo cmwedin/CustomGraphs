@@ -17,7 +17,7 @@ namespace SadSapphicGames.DataStructures{
         private int childCapacity; // ? the D in D-ary
         private RootedTree<float> heapTree = new RootedTree<float>();
         private Dictionary<THeapType,int> objectIDs = new Dictionary<THeapType, int>();
-        private Dictionary<int,THeapType> reverseID = new Dictionary<int, THeapType>();
+        private Dictionary<int,THeapType> reverseObjID = new Dictionary<int, THeapType>();
         private int IDcounter = 0;
 // * Properties
         public int Size { get => heapTree.Size; }
@@ -29,14 +29,14 @@ namespace SadSapphicGames.DataStructures{
         }
         
         public THeapType Peek() {
-            return reverseID[rootNode.ID];
+            return reverseObjID[rootNode.ID];
         }
         public void Push(THeapType inObject, float key) {
             if(objectIDs.ContainsKey(inObject)) {
                 Debug.LogWarning($"Heap already contains object");
             }
             objectIDs.Add(inObject,IDcounter);
-            reverseID.Add(IDcounter,inObject);
+            reverseObjID.Add(IDcounter,inObject);
             IDcounter++;
             if(isEmpty) {
                 heapTree.AddNode(new GraphNode<float>(objectIDs[inObject],null,key));
@@ -62,7 +62,9 @@ namespace SadSapphicGames.DataStructures{
             return true;
         }
         public void DeleteRoot() {
-            throw new NotImplementedException();
+            GraphNode<float> newRoot = GetSmallestChild(rootNode);
+            DeleteElement(reverseObjID[rootNode.ID]);
+            rootNode = newRoot;
         }
         public void DeleteAndReplaceRoot(THeapType inObject) {
             throw new NotImplementedException();
@@ -78,23 +80,26 @@ namespace SadSapphicGames.DataStructures{
             // throw new NotImplementedException();
         }
         public void DecreaseKey(THeapType obj, float newValue) {
-            var node = GetHeapNode(obj);
-            if(node.Value <= newValue) {
+            var objNode = GetHeapNode(obj);
+            if(objNode.Value <= newValue) {
                 Debug.LogWarning("this object already has a lower key in the heap");
                 return;
             }
-            node.SetValue(newValue);
+            objNode.SetValue(newValue);
             SiftUp(obj);
+            if(objNode.Value < rootNode.Value) {rootNode = heapTree.RootNode;}
             // throw new NotImplementedException();
         }
-        public void DeleteElement(THeapType obj) {
+        private void DeleteElement(THeapType obj) {
             var objNode = GetHeapNode(obj);
+            // if(objNode == rootNode) {throw new Exception("The root node must be deleted through DeleteRoot() not DeleteElement(THeapType obj)");}
             while(heapTree.GetChildren(objNode).Count != 0) {
                 var smallestChild = GetSmallestChild(objNode);
+                //TODO not implemented
                 heapTree.GetEdge($"{objNode.ID},{smallestChild.ID}").TrySwapNodes();
             }
             heapTree.RemoveNode(objNode);     
-            // throw new NotImplementedException();
+            throw new NotImplementedException();
         }
         public void SiftUp(THeapType obj) {
             var objNode = GetHeapNode(obj);
