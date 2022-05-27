@@ -14,6 +14,7 @@ namespace SadSapphicGames.DataStructures{
     // ? since this isn't intended for general use and I mostly need it for pathfinding I'm only going to implement a min heap 
     public class D_aryHeap<THeapType> : MonoBehaviour {
         private GraphNode<float> rootNode;
+        private int childCapacity; // ? the D in D-ary
         private RootedTree<float> heapTree = new RootedTree<float>();
         private Dictionary<THeapType,int> objectIDs = new Dictionary<THeapType, int>();
         private Dictionary<int,THeapType> reverseID = new Dictionary<int, THeapType>();
@@ -23,7 +24,8 @@ namespace SadSapphicGames.DataStructures{
         public bool isEmpty { get => Size == 0;}
 
 // * Constructors
-        public D_aryHeap() {
+        public D_aryHeap(int D) {
+            childCapacity = D;
         }
         
         public THeapType Peek() {
@@ -114,8 +116,12 @@ namespace SadSapphicGames.DataStructures{
         private GraphNode<float> GetHeapNode(THeapType obj) {
             return heapTree.GetNode(objectIDs[obj]);
         }
-        private GraphNode<float> GetBottomNode(){
-            throw new NotImplementedException();
+        private GraphNode<float> GetBottomNode() {
+            var currentNode = rootNode;
+            while(heapTree.GetChildren(currentNode).Count == 3) {
+                currentNode = GetGreatestChild(currentNode);
+            }
+            return currentNode;
         }
         private GraphNode<float> GetGreatestChild(GraphNode<float> node) {
             var children = heapTree.GetChildren(node);
