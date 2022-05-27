@@ -5,7 +5,16 @@ using UnityEngine;
 // ? 
 namespace SadSapphicGames.CustomGraphs {
     public class RootedTree<TGraphType> : Tree<TGraphType> {
-        // * Overrides
+        public GraphNode<TGraphType> RootNode { get {
+            // ! this is probably not efficient
+            // ! should set a reference to this so we can get the root in constant time
+            var node = GetRandomNode();
+            while(node.GetInEdges().Count != 0) {
+                node = node.GetInEdges()[0].GetOppositeNode(node); 
+            }
+            return node;
+        }} 
+// * Overrides
         public override bool TryAddEdge(int id1, int id2) {
             if(nodes.ContainsKey(id1)) {
                 if(nodes.ContainsKey(id2)) {

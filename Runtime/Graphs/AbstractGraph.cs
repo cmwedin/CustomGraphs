@@ -27,6 +27,12 @@ namespace SadSapphicGames.CustomGraphs{
             }
             return nodes[ID];
         }
+        public GraphNode<TGraphType> GetRandomNode() {
+            var allNodes = GetAllNodes();
+            var random = new System.Random();
+            int index  = random.Next(Size);
+            return allNodes[index]; 
+        }
         public List<GraphNode<TGraphType>> GetAllNodes() {
             return nodes.Values.ToList();
         }
