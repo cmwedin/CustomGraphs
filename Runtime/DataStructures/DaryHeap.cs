@@ -12,8 +12,10 @@ namespace SadSapphicGames.DataStructures{
     // ! and provide a d-ary heap for myself to use in dijkstra and prim MST that could be replaced with a more efficient one in the future. 
     // ? since this isn't intended for general use and I mostly need it for pathfinding I'm only going to implement a min heap 
     public class D_aryHeap<THeapType> : MonoBehaviour {
-        private Tree<float> heapTree = new RootedTree<float>();
+        private GraphNode<float> rootNode;
+        private RootedTree<float> heapTree = new RootedTree<float>();
         private Dictionary<THeapType,int> objectIDs = new Dictionary<THeapType, int>();
+        private Dictionary<int,THeapType> reverseID = new Dictionary<int, THeapType>();
         private int IDcounter = 0;
 // * Properties
         public int Size { get => heapTree.Size; }
@@ -21,32 +23,39 @@ namespace SadSapphicGames.DataStructures{
 
 // * Constructors
         public D_aryHeap() {
-            // ? empty constructor
         }
         
         public THeapType Peek() {
-            throw new NotImplementedException();
+            return reverseID[rootNode.ID];
         }
         public void Push(THeapType inObject, float key) {
             if(objectIDs.ContainsKey(inObject)) {
                 Debug.LogWarning($"Heap already contains object");
             }
             objectIDs.Add(inObject,IDcounter);
+            reverseID.Add(IDcounter,inObject);
             IDcounter++;
             if(isEmpty) {
                 heapTree.AddNode(new GraphNode<float>(objectIDs[inObject],null,key));
+                rootNode = heapTree.RootNode;
+                return;
             } else {
                 heapTree.TryAddEdge(GetBottomNode(),new GraphNode<float>(objectIDs[inObject],null,key)); 
             }
             SiftUp(inObject);
-            throw new NotImplementedException();
+            if(key < rootNode.Value) {
+                //? update root
+                rootNode = heapTree.RootNode;
+            }
+            // throw new NotImplementedException();
         }
         public bool TryPop(out THeapType outObject) {
             if(Size == 0) {
                 outObject = default(THeapType);
                 return false;
             }
-            outObject = default(THeapType); //placeholder 
+            outObject = Peek(); //placeholder 
+            DeleteRoot();
             return true;
         }
         public void DeleteRoot() {
