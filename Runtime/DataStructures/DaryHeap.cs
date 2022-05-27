@@ -118,9 +118,17 @@ namespace SadSapphicGames.DataStructures{
         }
         private GraphNode<float> GetBottomNode() {
             var currentNode = rootNode;
-            while(heapTree.GetChildren(currentNode).Count == 3) {
-                currentNode = GetGreatestChild(currentNode);
-            }
+            // ? we know the graph has size N nodes
+            // ? and every node but the bottom node should have d children
+            // ? if N > d + 1 the bottom is a child of the root
+                // ? here note that layer k has d^k elements 
+                // ? hence we can generalize that if N > Sum(from k=0 to K, d^k) the bottom node is bellow layer k
+            //? more precisely we can conclude that if Sum(from k=0 to K+1, d^k) > N > Sum(from k=0 to K, d^k)
+                // ? or more clearly d^k+1 > N or k > log_d(N)-1
+                    // ? sanity check: if N = 1 evaluates to -1, 2 to 0, 3 to .58, 4 to 1,...
+                        //? rounding down to int gives 1:-1, 2:0, 3:0, 4:1, 5:1, 6:1, 7:1, 8:2, 9:2...
+            // ! hence FloorToInt(log_d(N)-1) gives the layer the bottom node should be in when attaching node #N to the heap
+            throw new NotImplementedException();
             return currentNode;
         }
         private GraphNode<float> GetGreatestChild(GraphNode<float> node) {
