@@ -13,7 +13,22 @@ namespace SadSapphicGames.CustomGraphs {
                 node = node.GetInEdges()[0].GetOppositeNode(node); 
             }
             return node;
-        }} 
+        }}
+        public GraphNode<TGraphType> GetParentNode(GraphNode<TGraphType> node) {
+            if (node.ParentGraph != this) { throw new DifferentGraphsException();}
+            if (node.GetInEdges().Count == 0) {
+                Debug.LogWarning("This is the root node, returning null for its parent");
+                return null;
+            } else {
+                return node.GetInEdges()[0].GetOppositeNode(node);
+            }
+        }
+// * Constructors
+        public RootedTree(Dictionary<int, List<int>> adjacencyList) : base(adjacencyList) {
+        }
+
+        public RootedTree() : base() {
+        }
 // * Overrides
         public override bool TryAddEdge(int id1, int id2) {
             if(nodes.ContainsKey(id1)) {
@@ -73,12 +88,6 @@ namespace SadSapphicGames.CustomGraphs {
                     return false;
                 }
             }
-        }
-// * Constructors
-        public RootedTree(Dictionary<int, List<int>> adjacencyList) : base(adjacencyList) {
-        }
-
-        public RootedTree() : base() {
         }
     }
 }

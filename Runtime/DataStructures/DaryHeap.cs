@@ -88,9 +88,25 @@ namespace SadSapphicGames.DataStructures{
             throw new NotImplementedException();
         }
         public void SiftUp(THeapType obj) {
+            var objNode = GetHeapNode(obj);
+            if( heapTree.GetParentNode(objNode) == null) {
+                Debug.LogWarning("object is already the root of the heap");
+                return;
+            } else while (objNode.Value < heapTree.GetParentNode(objNode).Value) {
+                //TODO not implemented
+                //TODO objNode.GetInEdges()[0].SwapNodes()
+            }
             throw new NotImplementedException();
         }
         public void SiftDown(THeapType obj) {
+            var objNode = GetHeapNode(obj);
+            if( heapTree.GetParentNode(objNode) == null) {
+                Debug.LogWarning("object is already the root of the heap");
+                return;
+            } else while (objNode.Value > heapTree.GetParentNode(objNode).Value) {
+                //TODO not implemented
+                //TODO objNode.GetInEdges()[0].SwapNodes()
+            }
             throw new NotImplementedException();
         }
 
