@@ -10,9 +10,9 @@ namespace SadSapphicGames.DataStructures{
     // ! (well it is hopefully time efficient but a space efficient implementation would just use an array)
     // ! but rather use case to identify any additional behavior that might be needed for a extensibility of the tree class
     // ! and provide a d-ary heap for myself to use in dijkstra and prim MST that could be replaced with a more efficient one in the future. 
-    // ? since this isnt intended for general use and I mostly need it for pathfinding I'm only going to implement a min heap 
+    // ? since this isn't intended for general use and I mostly need it for pathfinding I'm only going to implement a min heap 
     public class D_aryHeap<THeapType> : MonoBehaviour {
-        private Tree<float> heapTree = new Tree<float>();
+        private Tree<float> heapTree = new RootedTree<float>();
         private Dictionary<THeapType,int> objectIDs = new Dictionary<THeapType, int>();
         private int IDcounter = 0;
 // * Properties
@@ -33,7 +33,7 @@ namespace SadSapphicGames.DataStructures{
             }
             objectIDs.Add(inObject,IDcounter);
             IDcounter++;
-            if(Size == 0) {
+            if(isEmpty) {
                 heapTree.AddNode(new GraphNode<float>(objectIDs[inObject],null,key));
             } else {
                 heapTree.TryAddEdge(GetBottomNode(),new GraphNode<float>(objectIDs[inObject],null,key)); 
@@ -42,7 +42,12 @@ namespace SadSapphicGames.DataStructures{
             throw new NotImplementedException();
         }
         public bool TryPop(out THeapType outObject) {
-            throw new NotImplementedException();
+            if(Size == 0) {
+                outObject = default(THeapType);
+                return false;
+            }
+            outObject = default(THeapType); //placeholder 
+            return true;
         }
         public void DeleteRoot() {
             throw new NotImplementedException();
