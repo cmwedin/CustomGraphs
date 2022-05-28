@@ -85,6 +85,15 @@ namespace SadSapphicGames.CustomGraphs
         }
 
 // * Modification Methods
+        public void AddEdge(string edgeID) {
+            // ? we cant add an edge by a string because we need a reference to the edge to determine if this node is connected to the opposite
+            // if(outEdgeIDs.Contains(edgeID) || inEdgeIDs.Contains(edgeID)) return;
+            // string[] nodeIDs = edgeID.Split(",",2);
+            // int sourceID = Int32.Parse(nodeIDs[0]);
+            // int sinkID = Int32.Parse(nodeIDs[1]);
+            // if(sinkID == this.ID) { inEdgeIDs.Add(edgeID);}
+            // if(ID == this.ID) { inEdgeIDs.Add(edgeID);} 
+        }
         public void AddEdge(AbstractEdge<TGraphType> _edge) {
             if(outEdgeIDs.Contains(_edge.ID) || inEdgeIDs.Contains(_edge.ID)) return;
             if(_edge.GetSinkNode() == this) { inEdgeIDs.Add(_edge.ID);} //? if this node is a sink add it to in edges

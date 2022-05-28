@@ -34,10 +34,10 @@ namespace SadSapphicGames.CustomGraphs {
             while (currentDepth < k) {
                 nextLayer = new List<GraphNode<TGraphType>>{};
                 foreach (var node in prevLayer) {
-                    Debug.Log($"Adding children of node {node.ID} to next layer");
+                    // Debug.Log($"Adding children of node {node.ID} to next layer");
                     nextLayer = nextLayer.Concat(GetChildren(node));
                 }
-                Debug.Log($"Next layer has {nextLayer.Count()} nodes");
+                // Debug.Log($"Next layer has {nextLayer.Count()} nodes");
                 prevLayer = new List<GraphNode<TGraphType>>(nextLayer);
                 currentDepth++;
             } 

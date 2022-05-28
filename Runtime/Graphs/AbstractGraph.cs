@@ -109,6 +109,38 @@ namespace SadSapphicGames.CustomGraphs{
         public abstract bool TryAddEdge(GraphNode<TGraphType> v1, GraphNode<TGraphType> v2);
         
         protected abstract bool TryAddEdge(AbstractEdge<TGraphType> edgeToAdd);
+        public virtual bool TryReplaceEdge(AbstractEdge<TGraphType> oldEdge, AbstractEdge<TGraphType> newEdge) {
+            if(newEdge.GetType() != oldEdge.GetType()) {
+                Debug.LogWarning("must replace an edge with one of the same type");
+                return false;
+            } else if(oldEdge.ParentGraph != this || newEdge.ParentGraph != null) {
+                Debug.LogWarning("must replace an edge belonging to this graph with a new orphan (null parent graph) edge");
+                return false;
+            } else { //? the new edge is valid in principle to replace the old but still might have id's the graph doesnt
+                if(!nodes.ContainsKey(newEdge.SourceNodeID)) {
+                    AddNode(newEdge.SourceNodeID);
+                }
+                if(!nodes.ContainsKey(newEdge.SinkNodeID)) { 
+                    AddNode(newEdge.SinkNodeID);
+                }
+            }
+            
+            // ? we bypass remove edge because some subclass prevent removing an edge without replacing it
+            GetNode(oldEdge.SourceNodeID).RemoveEdge(oldEdge);
+            GetNode(oldEdge.SinkNodeID).RemoveEdge(oldEdge);
+            edges.Remove(oldEdge.ID);
+            oldEdge = null;
+
+            //? add the new edge (again bypassing TryAddEdge since this is the only way some subclasses will be able to edges after instantiation)
+            var newSource = GetNode(newEdge.SourceNodeID);
+            var newSink = GetNode(newEdge.SinkNodeID);
+            newEdge.SetParent(this);
+            edges.Add(newEdge.ID,newEdge);
+            newSource.AddEdge(newEdge);
+            newSink.AddEdge(newEdge);
+
+            return true;
+        }
         protected abstract void InitializeEdges(List<int[]> edgeList);
         
         public void RemoveEdge(AbstractEdge<TGraphType> edge) {
