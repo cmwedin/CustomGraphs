@@ -67,6 +67,7 @@ namespace SadSapphicGames.DataStructures{
             rootNode = newRoot;
         }
         public bool TryPopThenPush(THeapType inObject, float key, out THeapType outObject) {
+            //TODO
             throw new NotImplementedException();
             if(isEmpty) {
                 outObject = default(THeapType);
@@ -160,9 +161,10 @@ namespace SadSapphicGames.DataStructures{
                         //? rounding down to int gives 1:-1, 2:0, 3:0, 4:1, 5:1, 6:1, 7:1, 8:2, 9:2...
             // ! hence FloorToInt(log_d(N)-1) gives the layer the bottom node should be in when attaching node #N to the heap
             int bottomLayer = Mathf.FloorToInt(Mathf.Log(Size + 1,childCapacity) - 1); // ? we add one to the size because we want to know what node to add the next one too
+            //TODO NOT IMPLEMENTED
+            
             List<GraphNode<float>> layerNodes = heapTree.GetLayer(bottomLayer);
             int index = 0;
-            //TODO NOT IMPLEMENTED
             GraphNode<float> currentNode = layerNodes[index];
             while(heapTree.GetChildren(currentNode).Count == childCapacity) {
                 index++;

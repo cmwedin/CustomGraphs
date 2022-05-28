@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 // ? 
@@ -8,7 +9,8 @@ namespace SadSapphicGames.CustomGraphs {
     public class RootedTree<TGraphType> : Tree<TGraphType> {
         public GraphNode<TGraphType> RootNode { get {
             // ! this is probably not efficient
-            // ! should set a reference to this so we can get the root in constant time
+            // ! linear worst case (tree is a linked list) log_d(V) best case (Full d-ary tree)
+            // ! should set a reference to this so we can get the root in constant time but would need to update that when operations that change the root happen
             var node = GetRandomNode();
             while(node.GetInEdges().Count != 0) {
                 node = node.GetInEdges()[0].GetOppositeNode(node); 
@@ -23,6 +25,21 @@ namespace SadSapphicGames.CustomGraphs {
             } else {
                 return node.GetInEdges()[0].GetOppositeNode(node);
             }
+        }
+        public List<GraphNode<TGraphType>> GetLayer(int k) {
+            List<GraphNode<TGraphType>> prevLayer = new List<GraphNode<TGraphType>>{RootNode};
+            List<GraphNode<TGraphType>> nextLayer;
+
+            int currentDepth = 0;
+            while (currentDepth < k) {
+                nextLayer = new List<GraphNode<TGraphType>>();
+                foreach (var node in prevLayer) {
+                    nextLayer.Concat(GetChildren(node));
+                }
+                prevLayer = new List<GraphNode<TGraphType>>(nextLayer);
+                currentDepth++;
+            } 
+            return prevLayer;
         }
         public List<GraphNode<TGraphType>> GetChildren(GraphNode<TGraphType> node) {
             if (node.ParentGraph != this) { throw new DifferentGraphsException();}
@@ -95,10 +112,6 @@ namespace SadSapphicGames.CustomGraphs {
                     return false;
                 }
             }
-        }
-
-        public List<GraphNode<float>> GetLayer(int bottomLayer) {
-            throw new NotImplementedException();
         }
     }
 }
