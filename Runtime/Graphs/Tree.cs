@@ -70,6 +70,38 @@ namespace SadSapphicGames.CustomGraphs {
                 }
             }
         }
+        public override bool TryReplaceEdge(AbstractEdge<TGraphType> oldEdge, AbstractEdge<TGraphType> newEdge) {
+           if(newEdge.GetType() != oldEdge.GetType()) {
+                Debug.LogWarning("must replace an edge with one of the same type");
+                return false;
+            } else if(oldEdge.ParentGraph != this || newEdge.ParentGraph != null) {
+                Debug.LogWarning("must replace an edge belonging to this graph with a new orphan (null parent graph) edge");
+                return false;
+            } else if(edges.ContainsKey(newEdge.ID)) {
+                Debug.LogWarning("this graph already has an edge with that ID");
+                return false;
+            } else if(!nodes.ContainsKey(newEdge.SourceNodeID) || !nodes.ContainsKey(newEdge.SinkNodeID)) {
+                Debug.LogWarning("The new edge must be between nodes already in the tree, otherwise the tree would be disconnected by the old edges removal");
+                return false;
+            }
+             
+            // ? we bypass remove edge because some subclass prevent removing an edge without replacing it
+            GetNode(oldEdge.SourceNodeID).RemoveEdge(oldEdge);
+            GetNode(oldEdge.SinkNodeID).RemoveEdge(oldEdge);
+            edges.Remove(oldEdge.ID);
+            oldEdge = null;
+
+            //? add the new edge (again bypassing TryAddEdge since this is the only way some subclasses will be able to edges after instantiation)
+            var newSource = GetNode(newEdge.SourceNodeID);
+            var newSink = GetNode(newEdge.SinkNodeID);
+            newEdge.SetParent(this);
+            edges.Add(newEdge.ID,newEdge);
+            newSource.AddEdge(newEdge);
+            newSink.AddEdge(newEdge);
+
+            if(!Tree<TGraphType>.VerifyTree(this)) throw new System.Exception("you broke the tree condition. this exception is a work in progress and should be replaced with proper error handling soon");
+            return true;
+        }
 // * Constructors
         public Tree(Dictionary<int, List<int>> adjacencyList) : base(adjacencyList) {
             //? we shouldn't have to do anything special when constructing a tree
