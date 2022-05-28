@@ -48,7 +48,28 @@ public class TreeTests
         Assert.IsFalse(rootedTree.TryAddEdge(10,20));
         Assert.IsFalse(rootedTree.TryAddEdge(6,4));
 
-        Assert.AreEqual(actual:rootedTree.RootNode, expected: rootedTree.GetNode(0));
         Assert.IsTrue(rootedTree.TryAddEdge(3,5));
+
+        Assert.AreEqual(actual:rootedTree.RootNode, expected: rootedTree.GetNode(0));
+        Assert.AreEqual(
+            actual:rootedTree.GetLayer(0),
+            expected: new List<GraphNode<bool>> {
+                rootedTree.GetNode(0)
+            }
+        );
+        Assert.AreEqual(
+            actual:rootedTree.GetLayer(1),
+            expected: new List<GraphNode<bool>> {
+                rootedTree.GetNode(1),
+                rootedTree.GetNode(2)
+            }
+        );
+        Assert.AreEqual(
+            actual:rootedTree.GetLayer(2),
+            expected: new List<GraphNode<bool>> {
+                rootedTree.GetNode(3),
+                rootedTree.GetNode(4)
+            }
+        );
     }
 }

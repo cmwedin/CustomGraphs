@@ -28,14 +28,16 @@ namespace SadSapphicGames.CustomGraphs {
         }
         public List<GraphNode<TGraphType>> GetLayer(int k) {
             List<GraphNode<TGraphType>> prevLayer = new List<GraphNode<TGraphType>>{RootNode};
-            List<GraphNode<TGraphType>> nextLayer;
+            IEnumerable<GraphNode<TGraphType>> nextLayer;
 
             int currentDepth = 0;
             while (currentDepth < k) {
-                nextLayer = new List<GraphNode<TGraphType>>();
+                nextLayer = new List<GraphNode<TGraphType>>{};
                 foreach (var node in prevLayer) {
-                    nextLayer.Concat(GetChildren(node));
+                    Debug.Log($"Adding children of node {node.ID} to next layer");
+                    nextLayer = nextLayer.Concat(GetChildren(node));
                 }
+                Debug.Log($"Next layer has {nextLayer.Count()} nodes");
                 prevLayer = new List<GraphNode<TGraphType>>(nextLayer);
                 currentDepth++;
             } 
@@ -44,7 +46,11 @@ namespace SadSapphicGames.CustomGraphs {
         public List<GraphNode<TGraphType>> GetChildren(GraphNode<TGraphType> node) {
             if (node.ParentGraph != this) { throw new DifferentGraphsException();}
             var children = new List<GraphNode<TGraphType>>();
-            foreach(var edge in node.GetOutEdges()) {children.Add(edge.GetOppositeNode(node));}
+            foreach(var edge in node.GetOutEdges()) {
+                if(node != edge.GetSinkNode()) {
+                    children.Add(edge.GetOppositeNode(node));
+                }
+            }
             return children;
         }
 // * Constructors
