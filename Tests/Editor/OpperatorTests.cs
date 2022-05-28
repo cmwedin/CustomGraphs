@@ -14,6 +14,26 @@ internal class Bar {
 
 public class OperatorTests {
     [Test]
+    public void ReplaceEdgeTest(){
+        DirectedGraph<bool> graphA = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
+            {0, new List<int>{1}}, 
+            {1, new List<int>{2}},
+            {2, new List<int>{0}} 
+        });
+        UndirectedGraph<bool> graphB = new UndirectedGraph<bool>( new Dictionary<int, List<int>> {
+            {3, new List<int>{4}},
+            {4, new List<int>{5}},
+            {5, new List<int>{}} 
+        });
+        Assert.IsFalse(graphA.TryReplaceEdge(graphA.GetEdge("0,1"),new UndirectedEdge<bool>(0,2)));
+        Assert.IsFalse(graphA.TryReplaceEdge(graphA.GetEdge("0,1"),graphA.GetEdge("1,2")));
+
+        
+        Assert.IsTrue(graphA.TryReplaceEdge(graphA.GetEdge("0,1"),new DirectedEdge<bool>(0,2)));
+        Assert.IsFalse(graphA.HasPath(0,1));     
+
+    }
+    [Test]
     public void CopyTests() {
         DirectedGraph<bool> graphA = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
             {0, new List<int>{1}}, 
@@ -36,18 +56,18 @@ public class OperatorTests {
         Assert.IsFalse(graphB.GetNode(2) == graphB2.GetNode(2));
         Assert.IsTrue(graphB2.HasPath(2,3));
     }
-    [Test]
-    public void MismatchedEdgesTest() {
-        DirectedGraph<bool> graphA = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
-            {0, new List<int>{1}}, 
-            {1, new List<int>{}} 
-        });
-        UndirectedGraph<bool> graphB = new UndirectedGraph<bool>( new Dictionary<int, List<int>> {
-            {2, new List<int>{}} ,
-            {3, new List<int>{2}} 
-        });
-
-    }
+    // [Test]
+    // public void MismatchedEdgesTest() {
+    //     DirectedGraph<bool> graphA = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
+    //         {0, new List<int>{1}}, 
+    //         {1, new List<int>{}} 
+    //     });
+    //     UndirectedGraph<bool> graphB = new UndirectedGraph<bool>( new Dictionary<int, List<int>> {
+    //         {2, new List<int>{}} ,
+    //         {3, new List<int>{2}} 
+    //     });
+            //TODO
+    // }
     [Test]
     public void PlusNodeValTypeTest() {
         DirectedGraph<bool> graphA = new DirectedGraph<bool>( new Dictionary<int, List<int>> {

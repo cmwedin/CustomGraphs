@@ -116,6 +116,9 @@ namespace SadSapphicGames.CustomGraphs{
             } else if(oldEdge.ParentGraph != this || newEdge.ParentGraph != null) {
                 Debug.LogWarning("must replace an edge belonging to this graph with a new orphan (null parent graph) edge");
                 return false;
+            } else if(edges.ContainsKey(newEdge.ID)) {
+                Debug.LogWarning("this graph already has an edge with that ID");
+                return false;
             } else { //? the new edge is valid in principle to replace the old but still might have id's the graph doesnt
                 if(!nodes.ContainsKey(newEdge.SourceNodeID)) {
                     AddNode(newEdge.SourceNodeID);
