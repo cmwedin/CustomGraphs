@@ -36,6 +36,21 @@ public class TreeTests
         Assert.IsTrue(actualTree.TryAddEdge(6,4));
     }
     [Test]
+    public void ReplaceEdgeTest() {
+        Tree<bool> tree = new Tree<bool>( new Dictionary<int, List<int>> {
+            {0, new List<int>{1,2}},
+            {1, new List<int>{3}},
+            {2, new List<int>{4}},
+            {3, new List<int>{}},
+            {4, new List<int>{}}
+        });
+
+        Assert.IsTrue(tree.TryReplaceEdge(tree.GetEdge("2,4"),new UndirectedEdge<bool>(1,4)));
+        Assert.IsFalse(tree.TryReplaceEdge(tree.GetEdge("1,4"),new UndirectedEdge<bool>(1,5)));
+        // Assert.IsFalse(tree.TryReplaceEdge(tree.GetEdge("1,4"), new UndirectedEdge<bool>(2,3)));
+        Assert.Throws<System.Exception>(delegate{tree.TryReplaceEdge(tree.GetEdge("1,4"), new UndirectedEdge<bool>(2,3));});
+    }
+    [Test]
     public void RootedTreeTest() {
         RootedTree<bool> rootedTree = new RootedTree<bool>( new Dictionary<int, List<int>> {
             {0, new List<int>{1,2}},
