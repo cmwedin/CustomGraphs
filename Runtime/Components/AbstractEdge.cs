@@ -77,21 +77,17 @@ namespace SadSapphicGames.CustomGraphs{
         }
 // * Modification
         public bool TrySwapNodes() {
-            // Type edgeType = this.GetType();
             var oldSourceEdgeIDs = GetSourceNode().EdgeIDs;
             oldSourceEdgeIDs.Remove(this.ID);
             var oldSinkEdgeIDs = GetSinkNode().EdgeIDs;
             oldSinkEdgeIDs.Remove(this.ID);
             (int oldSourceNodeID, int oldSinkNodeID) = (SourceNodeID, SinkNodeID);
             (int newSourceNodeID, int newSinkNodeID) = (SinkNodeID, SourceNodeID);
-            // var newSourceEdgeIDs = new List<string>();
-            // var newSinkEdgeIDs = new List<string>();
             var edgesToRemove = ParentGraph.GetEdgeList(oldSourceEdgeIDs).Concat(ParentGraph.GetEdgeList(oldSinkEdgeIDs)).ToList();
             foreach(var edge in edgesToRemove) {
                 if(edge.SourceNodeID == oldSourceNodeID) {
                     ParentGraph.TryReplaceEdge(
                         edge,
-                        // (AbstractEdge<TGraphType>)Activator.CreateInstance(this.GetType(), new object[] { newSourceNodeID, edge.SinkNodeID, weight })
                         (AbstractEdge<TGraphType>)Activator.CreateInstance(this.GetType(), newSourceNodeID, edge.SinkNodeID , edge.Weight)
                         
                         //? this long line just bypassed us needing to know which edge constructor to call since we know the replacement will share a type with this
@@ -99,26 +95,22 @@ namespace SadSapphicGames.CustomGraphs{
                 } else if(edge.SourceNodeID == oldSinkNodeID) {
                     ParentGraph.TryReplaceEdge(
                         edge,
-                        // (AbstractEdge<TGraphType>)Activator.CreateInstance(this.GetType(), new object[] { newSinkNodeID, edge.SinkNodeID, weight })
                         (AbstractEdge<TGraphType>)Activator.CreateInstance(this.GetType(), newSinkNodeID, edge.SinkNodeID , edge.Weight)
                     );
                 } else if(edge.SinkNodeID == oldSinkNodeID) {
                     ParentGraph.TryReplaceEdge(
                         edge,
-                        // (AbstractEdge<TGraphType>)Activator.CreateInstance(this.GetType(), new object[] { edge.SourceNodeID, newSinkNodeID, weight })
                         (AbstractEdge<TGraphType>)Activator.CreateInstance(this.GetType(), edge.SourceNodeID, newSinkNodeID , edge.Weight)
                     );
                 } else if(edge.SinkNodeID == oldSourceNodeID) {
                     ParentGraph.TryReplaceEdge(
                         edge,
-                        // (AbstractEdge<TGraphType>)Activator.CreateInstance(this.GetType(), new object[] { edge.SourceNodeID, newSourceNodeID, weight })
                         (AbstractEdge<TGraphType>)Activator.CreateInstance(this.GetType(), edge.SourceNodeID, newSourceNodeID , edge.Weight)
                     );
                 }
             }
             ParentGraph.TryReplaceEdge(
                 this,
-                // (AbstractEdge<TGraphType>)Activator.CreateInstance(this.GetType(), new object[] { newSourceNodeID, newSourceNodeID, weight })
                 (AbstractEdge<TGraphType>)Activator.CreateInstance(this.GetType(),newSourceNodeID, newSinkNodeID , Weight)
 
             );

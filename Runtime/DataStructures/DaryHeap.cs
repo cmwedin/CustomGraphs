@@ -117,11 +117,10 @@ namespace SadSapphicGames.DataStructures{
             // if(objNode == rootNode) {throw new Exception("The root node must be deleted through DeleteRoot() not DeleteElement(THeapType obj)");}
             while(heapTree.GetChildren(objNode).Count != 0) {
                 var smallestChild = GetSmallestChild(objNode);
-                //TODO not implemented
                 heapTree.GetEdge($"{objNode.ID},{smallestChild.ID}").TrySwapNodes();
             }
             heapTree.RemoveNode(objNode);     
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
         public void SiftUp(THeapType obj) {
             var objNode = GetHeapNode(obj);
@@ -129,10 +128,9 @@ namespace SadSapphicGames.DataStructures{
                 Debug.LogWarning("object is already the root of the heap");
                 return;
             } else while (objNode.Value < heapTree.GetParentNode(objNode).Value) {
-                //TODO not implemented
                 objNode.GetInEdges()[0].TrySwapNodes();
             }
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
         public void SiftDown(THeapType obj) {
             var objNode = GetHeapNode(obj);
@@ -140,10 +138,9 @@ namespace SadSapphicGames.DataStructures{
                 Debug.LogWarning("object is already the bottom-most node");
                 return;
             } else while (objNode.Value > GetSmallestChild(objNode).Value) {
-                //TODO not implemented
                 heapTree.GetEdge($"{objNode.ID},{GetSmallestChild(objNode).ID}").TrySwapNodes();
             }
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
 
         private GraphNode<float> GetHeapNode(THeapType obj) {
