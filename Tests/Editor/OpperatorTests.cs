@@ -34,6 +34,26 @@ public class OperatorTests {
 
     }
     [Test]
+    public void SwapEdgeNodesTest(){
+        DirectedGraph<bool> graphA = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
+            {0, new List<int>{1}}, 
+            {1, new List<int>{2}},
+            {2, new List<int>{0}} 
+        });
+        UndirectedGraph<bool> graphB = new UndirectedGraph<bool>( new Dictionary<int, List<int>> {
+            {3, new List<int>{4}},
+            {4, new List<int>{5}},
+            {5, new List<int>{}} 
+        });
+        Assert.IsTrue(graphA.GetEdge("0,1").TrySwapNodes());
+        // Assert.IsFalse(graphA.HasPath(0,1));
+        graphA.DebugMsg();
+
+        Assert.IsTrue(graphB.GetEdge("3,4").TrySwapNodes());
+       graphB.DebugMsg();     
+
+    }
+    [Test]
     public void CopyTests() {
         DirectedGraph<bool> graphA = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
             {0, new List<int>{1}}, 

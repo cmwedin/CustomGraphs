@@ -42,6 +42,9 @@ namespace SadSapphicGames.CustomGraphs{
         public bool HasNode(GraphNode<TGraphType> node) {
             return GetAllNodes().Contains(node); 
         }
+        public AbstractEdge<TGraphType> GetEdge(int v1, int v2) {
+            return GetEdge($"{v1},{v2}");
+        }
         public AbstractEdge<TGraphType> GetEdge(string ID) {
             if(!edges.ContainsKey(ID)) {
                 Debug.LogWarning($"edge {ID} not found in graph");
@@ -117,7 +120,7 @@ namespace SadSapphicGames.CustomGraphs{
                 Debug.LogWarning("must replace an edge belonging to this graph with a new orphan (null parent graph) edge");
                 return false;
             } else if(edges.ContainsKey(newEdge.ID)) {
-                Debug.LogWarning("this graph already has an edge with that ID");
+                Debug.LogWarning($"this graph already has an edge with ID {newEdge.ID}");
                 return false;
             } else { //? the new edge is valid in principle to replace the old but still might have id's the graph doesnt
                 if(!nodes.ContainsKey(newEdge.SourceNodeID)) {
@@ -299,7 +302,7 @@ namespace SadSapphicGames.CustomGraphs{
                 return true;
             } 
         }
-        protected void DebugMsg() {
+        public void DebugMsg() {
             Debug.Log($"this graph has nodes {string.Join("|", nodes.Keys.ToList())}");
             Debug.Log($"this graph has edges {string.Join("|",edges.Keys.ToList())}");
         }
