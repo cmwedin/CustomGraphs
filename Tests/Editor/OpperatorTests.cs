@@ -4,9 +4,9 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using SadSapphicGames.CustomGraphs;
-internal class Foo {
+internal class FooBar {
     public int i = 1;
-    public Bar bar = new Bar();
+    internal Bar bar = new Bar();
 }
 internal class Bar {
     public int i = 2;
@@ -110,17 +110,17 @@ public class OperatorTests {
     }
     [Test]
     public void PlusNodeRefTypeTest() {
-        DirectedGraph<Foo> graphA = new DirectedGraph<Foo>( new Dictionary<int, List<int>> {
+        DirectedGraph<FooBar> graphA = new DirectedGraph<FooBar>( new Dictionary<int, List<int>> {
             {0, new List<int>{}} 
         });
-        graphA.GetNode(0).SetValue(new Foo());
-        DirectedGraph<Foo> graphB = new DirectedGraph<Foo>( new Dictionary<int, List<int>> {
+        graphA.GetNode(0).SetValue(new FooBar());
+        DirectedGraph<FooBar> graphB = new DirectedGraph<FooBar>( new Dictionary<int, List<int>> {
             {1, new List<int>{}} 
         });
-        graphB.GetNode(1).SetValue(new Foo());
-        DirectedGraph<Foo> result1 = (DirectedGraph<Foo>)(graphA + graphB.GetNode(1));
+        graphB.GetNode(1).SetValue(new FooBar());
+        DirectedGraph<FooBar> result1 = (DirectedGraph<FooBar>)(graphA + graphB.GetNode(1));
         result1.GetNode(1).Value.i = 3;
-        DirectedGraph<Foo> result2 = (DirectedGraph<Foo>)(graphB + graphA.GetNode(0));
+        DirectedGraph<FooBar> result2 = (DirectedGraph<FooBar>)(graphB + graphA.GetNode(0));
         result2.GetNode(0).Value.bar.i = 3;
         Assert.IsFalse(result1 == graphA);
         Assert.IsFalse(result1.GetNode(1) == graphB.GetNode(1));

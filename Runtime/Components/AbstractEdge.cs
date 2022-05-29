@@ -54,8 +54,7 @@ namespace SadSapphicGames.CustomGraphs{
             this.weight = weight; 
         } 
         // ? Standard constructor
-        public AbstractEdge(GraphNode<TGraphType> _sourceNode, GraphNode<TGraphType> _sinkNode, float weight = 1)
-        {
+        public AbstractEdge(GraphNode<TGraphType> _sourceNode, GraphNode<TGraphType> _sinkNode, float weight = 1) {
             sourceNodeID = _sourceNode.ID;
             sinkNodeID = _sinkNode.ID;
             id = $"{sourceNodeID},{sinkNodeID}";

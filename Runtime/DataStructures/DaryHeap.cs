@@ -12,7 +12,7 @@ namespace SadSapphicGames.DataStructures{
     // ! but rather use case to identify any additional behavior that might be needed for a extensibility of the tree class
     // ! and provide a d-ary heap for myself to use in dijkstra and prim MST that could be replaced with a more efficient one in the future. 
     // ? since this isn't intended for general use and I mostly need it for pathfinding I'm only going to implement a min heap 
-    public class D_aryHeap<THeapType> : MonoBehaviour {
+    public class D_aryHeap<THeapType> {
         private GraphNode<float> rootNode;
         private int childCapacity; // ? the D in D-ary
         private RootedTree<float> heapTree = new RootedTree<float>();
@@ -39,17 +39,22 @@ namespace SadSapphicGames.DataStructures{
             reverseObjID.Add(IDcounter,inObject);
             IDcounter++;
             if(isEmpty) {
+                Debug.Log("adding first node to the heap");
                 heapTree.AddNode(new GraphNode<float>(objectIDs[inObject],null,key));
                 rootNode = heapTree.RootNode;
                 return;
             } else {
-                heapTree.TryAddEdge(GetBottomNode(),new GraphNode<float>(objectIDs[inObject],null,key)); 
+                if(!heapTree.TryAddEdge(GetBottomNode(),new GraphNode<float>(objectIDs[inObject],null,key))){
+                    throw new SystemException("failed to add edge to next node");
+                }; 
             }
             SiftUp(inObject);
             if(key < rootNode.Value) {
                 //? update root
                 rootNode = heapTree.RootNode;
             }
+            Debug.Log("current heap tree info");
+            heapTree.DebugMsg();
             // throw new NotImplementedException();
         }
         public bool TryPop(out THeapType outObject) {
@@ -59,6 +64,8 @@ namespace SadSapphicGames.DataStructures{
             }
             outObject = Peek(); //placeholder 
             DeleteRoot();
+            Debug.Log("current heap tree info");
+            heapTree.DebugMsg();
             return true;
         }
         public void DeleteRoot() {
@@ -124,11 +131,18 @@ namespace SadSapphicGames.DataStructures{
         }
         public void SiftUp(THeapType obj) {
             var objNode = GetHeapNode(obj);
-            if( heapTree.GetParentNode(objNode) == null) {
+            if(objNode == null) throw new SystemException("this shouldn't happen");
+            if( heapTree.GetParentNode(objNode) == null) { //! if GetParentNode is returning null why isnt this printing?
                 Debug.LogWarning("object is already the root of the heap");
                 return;
-            } else while (objNode.Value < heapTree.GetParentNode(objNode).Value) {
-                objNode.GetInEdges()[0].TrySwapNodes();
+            } else {
+                while (heapTree.GetParentNode(objNode) != null && objNode.Value < heapTree.GetParentNode(objNode).Value) { //! null reference excep
+                    //! obj node is not null
+                    //! heapTree.GetParentNode(objNode) is not null
+                    //! so what is causing this null reference 
+                        //! objNode doesnt have any inEdges so Get parent thinks its the root
+                    objNode.GetInEdges()[0].TrySwapNodes();
+                }
             }
             // throw new NotImplementedException();
         }
@@ -157,9 +171,8 @@ namespace SadSapphicGames.DataStructures{
                     // ? sanity check: if N = 1 evaluates to -1, 2 to 0, 3 to .58, 4 to 1,...
                         //? rounding down to int gives 1:-1, 2:0, 3:0, 4:1, 5:1, 6:1, 7:1, 8:2, 9:2...
             // ! hence FloorToInt(log_d(N)-1) gives the layer the bottom node should be in when attaching node #N to the heap
-            int bottomLayer = Mathf.FloorToInt(Mathf.Log(Size + 1,childCapacity) - 1); // ? we add one to the size because we want to know what node to add the next one too
-            //TODO NOT IMPLEMENTED
-            
+            int bottomLayer = Mathf.FloorToInt(Mathf.Log(Size + 1, childCapacity) - 1); // ? we add one to the size because we want to know what node to add the next one too
+            Debug.Log($"the bottom node is in layer {bottomLayer}");
             List<GraphNode<float>> layerNodes = heapTree.GetLayer(bottomLayer);
             int index = 0;
             GraphNode<float> currentNode = layerNodes[index];
@@ -169,16 +182,20 @@ namespace SadSapphicGames.DataStructures{
                 currentNode = layerNodes[index];
             }
             // throw new NotImplementedException();
+            Debug.Log($"the bottom node is {currentNode.ID} ");
             return currentNode;
         }
         private GraphNode<float> GetGreatestChild(GraphNode<float> node) {
             var children = heapTree.GetChildren(node);
-            children = children.OrderBy(o => o.Value).ToList();
+            if(children.Count == 0) return null;
+            children = children.OrderByDescending(o => o.Value).ToList();
             return children[0];
         }
         private GraphNode<float> GetSmallestChild(GraphNode<float> node) {
             var children = heapTree.GetChildren(node);
-            children = children.OrderByDescending(o => o.Value).ToList();
+            if(children.Count == 0) return null;
+            children = children.OrderBy(o => o.Value).ToList();
+            Debug.Log($"the smallest child of node {node.ID} is node {children[0].ID} with key {children[0].Value}");
             return children[0];
         }
         

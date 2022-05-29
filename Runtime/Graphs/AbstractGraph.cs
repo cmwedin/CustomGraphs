@@ -169,7 +169,10 @@ namespace SadSapphicGames.CustomGraphs{
                 Debug.LogWarning("This Node is already attached to a graph, it must be removed from its parent before it can be added to another graph");
                 return;
             }
-            nodeToAdd.ClearEdges();
+            if(nodeToAdd.EdgeIDs.Count != 0) {
+                Debug.LogWarning("node already has edges stored, clearing them");
+                nodeToAdd.ClearEdges();
+            }
             // ? old code before i decide it would be better to just clear out a nodes edges when adding it to a new graph
             // foreach (var edgeID in nodeToAdd.edgeIDs) {
             //         var edgeNodeIDs = edgeID.Split(",",2);
