@@ -73,30 +73,30 @@ namespace SadSapphicGames.DataStructures{
             DeleteElement(reverseObjID[rootNode.ID]);
             rootNode = newRoot;
         }
-        public bool TryPopThenPush(THeapType inObject, float key, out THeapType outObject) {
-            //TODO
-            throw new NotImplementedException();
-            if(isEmpty) {
-                outObject = default(THeapType);
-                Push(inObject, key);
-                return false;
-            }
-            outObject = Peek();
-            ReplaceRoot(inObject,key);
-            return true;
-        }
+        // public bool TryPopThenPush(THeapType inObject, float key, out THeapType outObject) {
+        //     //TODO
+        //     throw new NotImplementedException();
+        //     if(isEmpty) {
+        //         outObject = default(THeapType);
+        //         Push(inObject, key);
+        //         return false;
+        //     }
+        //     outObject = Peek();
+        //     ReplaceRoot(inObject,key);
+        //     return true;
+        // }
 
-        private void ReplaceRoot(THeapType inObject, float key) {
-            throw new NotImplementedException();
-            objectIDs.Add(inObject,IDcounter);
-            reverseObjID.Add(IDcounter,inObject);
-            IDcounter++;
-            //TODO if I want to add PopThenPush I just need to finish this function
-            //TODO seems like it might be more specialized than a class that admittedly isn't intended for broad use might warrant however
-            //TODO the reasoning for implementing something like this is that it eliminates the need to sort the heap twice
-            //TODO once when popping the root
-            //TODO and once when pushing the new object
-        }
+        // private void ReplaceRoot(THeapType inObject, float key) {
+        //     throw new NotImplementedException();
+        //     objectIDs.Add(inObject,IDcounter);
+        //     reverseObjID.Add(IDcounter,inObject);
+        //     IDcounter++;
+        //     //TODO if I want to add PopThenPush I just need to finish this function
+        //     //TODO seems like it might be more specialized than a class that admittedly isn't intended for broad use might warrant however
+        //     //TODO the reasoning for implementing something like this is that it eliminates the need to sort the heap twice
+        //     //TODO once when popping the root
+        //     //TODO and once when pushing the new object
+        // }
 
         public void IncreaseKey(THeapType obj, float newValue) {
             var node = GetHeapNode(obj);
@@ -132,15 +132,11 @@ namespace SadSapphicGames.DataStructures{
         public void SiftUp(THeapType obj) {
             var objNode = GetHeapNode(obj);
             if(objNode == null) throw new SystemException("this shouldn't happen");
-            if( heapTree.GetParentNode(objNode) == null) { //! if GetParentNode is returning null why isnt this printing?
+            if( heapTree.GetParentNode(objNode) == null) {
                 Debug.LogWarning("object is already the root of the heap");
                 return;
             } else {
-                while (heapTree.GetParentNode(objNode) != null && objNode.Value < heapTree.GetParentNode(objNode).Value) { //! null reference excep
-                    //! obj node is not null
-                    //! heapTree.GetParentNode(objNode) is not null
-                    //! so what is causing this null reference 
-                        //! objNode doesnt have any inEdges so Get parent thinks its the root
+                while (heapTree.GetParentNode(objNode) != null && objNode.Value < heapTree.GetParentNode(objNode).Value) {
                     objNode.GetInEdges()[0].TrySwapNodes();
                 }
             }
