@@ -27,6 +27,15 @@ namespace SadSapphicGames.CustomGraphs
                 }
                 return output;
         }}
+        // ? unused code
+        public List<int> NeighborIDs { get { 
+            List<int> output = new List<int>();
+            foreach (var edge in GetOutEdges()) {
+                output.Add(edge.GetOppositeNode(this).ID);
+            }
+            return output;
+        } }
+
 
 // * Reference Types - Private
         private TGraphType value; // ? This could hypothetically be a value type
@@ -36,17 +45,7 @@ namespace SadSapphicGames.CustomGraphs
 
 
 // ! Methods -------
-// * Member Accessors 
-        public void SetValue(TGraphType _value) {
-            value = _value;
-        }
-        public void SetParent(AbstractGraph<TGraphType> newParent) {
-            if(parentGraph != null) {
-                Debug.LogWarning("You must orphan this node first before setting a new parent");
-                return;
-            }
-            parentGraph = newParent;
-        }
+// * Field Accessors 
         public ReadOnlyCollection<AbstractEdge<TGraphType>> GetOutEdges() {
             List<AbstractEdge<TGraphType>> output = ParentGraph.GetEdgeList(outEdgeIDs);
             return output.AsReadOnly();
@@ -56,13 +55,6 @@ namespace SadSapphicGames.CustomGraphs
             List<AbstractEdge<TGraphType>> output = ParentGraph.GetEdgeList(inEdgeIDs);
             return output.AsReadOnly();
         }
-        public List<int> NeighborIDs { get { 
-            List<int> output = new List<int>();
-            foreach (var edge in GetOutEdges()) {
-                output.Add(edge.GetOppositeNode(this).ID);
-            }
-            return output;
-        } }
 
 // * Constructors
         public GraphNode(
@@ -108,6 +100,16 @@ namespace SadSapphicGames.CustomGraphs
         internal void ClearEdges() { // ? this should only be used when moving a node from one graph to another;
             inEdgeIDs = new List<string>();
             outEdgeIDs = new List<string>();
+        }
+        public void SetValue(TGraphType _value) {
+            value = _value;
+        }
+        public void SetParent(AbstractGraph<TGraphType> newParent) {
+            if(parentGraph != null) {
+                Debug.LogWarning("You must orphan this node first before setting a new parent");
+                return;
+            }
+            parentGraph = newParent;
         }
     }
 }
