@@ -27,7 +27,6 @@ namespace SadSapphicGames.CustomGraphs
                 }
                 return output;
         }}
-        // ? unused code
         public List<int> NeighborIDs { get { 
             List<int> output = new List<int>();
             foreach (var edge in GetOutEdges()) {
@@ -77,16 +76,10 @@ namespace SadSapphicGames.CustomGraphs
         }
 
 // * Modification Methods
-        public void AddEdge(string edgeID) {
-            // ? we cant add an edge by a string because we need a reference to the edge to determine if this node is connected to the opposite
-            // if(outEdgeIDs.Contains(edgeID) || inEdgeIDs.Contains(edgeID)) return;
-            // string[] nodeIDs = edgeID.Split(",",2);
-            // int sourceID = Int32.Parse(nodeIDs[0]);
-            // int sinkID = Int32.Parse(nodeIDs[1]);
-            // if(sinkID == this.ID) { inEdgeIDs.Add(edgeID);}
-            // if(ID == this.ID) { inEdgeIDs.Add(edgeID);} 
+        public void SetValue(TGraphType _value) {
+            value = _value;
         }
-        public void AddEdge(AbstractEdge<TGraphType> _edge) {
+        internal void AddEdge(AbstractEdge<TGraphType> _edge) {
             if(outEdgeIDs.Contains(_edge.ID) || inEdgeIDs.Contains(_edge.ID)) return;
             if(_edge.SinkNodeID == this.ID) { inEdgeIDs.Add(_edge.ID);} //? if this node is a sink add it to in edges
             if(_edge.GetOppositeNode(this) != this){outEdgeIDs.Add(_edge.ID);} //? if the other node is accessible add it to out edge (and undirected edge will be both) 
@@ -101,15 +94,12 @@ namespace SadSapphicGames.CustomGraphs
             inEdgeIDs = new List<string>();
             outEdgeIDs = new List<string>();
         }
-        public void SetValue(TGraphType _value) {
-            value = _value;
-        }
-        public void SetParent(AbstractGraph<TGraphType> newParent) {
+        internal void SetParent(AbstractGraph<TGraphType> _parent) {
             if(parentGraph != null) {
                 Debug.LogWarning("You must orphan this node first before setting a new parent");
                 return;
             }
-            parentGraph = newParent;
+            parentGraph = _parent;
         }
     }
 }

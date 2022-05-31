@@ -44,7 +44,8 @@ Unlike edges the base class fore nodes GraphNode is not abstract. This is becaus
 The public fields of a Node are as follows:
 - public int ID {get => id}
 - public AbstractGraph ParentGraph {get => parentGraph}
-- public List<string> EdgeIDs { get => something that should be its own method 
+- public List<string> EdgeIDs { get => something that should be its own method }
+- public List<string> NeighborIDs { get => something that should be its own method }
 
 And the private field:
 - private int id
@@ -57,6 +58,8 @@ At this point I can already make some points on improvements to be made to the c
 First regarding the public property for ParentGraph - it should be noted that this is a property for a reference type. As such any external class will still be able to access the public method and field. This is not necessarily undesirable; however, it would be prudent reflect on what this data is used for and wether an actual reference to the parent graph is needed to achieve that. It could be possible the public property for the parent could be replace by a unique id generated at construction.   
 
 Secondly EdgeIDs - intended to allow for other accessing a list of all edges a node regardless of wether they are in or out, or repeating edges that are both, should be made a method. It already essentially is, and this will make it more clear that there is no underlying value for this property, but rather that the property evaluates code every time it is invoked, potentially a performance consideration.
+
+The same is true of Get NeighborIDs however this code is very old and looking the instances it is referenced I feel comfortable recommending this function be removed
 
 #### Methods Review
 
@@ -76,7 +79,21 @@ Nodes contain the following methods for Accessing its Fields from other classes.
 
 It should have the method GetEdgeIDs, which is currently the EdgeIDs property discussed in the fields section. Some remarks on these is that first of all - they do not implement error control for node who do not yet have a parent. This should obviously be remedied, especially with the change suggested above. 
 
-Further, why are we returning these as ReadOnlyCollections?
+Further, why are we returning these the only place we are using ReadOnlyCollections for this type of function? This behavior should be standardized for all functions like this if it is the desired behavior. 
+
+Lastly are the methods nodes have for modification of themselves. 
+- internal void AddEdge(AbstractEdge _edge)
+- internal void RemoveEdge(AbstractEdge _edge)
+- internal void ClearEdges()
+- internal void SetParent(AbstractGraph _parent)
+- public void SetValue(TGraphType _value)
+
+I will not here that as a rule this these functions do not modify the parent graph themselves and thus should only be used internally within the CustomGraphs assembly, invoked from the appropriate method in the parent graph. This is a potential source of error in antagonistic use and something that should be test for; however, provided I am able to restrict the use of them outside of the assembly it is a code smell im willing to accept for now.
+
+A more serious issue is that again some of these functions no not handle the case where they are called on a node that does not have a parent. This is easily remedied. Beyond that however these methods look fine.
+
+On last note for this class is that the reason we only allow adding an edge to a node by reference is that wether an edge gets added to outEdges depend on the type of edge its is. Undirected Edges are always added to outEdges, however Directed Edges are only add to their source nodes outEdges.
+
 ### AbstractEdge
 
 ### DirectedEdge : AbstractEdge
