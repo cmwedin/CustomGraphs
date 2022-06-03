@@ -1,6 +1,6 @@
 # Sprint 1 Code Review
 
-sprint focus: creation of graph classes and some algorithm implementations. Review includes all code completed before the start of full time development
+sprint focus: creation of graph classes and some algorithm implementations. Review includes all code completed before the start of full time development. When referencing the type names of graph classes i will be neglecting the <TGraphType> generic type parameter for readability.
 
 - [Sprint 1 Code Review](#sprint-1-code-review)
   - [Low Level Components](#low-level-components)
@@ -8,6 +8,8 @@ sprint focus: creation of graph classes and some algorithm implementations. Revi
       - [Fields Review](#fields-review)
       - [Methods Review](#methods-review)
     - [AbstractEdge](#abstractedge)
+      - [Fields Review](#fields-review-1)
+      - [Methods Review](#methods-review-1)
     - [DirectedEdge : AbstractEdge](#directededge--abstractedge)
     - [UndirectedEdge : AbstractEdge](#undirectededge--abstractedge)
   - [High Level Components](#high-level-components)
@@ -89,7 +91,26 @@ I will note here that as a rule this these functions do not modify the parent gr
 On last note for this class is that the reason we only allow adding an edge to a node by reference is that wether an edge gets added to outEdges depends on the type of edge it is. Undirected Edges are always added to outEdges, however Directed Edges are only add to their source nodes outEdges.
 
 ### AbstractEdge
+This is the base level class for all edges. It is abstract because all edges must specify if they are directed or undirected - there is no presumed default. 
 
+#### Fields Review
+AbstractEdge has the following public value type fields:
+- public int SourceNodeID {get => sourceNodeID}
+- public int SinkNodeID {get => sinkNodeID}
+- public string ID {get => id}
+- public float Weight {get => weight}
+
+They all also have straight forward private fields underlying each property. They also have the public reference type field
+- public AbstractGraph ParentGraph {get => parentGraph}
+
+which again has a private field underlying the property. The same criticism of the ParentGraph property made regarding graph nodes apply head well. It may be prudent to replace the public property with a unique ID. The rest of the properties are all fine.
+
+#### Methods Review
+They contain the following Methods for accessing data from their parent graph
+- public GraphNode GetSourceNode()
+- public GraphNode GetSinkNode()
+
+which are both fine aside from the fact they again neglect error control for null parents
 ### DirectedEdge : AbstractEdge
 
 ### UndirectedEdge : AbstractEdge

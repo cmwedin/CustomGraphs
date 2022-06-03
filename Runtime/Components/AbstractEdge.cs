@@ -25,16 +25,9 @@ namespace SadSapphicGames.CustomGraphs{
 // * Reference Types - Private
         private AbstractGraph<TGraphType> parentGraph; //? set to null when copying an edge
 // * Member Accessors
-        public static explicit operator string(AbstractEdge<TGraphType> edge) {
-            return edge.ID;
-        }
-        public void SetParent(AbstractGraph<TGraphType> newParent) {
-            if(parentGraph != null) {
-                Debug.LogWarning("You must orphan this edge first before setting a new parent");
-                return;
-            }
-            parentGraph = newParent;
-        }
+        // public static explicit operator string(AbstractEdge<TGraphType> edge) {
+        //     return edge.ID;
+        // }
         public GraphNode<TGraphType> GetSourceNode() {
             return parentGraph.GetNode(sourceNodeID);
         }
@@ -75,6 +68,13 @@ namespace SadSapphicGames.CustomGraphs{
             this.parentGraph = null; 
         }
 // * Modification
+        public void SetParent(AbstractGraph<TGraphType> newParent) {
+            if(parentGraph != null) {
+                Debug.LogWarning("You must orphan this edge first before setting a new parent");
+                return;
+            }
+            parentGraph = newParent;
+        }
         public bool TrySwapNodes() {
             var oldSourceEdgeIDs = GetSourceNode().EdgeIDs;
             oldSourceEdgeIDs.Remove(this.ID);
