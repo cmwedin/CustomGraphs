@@ -151,6 +151,12 @@ This behavior works to distinguish directed an undirected edge however it is som
 The method should be refactored so that it returns null when asking for the node opposite the sink node of a directed edge. Perhaps it should also be renamed GetConnectedNode to make it even more clear it will only return the opposite node if it is accessible. 
 ### UndirectedEdge : AbstractEdge
 
+Again UndirectedEdge predominantly just inherit the fields and methods of AbstractEdges, with the only new code being the implementations of its abstract methods.
+
+The implementation of Copy() is the same as in DirectedEdge - aside from invoking the copy constructor of UndirectedEdge instead. the implementation of GetOppositeNode(GraphNode node) is much simpler here than  DirectedEdge. Here it does exactly what the name would imply and returns the sourceNode is the sinkNode is passed in and the sourceNode for the sinkNode.
+
+For both of these classes however we do need to add null parent error control.
+
 ## High Level Components
 
 The high level components of this library are the graphs themselves. A graph is defined by a list of edges and a list of nodes (Stored internally as dictionaries with integer keys for node and string keys for edges (the two nodes they connect separated by a comma).
