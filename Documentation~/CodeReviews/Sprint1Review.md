@@ -140,6 +140,15 @@ The TrySwapNodes method has a somewhat misleading name as it currently never act
 
 ### DirectedEdge : AbstractEdge
 
+DirectedEdge's dont contain any fields not inherited from AbstractEdge. They also dont implement any new methods. All the constructors simply inherit the Abstract constructors with no additional code. They do implement the following abstract methods from AbstractEdge
+- public override AbstractEdge Copy()
+- public GraphNode GetOppositeNode()
+
+copy simply calls the appropriate copy construct with this as an argument. GetOppositeNode in this case will always return the SinkNode. This will allow the sink node to identify an incoming edge will also knowing it cant actually travel down it (as the opposite node from it is itself).
+
+This behavior works to distinguish directed an undirected edge however it is somewhat unclear. As the same class of object is returned in the "fail" case as the method successfully completing it might be difficult to notice what happened and that the node this method is returning isn't actual the node opposite its argument. 
+
+The method should be refactored so that it returns null when asking for the node opposite the sink node of a directed edge. Perhaps it should also be renamed GetConnectedNode to make it even more clear it will only return the opposite node if it is accessible. 
 ### UndirectedEdge : AbstractEdge
 
 ## High Level Components
