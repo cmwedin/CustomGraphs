@@ -106,11 +106,38 @@ They all also have straight forward private fields underlying each property. The
 which again has a private field underlying the property. The same criticism of the ParentGraph property made regarding graph nodes apply head well. It may be prudent to replace the public property with a unique ID. The rest of the properties are all fine.
 
 #### Methods Review
+While AbstractEdges can not be instantiated they have the following constructors for inheritance.
+- public AbstractEdge(int _sourceID, int _sinkID, [float weight = 1])
+- public AbstractEdge(GraphNode _sourceNode, GraphNode _sinkNode, [float weight = 1])
+- public AbstractEdge(AbstractEdge _edge)
+
+It is would potentially prudent to combind the first too constructors into one for the sake of clarity and consistency. If nodes establish the standard that upon instantiating a low lever component its parent is null until it its added to a graph we should follow that standard for abstract edges as well. The primary reason for the constructor that uses references to existing nodes is to assign the parent graph of the those nodes to be the parent graph of the edge as well. Aside from the issues with consistency this is fine, but i still think those issues warrant its removal. Aside from assigning a non-null value to parentGraph this constructor is equivalent to the constructor that takes integer ID's as Edges do not actually directly reference their Source and Sink nodes anywhere.
+
+The final constructor is the copy constructor. I will note there is some redundancy between this constructor and the abstract method 
+-public AbstractEdge Copy(AbstractEdge _edge)
+
+the reason for this was a problem when copying an edge whose type i didn't necessarily know (implement an AbstractGraph copy constructor rather than copy constructors for both Directed and Undirected graphs). The solution was to implement Copy as an abstract method of Edge. In retrospect there was an alternative solution using Activator.CreateInstance(_edge.GetType(), {constructor parameters}). I will discus this more in the review of the AbstractGraph Copy constructor.
+
 They contain the following Methods for accessing data from their parent graph
 - public GraphNode GetSourceNode()
 - public GraphNode GetSinkNode()
 
-which are both fine aside from the fact they again neglect error control for null parents
+which are  fine aside from the fact they again neglect error control for null parents
+
+They also contain the abstact method 
+- public abstract GraphNode GetOppositeNode(_node)
+
+Which is the primary point of distinction between Directed and Undirected Edges, which will be discussed more in their respective reviews.
+
+The methods for modifying an edge are
+
+- public void SetParent(AbstractGraph)
+- public void TrySwapNodes()
+
+currently Set Parent prevents you from changing the parent of an edge unless the parent is currently null and warns you to orphan in edge first. This is acceptable as error control against graphs contain components that don't have it set as their parent.
+
+The TrySwapNodes method has a somewhat misleading name as it currently never actually returns false / fails to swap; however it is possible these will come up in the future. I would rather use the "try" naming semantic for all modifications to graphs in case future subclasses of graphs need to prevent certain modifications. Also it should already have the null parent fail case, which it does not. THis needs to be added.
+
 ### DirectedEdge : AbstractEdge
 
 ### UndirectedEdge : AbstractEdge
