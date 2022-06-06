@@ -42,12 +42,12 @@ namespace SadSapphicGames.CustomGraphs{
         public bool HasNode(GraphNode<TGraphType> node) {
             return GetAllNodes().Contains(node); 
         }
-        public AbstractEdge<TGraphType> GetEdge(int v1, int v2) {
-            return GetEdge($"{v1},{v2}");
+        public AbstractEdge<TGraphType> GetEdge(int sourceID, int sinkID) {
+            return GetEdge($"{sourceID},{sinkID}");
         }
         public AbstractEdge<TGraphType> GetEdge(string ID) {
             if(!edges.ContainsKey(ID)) {
-                Debug.LogWarning($"edge {ID} not found in graph");
+                Debug.LogWarning($"edge {ID} not found in graph, returning null");
                 return null;
             }
             return edges[ID];
@@ -56,7 +56,7 @@ namespace SadSapphicGames.CustomGraphs{
             return edges.Values.ToList();
         }
         public List<string> GetAllEdgeIDs() {
-            return edges.Keys.ToList(); //? again, should be a new object with copied values
+            return edges.Keys.ToList(); 
         }
         public List<AbstractEdge<TGraphType>> GetEdgeList(List<string> IDs) {
             List<AbstractEdge<TGraphType>> output = new List<AbstractEdge<TGraphType>>();
@@ -160,18 +160,18 @@ namespace SadSapphicGames.CustomGraphs{
             edge = null;
             return;
         }
-        protected void AddNode(int nodeID) {
+        public void AddNode(int nodeID) {
             nodes.Add(nodeID, new GraphNode<TGraphType>(nodeID,this));
         }
-        public void AddNode(GraphNode<TGraphType> nodeToAdd) {
-            if(nodes.ContainsKey(nodeToAdd.ID)) throw new NonUniqueIDException(nodeToAdd.ID);
-            if(nodeToAdd.ParentGraph != null) {
+        public void AddNode(GraphNode<TGraphType> node) {
+            if(nodes.ContainsKey(node.ID)) throw new NonUniqueIDException(node.ID);
+            if(node.ParentGraph != null) {
                 Debug.LogWarning("This Node is already attached to a graph, it must be removed from its parent before it can be added to another graph");
                 return;
             }
-            if(nodeToAdd.EdgeIDs.Count != 0) {
+            if(node.EdgeIDs.Count != 0) {
                 Debug.LogWarning("node already has edges stored, clearing them");
-                nodeToAdd.ClearEdges();
+                node.ClearEdges();
             }
             // ? old code before i decide it would be better to just clear out a nodes edges when adding it to a new graph
             // foreach (var edgeID in nodeToAdd.edgeIDs) {
@@ -181,8 +181,8 @@ namespace SadSapphicGames.CustomGraphs{
             //         } else {
             //             nodeToAdd.RemoveEdgeID(edgeID);
             //     } }
-            nodeToAdd.SetParent(this);
-            nodes.Add(nodeToAdd.ID,nodeToAdd);
+            node.SetParent(this);
+            nodes.Add(node.ID,node);
         }
         public void RemoveNode(GraphNode<TGraphType> node) {
             if(!(node.ParentGraph == this)) return;
@@ -226,13 +226,13 @@ namespace SadSapphicGames.CustomGraphs{
         }
 // * Searches
     // * Depth First Search
-        public List<GraphNode<TGraphType>> DFS(int nodeID) {
-            return DFS(GetNode(nodeID));
+        public List<GraphNode<TGraphType>> DFS(int startID) {
+            return DFS(GetNode(startID));
         }
-        public List<GraphNode<TGraphType>> DFS(GraphNode<TGraphType> node) {
-            List<GraphNode<TGraphType>> connectedNodes = new List<GraphNode<TGraphType>>{node};
-            List<int> visitedIDs = new List<int>{node.ID};
-            Stack<int> idsToVisit = new Stack<int>(node.NeighborIDs);
+        public List<GraphNode<TGraphType>> DFS(GraphNode<TGraphType> startNode) {
+            List<GraphNode<TGraphType>> connectedNodes = new List<GraphNode<TGraphType>>{startNode};
+            List<int> visitedIDs = new List<int>{startNode.ID};
+            Stack<int> idsToVisit = new Stack<int>(startNode.NeighborIDs);
             while (idsToVisit.TryPop(out int nextID)) {        
                 if(VisitNode(nextID,visitedIDs)) {
                     foreach (int id in GetNode(nextID).NeighborIDs) {

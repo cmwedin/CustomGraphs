@@ -126,7 +126,7 @@ They contain the following Methods for accessing data from their parent graph
 
 which are  fine aside from the fact they again neglect error control for null parents
 
-They also contain the abstact method 
+They also contain the abstract method 
 - public abstract GraphNode GetOppositeNode(_node)
 
 Which is the primary point of distinction between Directed and Undirected Edges, which will be discussed more in their respective reviews.
@@ -142,7 +142,7 @@ The TrySwapNodes method has a somewhat misleading name as it currently never act
 
 ### DirectedEdge : AbstractEdge
 
-DirectedEdge's dont contain any fields not inherited from AbstractEdge. They also dont implement any new methods. All the constructors simply inherit the Abstract constructors with no additional code. They do implement the following abstract methods from AbstractEdge
+DirectedEdge's don't contain any fields not inherited from AbstractEdge. They also don't implement any new methods. All the constructors simply inherit the Abstract constructors with no additional code. They do implement the following abstract methods from AbstractEdge
 - public override AbstractEdge Copy()
 - public GraphNode GetOppositeNode()
 
@@ -187,7 +187,12 @@ There are currently three constructors for graphs.
 - public AbstractGraph(Dictionary<int List<int>> adjList)
 - public AbstractGraph(int V, List<int[]> E)
 
-The first constructor is the empty graph constructor, the second constructs from an adjacency list, the third from a number of nodes and list of edges (nodes are presumed to have id's ranging from 0 to V-1). There is also a planed constructor from an adjacency matrix however that is currently not implemented. All constructors also make us of the method
+The first constructor is the empty graph constructor, the second constructs from an adjacency list, the third from a number of nodes and list of edges (nodes are presumed to have id's ranging from 0 to V-1). There is also a planed constructor from an adjacency matrix however that is currently not implemented. AbstractGraph's do not have a true copy constructor implemented but instead an abstract method
+- public AbstractGraph Copy()
+
+The reason for this was the need to know what kind of edges to instantiate when creating a copy of a graph, however since we have a reference to the object we want to copy it would be possible to replace this with an actual constructor that uses Activator.CreateInstance to create instances of edges based on the type of edges in the graph passed in as an argument to the constructor. This would allow use to implement all copying logic at the highest level of abstraction for Graphs.
+
+All constructors also make us of the method
 
 - protected abstract void InitializeEdges(list<int[]> edgeList)
 
@@ -202,7 +207,63 @@ They also have the virtual method
 
 however this method just calls TryAddEdge(graphNode sourceNode, graphNode sinkNode) with the appropriate node after verifying they are in the graph.
 
-One standard in these methods that may be worth reconsidering is the s that if you attempt to add an edge to a node that doesn't exist it will be created and added to the graph.
+One standard in these methods that may be worth reconsidering is that if you attempt to add an edge to a node that doesn't exist it will be created and added to the graph. This is perhaps unintuitive and it would be better to return false in those circumstances. An argument for way it might be better to leave this as is would be that in Tree's adding a node by itself shouldn't be allowed, it would break the tree condition; however adding a new edge to a new node should be. It also might be prudent to remove the method to add an edge by ID and establish the standard that all components are added to graphs by reference.
+
+Other methods for modifying the graph include 
+- public virtual bool TryReplaceEdge(AbstractEdge oldEdge, AbstractEdge newEdge)
+- public void RemoveEdge(AbstractEdge edge)
+- public void AddNode(int nodeID)
+- public void AddNode(GraphNode node)
+- public void RemoveNode(GraphNode node)
+
+The most involved method of these is TryReplaceEdge - which was added as a tree should not allow an edge to be removed without a new one being added to re-satisfy the tree condition.
+
+The first change i recommend for these methods is to unify them under the TryBlankBlank naming semantic. This will make it more clear that if the operation would break the rules of a graph subclass it wont be allowed. They should all also return a bool to identify if the operation was allowed or not. Beyond that it would make sense to have methods to remove nodes/edges by id however this is a low priority.
+
+Abstract graphs also implement the flowing operator overloads.
+
+- public static AbstractGraph operator +(AbstractGraph a, GraphNode b)
+- public static AbstractGraph operator -(AbstractGraph a, GraphNode b)
+- public static AbstractGraph operator +(AbstractGraph a, AbstractEdge b)
+- public static AbstractGraph operator -(AbstractGraph a, AbstractEdge b)
+
+the behavior of these operators is straightforwardly what you would expect. The return of the operators is a new graph instance so modifications to it have no effect on the original graph a. A potential issue with these operators is with Tree's certain operations would be forbidden. We could alleviate this by up-casting the copy of the Tree a to a undirected graph which will be more permissive with its allowed operations. These operators have also yet to prove themselves useful so if needed they would likely be easy to remove.
+
+Next are the field access methods for nodes
+- public GraphNode GetNode(int id)
+- public GraphNode GetRandomNode()
+- public List<GraphNode> GetAllNodes()
+- public List<int> GetAllNodeIDs()
+- public bool HasNode(GraphNode node)
+  
+and for edges
+
+- public AbstractEdge GetEdge(int sourceID, int sinkID)
+- public AbstractEdge GetEdge(string ID)
+- public List<AbstractEdge> GetAllEdges()
+- public List<string> GetAllEdgesIDs()
+- public List<AbstractEdge> GetEdgeList()
+ 
+Again these functions all straightforwardly do what you would expect. Most of them are only a line or two long. My only suggestion regarding them would be to unify the types of methods available for edges and nodes by adding GetNodeList, HasEdge, and GetRandomEdge methods.
+
+Lastly we have a few older methods implemented before the start of fulltime development that have been of limited use. 
+
+- public List<GraphNode> DFS(int startID)
+- public List<GraphNode> DFS(int startNode)
+- public List<GraphNode> BFS(int startID)
+- public List<GraphNode> BFS(int startNode)
+
+the functions that take integer id's as parameters are QoL functions that simply call the actual search method using the node with the given ID. Other old functions are 
+
+- public GetConnectedComponents()
+- public bool HasPath(int node1ID, int node2ID)
+- public bool HasPath(GraphNode node1, GraphNode node2)
+- public VisitNode(int id, List<int> visitedIDs)
+
+the search functions have been of limited use al typically there is algorithm specific work that needs to be done at each stage of the search making this generic version unsuitable for general use. It is useful in the HasPath functions however. The VisitNode function hasn't been used frequently but is a nice QoL function. Overall these methods are unlikely to see extensive use going forward, but I still recommend keeping them for their occasional convenience in testing.  
+
+GetConnectedComponents on the other hand has never been used outside of testing and is of questionable efficiency, so i recommend it be removed.
+  
 ### DirectedGraph : AbstractGraph
 
 ### UndirectedGraph : AbstractGraph
