@@ -53,7 +53,7 @@ namespace SadSapphicGames.CustomGraphs {
             return true;
         }
 
-        protected override bool TryAddEdge(AbstractEdge<TGraphType> edgeToAdd) {
+        public override bool TryAddEdge(AbstractEdge<TGraphType> edgeToAdd) {
             if(!(edgeToAdd is DirectedEdge<TGraphType>)) {
                 Debug.LogWarning("A directed graph can only have directed Edges added");
                 return false;

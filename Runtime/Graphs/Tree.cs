@@ -38,7 +38,7 @@ namespace SadSapphicGames.CustomGraphs {
                 return false;
             }
         }
-        protected override bool TryAddEdge(AbstractEdge<TGraphType> edge) {
+        public override bool TryAddEdge(AbstractEdge<TGraphType> edge) {
             if(!(edge is UndirectedEdge<TGraphType>)) {
                 Debug.LogWarning("A Tree is a type of undirected graph");
                 return false;

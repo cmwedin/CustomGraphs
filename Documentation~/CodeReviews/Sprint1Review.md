@@ -162,7 +162,45 @@ For both of these classes however we do need to add null parent error control.
 The high level components of this library are the graphs themselves. A graph is defined by a list of edges and a list of nodes (Stored internally as dictionaries with integer keys for node and string keys for edges (the two nodes they connect separated by a comma).
 
 ### AbstractGraph
+This is the parent class of all graphs. Any logic that all graphs share should go here. Functions related to adding edges should be abstract to ensure inherited classes implement the appropriate type of edges.
 
+#### Fields Review
+
+this high level component contains one public property
+
+- public int Size {get => nodes.Keys.Count}
+
+and two private fields
+- protected Dictionary<int, GraphNode> n
+odes
+- protected Dictionary<string, AbstractEdge> edges
+
+these are all fine. As discussed in the low level component review it might be prudent for graphs to have a unique id, automatically generated upon instantiation.
+
+#### Methods Review
+
+There are currently three constructors for graphs.
+
+- public AbstractGraph()
+- public AbstractGraph(Dictionary<int List<int>> adjList)
+- public AbstractGraph(int V, List<int[]> E)
+
+The first constructor is the empty graph constructor, the second constructs from an adjacency list, the third from a number of nodes and list of edges (nodes are presumed to have id's ranging from 0 to V-1). There is also a planed constructor from an adjacency matrix however that is currently not implemented. All constructors also make us of the method
+
+- protected abstract void InitializeEdges(list<int[]> edgeList)
+
+as while initializing the edge of a graph they might not satisfy the restrictions some subclasses use in TryAddEdge(), which presumes the graph is fully constructed. This function is abstract as the child classes must initialize the appropriate type of edges. 
+
+Other abstract functions relating to edges are
+- public abstract bool TryAddEdge(GraphNode sourceNode, GraphNode sinkNode)
+- public abstract bool TryAddEdge(AbstractEdge edgeToAdd)
+
+They also have the virtual method 
+-public virtual bool TryAddEdge(int id1, int id2)
+
+however this method just calls TryAddEdge(graphNode sourceNode, graphNode sinkNode) with the appropriate node after verifying they are in the graph.
+
+One standard in these methods that may be worth reconsidering is the s that if you attempt to add an edge to a node that doesn't exist it will be created and added to the graph.
 ### DirectedGraph : AbstractGraph
 
 ### UndirectedGraph : AbstractGraph

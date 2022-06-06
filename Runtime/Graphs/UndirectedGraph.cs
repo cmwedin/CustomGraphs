@@ -50,7 +50,7 @@ namespace SadSapphicGames.CustomGraphs {
 
 
 
-        protected override bool TryAddEdge(AbstractEdge<TGraphType> edgeToAdd) {
+        public override bool TryAddEdge(AbstractEdge<TGraphType> edgeToAdd) {
             if(!(edgeToAdd is UndirectedEdge<TGraphType>)) {
                 Debug.LogWarning("An undirected graph can only have undirected Edges added");
                 return false;

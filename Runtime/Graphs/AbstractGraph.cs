@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace SadSapphicGames.CustomGraphs{
     public abstract class AbstractGraph<TGraphType> { //? the default type of graph is directed and unweighted
-// ! Members -----
+// ! Fields -----
 // * Value Types - Public
         public int Size { get => nodes.Keys.Count;}
 // * Value Types - Private
@@ -111,7 +111,7 @@ namespace SadSapphicGames.CustomGraphs{
         }
         public abstract bool TryAddEdge(GraphNode<TGraphType> v1, GraphNode<TGraphType> v2);
         
-        protected abstract bool TryAddEdge(AbstractEdge<TGraphType> edgeToAdd);
+        public abstract bool TryAddEdge(AbstractEdge<TGraphType> edgeToAdd);
         public virtual bool TryReplaceEdge(AbstractEdge<TGraphType> oldEdge, AbstractEdge<TGraphType> newEdge) {
             if(newEdge.GetType() != oldEdge.GetType()) {
                 Debug.LogWarning("must replace an edge with one of the same type");
