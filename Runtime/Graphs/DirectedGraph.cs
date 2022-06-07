@@ -53,26 +53,26 @@ namespace SadSapphicGames.CustomGraphs {
             return true;
         }
 
-        public override bool TryAddEdge(AbstractEdge<TGraphType> edgeToAdd) {
-            if(!(edgeToAdd is DirectedEdge<TGraphType>)) {
+        public override bool TryAddEdge(AbstractEdge<TGraphType> edge) {
+            if(!(edge is DirectedEdge<TGraphType>)) {
                 Debug.LogWarning("A directed graph can only have directed Edges added");
                 return false;
             } 
-            if(edges.ContainsKey(edgeToAdd.ID)) {
+            if(edges.ContainsKey(edge.ID)) {
                 Debug.LogWarning("This edge has the same ID as one already in the graph, parallel edges are not currently supported");
                 return false;
             }
-            if(edgeToAdd.ParentGraph != null) {
+            if(edge.ParentGraph != null) {
                 Debug.LogWarning("This edge is already attached to a graph, it must be removed from its parent before it can be added to another graph");
                 Debug.LogWarning("if it cannot be removed consider the copy method or orphan edge constructor");
                 return false;
             }
-            if(!nodes.ContainsKey(edgeToAdd.SourceNodeID)) { AddNode(edgeToAdd.SourceNodeID); }
-            if(!nodes.ContainsKey(edgeToAdd.SinkNodeID)) { AddNode(edgeToAdd.SinkNodeID); }
-            edgeToAdd.SetParent(this);
-            GetNode(edgeToAdd.SourceNodeID).AddEdge(edgeToAdd);
-            GetNode(edgeToAdd.SinkNodeID).AddEdge(edgeToAdd);
-            edges.Add(edgeToAdd.ID, edgeToAdd);
+            if(!nodes.ContainsKey(edge.SourceNodeID)) { AddNode(edge.SourceNodeID); }
+            if(!nodes.ContainsKey(edge.SinkNodeID)) { AddNode(edge.SinkNodeID); }
+            edge.SetParent(this);
+            GetNode(edge.SourceNodeID).AddEdge(edge);
+            GetNode(edge.SinkNodeID).AddEdge(edge);
+            edges.Add(edge.ID, edge);
             return true;
         }
     }

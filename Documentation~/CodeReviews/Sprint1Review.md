@@ -266,6 +266,19 @@ GetConnectedComponents on the other hand has never been used outside of testing 
   
 ### DirectedGraph : AbstractGraph
 
+DirectedGraph does not add any additional fields to AbstractGraph. It also does not add any additional code to its constructors. The only distinctions between it and its parent class are its implementation of the abstract methods, which are again
+
+- public override AbstractGraph Copy()
+- protected override void InitializeEdges(List<int[]> edgeList)
+- public override bool TryAddEdge(GraphNode v1, GraphNode v2)
+- public override bool TryAddEdge(AbstractEdge edge)
+
+As stated above it is likely possible to implement Copy as a base class level constructor using Activator.CreateInstance() to deduce the type of edge to instantiate from the argument / original graph. This is a low priority change as the code for the copy constructor has already been written so the work that could have been avoided by using a base level constructor has already been done.
+
+Another possible change is to make the argument for InitializeEdges a Vector2Int list to ensure it is the appropriate size. There are a few reasons I would argue not to do this. Firstly - Vector2Int is a unity class and while this library is intended for use in unity if it is possible to avoid directly Unity class such that it could be used outside unity as well I see no reason not too. Currently the only unity feature we are using is unity debug warning messages, which could just be replace by system debug messages in a non-unity port. Secondly, Vector2Int are a reference type and i would rather use a value type for a something like this.
+
+The two TryAddEdge methods are both fine. They have appropriate error controlling and do what they are supposed to; however, there are knock on changes that will be caused by some changes to edges. In particular for the method that takes to nodes as an argument. Since the ability to assign a parent graph in the constructors of low level components will be removed, the parent must be assigned with the TryAddEdge method (previously the edge would deduce is parent from the parent of the nodes it connects in this constructor). In fact - for clarity sake it might be prudent to remove this method all together. While convenient it might be better to establish that components are always added by a reference to a component with a null parent.
+
 ### UndirectedGraph : AbstractGraph
 
 ### Tree : UndirectedGraph
