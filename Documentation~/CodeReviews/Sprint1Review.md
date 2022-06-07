@@ -285,6 +285,25 @@ I have no comments to make for this class that i didn't already make on Undirect
 
 ### Tree : UndirectedGraph
 
+Again Trees do not add any fields to their parent class. They do add additional logic to certain methods however
+
+The rule that all trees use to determine if an operation should be allowed is the "Tree Condition." There are multiple equivalent ways to state this condition however for out purposes we state it as a tree is a graph that is both
+- fully connected (the reason we make tree a subtype of undirected graph)
+- acyclic
+
+Tree's add a new method to verify this
+- public static bool VerifyTree(AbstractGraph graph)
+
+which uses the CycleSolver's find cycle method to find if there is a cycle accessible from any node on the graph, then makes sure every other node in the graph is accessible from that node as well. We only need to check for a cycle once since if there is a cycle disconnected to the first node we test it is by definition not a tree.
+
+To ensure the tree condition is always satisfied there are differences in the when the TryAddEdge methods will allow you to add an edge. I will not list out the method signatures for a third time, but the distinctions are that a tree will not let you add an edge that:
+- Connects two node already in the graph (this would be a cycle)
+- adds two new nodes to a graph (this would form a disconnected components)
+  
+or more succinctly for an edge to be added to a tree one node of the edge must be included in the graph and one must be a new node.
+
+when replacing an edge on the other hand the requirements are more nuanced. removing an edge from a tree always splits it into two connected components. For the new edge added to re-satisfy the tree condition one node must be from one of these components, the the other from the other. Currently the class uses a stop gap solution of always letting you add the edge then throwing an exception if VerifyTree returns false on the new graph. This needs to be changed in the future as this behavior is inconsistent with "try" methods returning false if you attempt to do a forbidden operation.
+
 ### RootedTree : Tree
 
 ## Data structures

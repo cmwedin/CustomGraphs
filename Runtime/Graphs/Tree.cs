@@ -109,19 +109,19 @@ namespace SadSapphicGames.CustomGraphs {
             if(!Tree<TGraphType>.VerifyTree(this)) throw new NotATreeException();
         }
 
-        public Tree() {
+        public Tree() : base() {
         }
 
         // * Static Methods
-        public static bool VerifyTree(AbstractGraph<TGraphType> _graph) {
-            if(_graph is DirectedGraph<TGraphType>) {
+        public static bool VerifyTree(AbstractGraph<TGraphType> graph) {
+            if(graph is DirectedGraph<TGraphType>) {
                 // ? i feel in CS this is often overlooked do to the prevalence of rooted trees 
                 //? but in mathematically graph theory a tree must form one connected component
                 Debug.LogWarning("A tree is by definition undirected");
                 return false;
             }
             List<GraphNode<TGraphType>> visitedNodes = null;
-            foreach (var _node in _graph.GetAllNodes()) {
+            foreach (var _node in graph.GetAllNodes()) {
                 if(visitedNodes == null) {
                     //? this is the first node we tested
                     if(CycleSolver<TGraphType>.FindCycleFrom(_node, out visitedNodes)) {
