@@ -342,7 +342,19 @@ These are static classes to solve graph theory problems such as "what is the sho
 
 ## Exceptions
 
-During earlier development I was overly eager to throw exceptions during error/input handling. As such I anticipate many of the following exceptions will be candidates for removal
+During earlier development I was overly eager to throw exceptions during error/input handling. As such I anticipate many of the following exceptions will be candidates for removal. As the isnt much to say about these exceptions I will simply say wether I think they should be removed or not.
+
+- NotInGraphException: Remove
+- NotAttachedToEdgeException: Keep
+- IncompatibleEdgeException: Keep
+- EmptyGraphException: Remove
+- DifferentGraphException: Keep
+- NotATreeException: Keep
+- NonUniqueIDException: Remove
+- OrphanException: Keep
+- NotADAGException: Keep
+  
+In general when the code prevents something from happening it should do so by displaying a warning not throwing an exception. Exceptions should be saved for situations where it appears something has already gone wrong previously (e.g. an Orphan node in a situation where the node should already have a parent. A Tree that doesn't satisfy the tree condition) or situations where there is likely user error that needs to be resolved (passing a node not attached to a tree object into its GetChildren method).  Try... functions should very rarely if ever throw exceptions.  
 
 ## Tests
 
