@@ -305,10 +305,26 @@ or more succinctly for an edge to be added to a tree one node of the edge must b
 when replacing an edge on the other hand the requirements are more nuanced. removing an edge from a tree always splits it into two connected components. For the new edge added to re-satisfy the tree condition one node must be from one of these components, the the other from the other. Currently the class uses a stop gap solution of always letting you add the edge then throwing an exception if VerifyTree returns false on the new graph. This needs to be changed in the future as this behavior is inconsistent with "try" methods returning false if you attempt to do a forbidden operation.
 
 ### RootedTree : Tree
+A RootedTree is a tree that also satisfies the property that every node exactly one inEdge except for one, the root, which has zero. 
+A RootedTree does have one additional field not included in its parent. The property
+- public GraphNode RootNode { get  {...}}
+  
+which calculate the root by picking a random node and moving up the graph until it reaches a node with no parent. This is not a particularly efficient method of calculating this as it takes linear time in the worst case (when the tree is equivalent to a linked list). Solutions to this would be an algorithm that finds the root more efficiently or an to store a reference to the root node and only run this function when that reference needs to be updates (this is how the heap class handles this). At the very least it should be made a method to make it clear that invoking it is a potentially significant time complexity consideration
+
+As for the methods of RootedTree again none of the Constructors have any additional code. The TryAddEdge methods now require the specifically the source node be the node already in the graph and the sink node be the new node. 
+
+
+Methods new to this class are
+- public GraphNode GetParentNode(GraphNode node)
+- public List<GraphNode> GetChildren(GraphNode node)
+- public List<GraphNode> GetLayer(int k)
+  
+The GetParent and GetChildren methods straightforwardly return the appropriate nodes connected to the arguments. GetLayer returns a list of all nodes k edges away from the root. The time complexity of this is O(# of node below layer k)
 
 ## Data structures
 
-These are data structures that don't inherit from AbstractGraph but use them in there underlying implementation nonetheless. Note that of many of these it would be more pragmatic to implement them in a dependency free manner however they have proved useful as a method of testing the library while also creating classes to enable future functionality
+These are data structures that don't inherit from AbstractGraph but use them in there underlying implementation nonetheless. Note that of many of these it would be more pragmatic to implement them in a dependency free manner however they have proved useful as a method of testing the library while also creating classes to enable future functionality.
+
 
 ### D-ary Heap
 
