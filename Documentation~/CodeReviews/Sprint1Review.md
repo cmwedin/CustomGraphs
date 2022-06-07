@@ -281,6 +281,8 @@ The two TryAddEdge methods are both fine. They have appropriate error controllin
 
 ### UndirectedGraph : AbstractGraph
 
+I have no comments to make for this class that i didn't already make on UndirectedGraph, the only distinction between these two classes is what kinds of edges they instantiate.
+
 ### Tree : UndirectedGraph
 
 ### RootedTree : Tree
