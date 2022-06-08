@@ -22,6 +22,8 @@ sprint focus: creation of graph classes and some algorithm implementations. Revi
     - [RootedTree : Tree](#rootedtree--tree)
   - [Data structures](#data-structures)
     - [D-ary Heap](#d-ary-heap)
+      - [Fields](#fields)
+      - [Methods](#methods)
   - [Algorithms](#algorithms)
     - [TarjanSCCSolver](#tarjansccsolver)
     - [CycleSolver](#cyclesolver)
@@ -304,6 +306,8 @@ or more succinctly for an edge to be added to a tree one node of the edge must b
 
 when replacing an edge on the other hand the requirements are more nuanced. removing an edge from a tree always splits it into two connected components. For the new edge added to re-satisfy the tree condition one node must be from one of these components, the the other from the other. Currently the class uses a stop gap solution of always letting you add the edge then throwing an exception if VerifyTree returns false on the new graph. This needs to be changed in the future as this behavior is inconsistent with "try" methods returning false if you attempt to do a forbidden operation.
 
+Currently trees do not prevent adding new nodes even though this breaks the tree condition as the new node would be disconnected from the rest of the tree. This will be rectified in the broader refactor to make the methods for adding nodes consistent with the methods for adding edges. 
+
 ### RootedTree : Tree
 A RootedTree is a tree that also satisfies the property that every node exactly one inEdge except for one, the root, which has zero. 
 A RootedTree does have one additional field not included in its parent. The property
@@ -327,6 +331,59 @@ These are data structures that don't inherit from AbstractGraph but use them in 
 
 
 ### D-ary Heap
+This implementation of a D-ary heap isn't space efficient as one could be implemented with a simple array; however it has proved useful as a use case to test the functionality of the RootedTree class. This structure is needed for efficient implementation of Dijkstra's shortest path algorithm as well as Prim's MST algorithm.  
+#### Fields
+the heap class contains the following private fields
+- private GraphNode rootNode
+- private int childCapacity
+- private RootedTree heapTree
+- private Dictionary<THeapType, int> objectIDs
+- private Dictionary<int, THeapType> reverseObjIDs
+- private int IDcounter
+
+And the following public properties
+- public int Size {get => heapTree.Size}
+- public bool isEmpty {get => Size == 0}
+  
+The biggest concern for these fields is the use of two different dictionaries to keep track of the ID of each objects node in the heap tree. This is needed because we need to preform these look ups both ways. To get the id for each objects node in the graph, and when we pop a node to get the object we should return. Using two dictionaries to do this is the more time efficient but less space efficient solution to this. 
+
+the rootNode field also needs to be updated whenever the root is changed in the tree. This is done to avoid running the code to find the root of a RootedTree every time we need to reference to root. If RootedTree is modified to update its root automatically when needed this field could be removed and the heapTree.RootNode field could be used instead. 
+
+#### Methods
+
+DaryHeap's currently have one constructor
+- public D_aryHeap(int D)
+  
+It would be prudent to design a way to prevent the child capacity of the heap from being modified after its instantiation. It would also be useful to implement constructors that initialize the heap with some entries. This could be done using a dictionary of THeapType objects and their keys as an additional parameter.
+
+The public methods for interacting with the heap are
+- public THeapType Peek()
+- public void Push()
+- public bool TryPop(out THeapType outObject)
+- public void IncreaseKey(THeapType obj, float newValue)
+- public void DecreaseKey(THeapType obj, float newValue)
+
+there is also a planned but currently unimplemented  method TryPopThenPush. This would be beneficial because it eliminates the need to sort the heap both when popping the top node and when pushing a new node. Instead we could replace to root with the new node then resort the heap a single time.
+
+Only minor changes are necessary here. First of all, the Peek method should control for the scenario where the heap is empty. I would also recommend waiting to instantiate the heapTree until at least one node has been added to it. When the methods for adding nodes are refactored the situation where the tree is empty will be considered when determining if TryAddNode will allow the operation to be done; however it might be more clear if the tree is instantiated when its first node is added. An argument against this is it might cause null reference errors before a object is added to the heap.
+
+private/internal methods for modifying the heap are
+- private void DeleteRoot()
+- private void DeleteElement(THeapType obj)
+- private void SiftUp(THeapType obj)
+- private void SiftDown(THeapType obj)
+
+A problem with these is that DeleteElement doesn't preform all the needed work to be done in that case that the removed element was the root. Specifically it does not update the root after removing a node (this is only needed when the root itself is removed). This is because the root is intended to be removed through the DeleteRoot method; however, DeleteElement cannot prevent itself from being called with the root as its argument as DeleteRoot still uses it for actually removing the node itself, and just preforms the additional work to set the new root. 
+
+A potential solution would be to remove the DeleteRoot method and if the argument of DeleteElement is the current root simply store is smallest child to set as the new root after the old is removed. The sift methods are both fine.
+
+Lastly we have a few methods for accessing certain nodes in heap.
+- private GraphNode GetHeapNode(THeapType obj)
+- private GraphNode GetBottomNode()
+- private GraphNode GetGreatestChild(GraphNode node)
+- private GraphNode GetSmallestChild(GraphNode node)
+
+The only of these worth commenting it on is GetBottomNode as the others are either straight forward look ups or list sorting. GetBottomNode uses some math and the fact a heap is an "almost complete" D-ary tree to improve its efficiency by only searching the FloorToInt(log_d(N)-1) layer. This is obviously more efficient then searching the whole tree, however if the deduction it is based on is wrong it would cause errors (I don't believe this is the case though) 
 
 ## Algorithms
 

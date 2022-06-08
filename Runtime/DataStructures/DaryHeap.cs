@@ -68,11 +68,7 @@ namespace SadSapphicGames.DataStructures{
             heapTree.DebugMsg();
             return true;
         }
-        public void DeleteRoot() {
-            GraphNode<float> newRoot = GetSmallestChild(rootNode);
-            DeleteElement(reverseObjID[rootNode.ID]);
-            rootNode = newRoot;
-        }
+
         // public bool TryPopThenPush(THeapType inObject, float key, out THeapType outObject) {
         //     //TODO
         //     throw new NotImplementedException();
@@ -99,14 +95,13 @@ namespace SadSapphicGames.DataStructures{
         // }
 
         public void IncreaseKey(THeapType obj, float newValue) {
-            var node = GetHeapNode(obj);
-            if(node.Value >= newValue) {
+            var objNode = GetHeapNode(obj);
+            if(objNode.Value >= newValue) {
                 Debug.LogWarning("this object already has a greater key in the heap");
                 return;
             }
+            objNode.SetValue(newValue);
             SiftDown(obj);
-            node.SetValue(newValue);
-            // throw new NotImplementedException();
         }
         public void DecreaseKey(THeapType obj, float newValue) {
             var objNode = GetHeapNode(obj);
@@ -117,7 +112,11 @@ namespace SadSapphicGames.DataStructures{
             objNode.SetValue(newValue);
             SiftUp(obj);
             if(objNode.Value < rootNode.Value) {rootNode = heapTree.RootNode;}
-            // throw new NotImplementedException();
+        }
+        private void DeleteRoot() {
+            GraphNode<float> newRoot = GetSmallestChild(rootNode);
+            DeleteElement(reverseObjID[rootNode.ID]);
+            rootNode = newRoot;
         }
         private void DeleteElement(THeapType obj) {
             var objNode = GetHeapNode(obj);
@@ -129,9 +128,9 @@ namespace SadSapphicGames.DataStructures{
             heapTree.RemoveNode(objNode);     
             // throw new NotImplementedException();
         }
-        public void SiftUp(THeapType obj) {
+        private void SiftUp(THeapType obj) {
             var objNode = GetHeapNode(obj);
-            if(objNode == null) throw new SystemException("this shouldn't happen");
+            // if(objNode == null) throw new SystemException("this shouldn't happen");
             if( heapTree.GetParentNode(objNode) == null) {
                 Debug.LogWarning("object is already the root of the heap");
                 return;
@@ -142,7 +141,7 @@ namespace SadSapphicGames.DataStructures{
             }
             // throw new NotImplementedException();
         }
-        public void SiftDown(THeapType obj) {
+        private void SiftDown(THeapType obj) {
             var objNode = GetHeapNode(obj);
             if( heapTree.GetChildren(objNode).Count == 0) {
                 Debug.LogWarning("object is already the bottom-most node");
