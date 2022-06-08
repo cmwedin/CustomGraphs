@@ -353,7 +353,7 @@ the rootNode field also needs to be updated whenever the root is changed in the 
 
 #### Methods
 
-DaryHeap's currently have one constructor
+D-aryHeap's currently have one constructor
 - public D_aryHeap(int D)
   
 It would be prudent to design a way to prevent the child capacity of the heap from being modified after its instantiation. It would also be useful to implement constructors that initialize the heap with some entries. This could be done using a dictionary of THeapType objects and their keys as an additional parameter.
@@ -432,6 +432,12 @@ This static class only contains a single method implementing the Khan topologica
 Currently, the method returns a dictionary with integer keys that correspond to the node that word have that id is the sorted graph as values. This should be reversed as the references to the nodes are what we already know and what we want are where the node would be after sorting. It would be nice to directly update the id's of the nodes in the graph to reflect this sorting however functionality would needed to be added to AbstractGraph to enable the changing of a nodes ID after it has been created. Reversing the keys and value of this functions return value on the other had is comparatively a much simple improvement to implement.   
 
 ### ShortestPath
+
+Similar to CycleSolver this is a static class primarily intended as a location for future functionality (like Dijkstra) it does however already contain some methods for finding the single source shortest paths in the simple case of a DAG along with some other QoL functions for working with paths. Currently implemented are 
+
+- public static float PathCost(IEnumerable<AbstractEdge> Path)
+- public static string PathAsString(IEnumerable<AbstractEdge> Path)
+- public static Dictionary<int,float> DAGShortestPAth(DirectedGraph graph, int startingNodeID, out Dictionary<int,string> bestPathIDsOut)
 
 ## Exceptions
 
