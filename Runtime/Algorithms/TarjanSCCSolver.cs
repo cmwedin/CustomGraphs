@@ -14,7 +14,7 @@ namespace SadSapphicGames.CustomGraphs{
         private static Stack<GraphNode<TGraphType>> nodeStack; //? stack of nodes in the current scc
 
         // private bool solved = false;
-        private static Dictionary<GraphNode<TGraphType>,int> finalLowLinks = new Dictionary<GraphNode<TGraphType>, int>();
+        private static Dictionary<GraphNode<TGraphType>,int> finalLowLinks;
         // private Dictionary<int,List<GraphNode<TGraphType>>> solution = new Dictionary<int, List<GraphNode<TGraphType>>>();
 
        // * Constructor
@@ -45,6 +45,7 @@ namespace SadSapphicGames.CustomGraphs{
             lowlink = new int[graph.Size];
             onStack = new Dictionary<GraphNode<TGraphType>, bool>();
             tarjanIDs = new Dictionary<GraphNode<TGraphType>, int>();
+            finalLowLinks = new Dictionary<GraphNode<TGraphType>, int>();
             List<List<GraphNode<TGraphType>>> sccList = new List<List<GraphNode<TGraphType>>>();
 
             foreach (var node in graph.GetAllNodes()) { //? this does take O(V) time however at sufficiently large arguments  O(V)+O(V+E) ~ O(V+E)

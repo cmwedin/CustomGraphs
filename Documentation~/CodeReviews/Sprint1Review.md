@@ -26,6 +26,8 @@ sprint focus: creation of graph classes and some algorithm implementations. Revi
       - [Methods](#methods)
   - [Algorithms](#algorithms)
     - [TarjanSCCSolver](#tarjansccsolver)
+      - [Fields](#fields-1)
+      - [Methods](#methods-1)
     - [CycleSolver](#cyclesolver)
     - [Topological Sort](#topological-sort)
     - [ShortestPath](#shortestpath)
@@ -390,7 +392,32 @@ The only of these worth commenting it on is GetBottomNode as the others are eith
 These are static classes to solve graph theory problems such as "what is the shortest path between these two nodes" or "does this graph contain cycles or any strongly connected components
 
 ### TarjanSCCSolver
+This was originally a full class however after its initial implementation the decision was made to make algorithms static classes as needing to instantiate the class to use the algorithm is unintuitive. It is possible this post-implementation change may cause errors however. 
+#### Fields
+The TarjanSCCSolver class has the following private global fields
 
+- private static Dictionary<GraphNode, bool> onStack
+- private static Dictionary<GraphNode, int> TarjanID's
+- private static int[] lowlink
+- private static Dictionary<GraphNode, int> finalLowLinks
+
+because this is a static class we need to be sure to set these back to their initial values when we start solving a new graph. In fact, it may be prudent to make these fields local to the algorithms solve method.
+
+#### Methods
+
+TarjanSCCSolver has two public methods available for general use and one private method for internal use.
+
+- public static bool CheckDAG(DirectedGraph graph)
+- public static List<List<GraphNode>> Solve(DirectedGraph graph)
+- private static void TarjanDFS(...)
+  
+The parameters for the DFS function are 
+- List<List<GraphNode>> sccList
+- GraphNode node
+- int iterationDepth
+- out int outDepth
+
+CheckDAG just calls the solve function then checks it its return, the list of all strongly connected components, is empty. The majority of the work for calculating the strongly connected components in the graph occurs in the DFS function, with the Solve function initializing values passing them into the recursive search function. As this is a well known algorithm the are little changes that need to be made to these methods.
 ### CycleSolver
 
 ### Topological Sort
