@@ -419,14 +419,19 @@ The parameters for the DFS function are
 
 CheckDAG just calls the solve function then checks it its return, the list of all strongly connected components, is empty. The majority of the work for calculating the strongly connected components in the graph occurs in the DFS function, with the Solve function initializing values passing them into the recursive search function. As this is a well known algorithm the are little changes that need to be made to these methods.
 ### CycleSolver
+This static class is intended to find cycles in undirected graphs for which Tarjan is unsuited, or when it is not needed to find all cycles in a graph but simply if any exist. This class contains two static methods (actually one method with one overload)
 
+- public static bool FindCycleFrom(GraphNode CurrentNode, [List<AbstractEdge> visitedEdges = null], [List<GraphNode> visitedNodes = null])
+- public static bool FindCycleFrom(GraphNode CurrentNode, out List<GraphNode> touchedNodes [List<AbstractEdge> visitedEdges = null], [List<GraphNode> visitedNodes = null])
+
+With the first simply wrapping the second for situations where only the cycles existence is needed, not what nodes where touched while finding the cycle. The second function is recursive, but it should not be possible for the function to enter an infinite loop. As this is a straightforward method I have no changes to recommend to it. This class is mainly a place to put future functionality.   
 ### Topological Sort
 
 ### ShortestPath
 
 ## Exceptions
 
-During earlier development I was overly eager to throw exceptions during error/input handling. As such I anticipate many of the following exceptions will be candidates for removal. As the isnt much to say about these exceptions I will simply say wether I think they should be removed or not.
+During earlier development I was overly eager to throw exceptions during error/input handling. As such I anticipate many of the following exceptions will be candidates for removal. As the isn't much to say about these exceptions I will simply say wether I think they should be removed or not.
 
 - NotInGraphException: Remove
 - NotAttachedToEdgeException: Keep
