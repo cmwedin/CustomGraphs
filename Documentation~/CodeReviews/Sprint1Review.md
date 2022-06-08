@@ -427,6 +427,10 @@ This static class is intended to find cycles in undirected graphs for which Tarj
 With the first simply wrapping the second for situations where only the cycles existence is needed, not what nodes where touched while finding the cycle. The second function is recursive, but it should not be possible for the function to enter an infinite loop. As this is a straightforward method I have no changes to recommend to it. This class is mainly a place to put future functionality.   
 ### Topological Sort
 
+This static class only contains a single method implementing the Khan topological sort algorithm. Topological sorts can only be preformed on directed graphs that do not contain cycles. This is currently verified by using the Tarjan algorithm, however this is potentially inefficient as the algorithm does not need to run in its entirety if it detects a cycle, as any cycle would disqualify it; however, this is a low priority improvement. Again as this is a well known algorithms there are few changes to implement in the method itself, it appears to correctly implement the algorithm. The only point of improvement would be in how the method returns its output. 
+
+Currently, the method returns a dictionary with integer keys that correspond to the node that word have that id is the sorted graph as values. This should be reversed as the references to the nodes are what we already know and what we want are where the node would be after sorting. It would be nice to directly update the id's of the nodes in the graph to reflect this sorting however functionality would needed to be added to AbstractGraph to enable the changing of a nodes ID after it has been created. Reversing the keys and value of this functions return value on the other had is comparatively a much simple improvement to implement.   
+
 ### ShortestPath
 
 ## Exceptions
