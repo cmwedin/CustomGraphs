@@ -467,6 +467,19 @@ These tests are for the moment fairly non-adversarial intended to verify the cod
 
 ### GraphTests
 
+this file contains the following tests
+
+- TestTrivialGraph
+- TestTrivialCycle
+- TestBFSvsDFS
+- TestConnectedComponents
+- TestHasPath
+- SortTest
+
+The first two tests are for the simple tests of the graph constructors for graphs with one or two nodes. The Second tests that the initial BFS and DFS methods are each searching the graph in the proper order. The connected component test ensures that the old method for finding the connected components of a graph runs correctly. The HasPathTest method tests that the HasPath method correctly determines if nodes have paths between them. (Currently it only tests Directed graphs, we should test undirected graphs as well). And lastly the sort tests verifies that the method implementing Khans algorithm returns the nodes of a graph in the correct order.
+
+Some other test that should be included in this class are adding the wrong kinds of edges to graphs or other types of edges that should not be allowed to be added. (some of these are already in the OpperatorTests file).
+
 ### TreeTests
 
 ### OpperatorTests
