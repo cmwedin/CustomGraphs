@@ -24,7 +24,7 @@ public class CyclesTests
         {6, new List<int>{4,7}},
         {7, new List<int>{6,5}}, //? end of scc 3
     });
-    DirectedGraph<bool> childNodes = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
+    DirectedGraph<bool> acyclic = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
         {0, new List<int>{1,2}},
         {1, new List<int>{3}},
         {2, new List<int>{4}},
@@ -45,7 +45,7 @@ public class CyclesTests
     } );
     [Test]
     public void DAGTest() {
-        Assert.IsTrue(TarjanSCCSolver<bool>.CheckDAG(childNodes));
+        Assert.IsTrue(TarjanSCCSolver<bool>.CheckDAG(acyclic));
         Assert.IsFalse(TarjanSCCSolver<bool>.CheckDAG(scc));
     }
     [Test]
@@ -76,7 +76,7 @@ public class CyclesTests
         Assert.IsTrue(CycleSolver<bool>.FindCycleFrom(scc.GetNode(6)));
         Assert.IsTrue(CycleSolver<bool>.FindCycleFrom(undirectedCycle.GetNode(0)));
         Assert.IsTrue(CycleSolver<bool>.FindCycleFrom(DirectedCycle.GetNode(3)));
-        Assert.IsFalse(CycleSolver<bool>.FindCycleFrom(childNodes.GetNode(0)));
+        Assert.IsFalse(CycleSolver<bool>.FindCycleFrom(acyclic.GetNode(0)));
     }
     [Test]
     public void CycleCallbackTest() {

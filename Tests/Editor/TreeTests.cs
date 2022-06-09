@@ -51,7 +51,7 @@ public class TreeTests
         Assert.Throws<System.Exception>(delegate{tree.TryReplaceEdge(tree.GetEdge("1,4"), new UndirectedEdge<bool>(2,3));});
     }
         [Test]
-    public void TreeSwapNodesTest() {
+    public void SwapNodesTest() {
         Tree<bool> tree = new Tree<bool>( new Dictionary<int, List<int>> {
             {0, new List<int>{1,2}},
             {1, new List<int>{3}},

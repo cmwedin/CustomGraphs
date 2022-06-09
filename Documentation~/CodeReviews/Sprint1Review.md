@@ -481,11 +481,44 @@ The first two tests are for the simple tests of the graph constructors for graph
 Some other test that should be included in this class are adding the wrong kinds of edges to graphs or other types of edges that should not be allowed to be added. (some of these are already in the OpperatorTests file).
 
 ### TreeTests
+this file contains 
 
+- TestVerifyTree
+- AddEdgeTest
+- ReplaceEdgeTest
+- SwapNodeTest
+- RootedTreeTest
+
+After adding more logic to prevent nodes from being added to graphs if it would break the tree condition there should also be an AddNodeTest. Similarly there should be tests about removing nodes as well. The TryAddEdge test should attempt to add directed edges to the tree. The rest of the tests are fine. 
 ### OpperatorTests
+this file contains 
+
+- ReplaceEdgeTest
+- SwapEdgeNodesTest
+- CopyTest
+- PlusNodeValTypeTest
+- PlusNodeRefTypeTest
+- MinusNodeTest
+- PlusEdgeTest
+- MinusEdgeTest
+
+the first two tests should be moved to the graphTests file as they are related to modifying graphs not graph operators. The copy test can stay here since graph operators are currently the only place they are used. It might make sense to brake down the minus node test into graph whose nodes store value types and graphs whose nodes store reference types but the fact that  both plus node tests work makes me think this is unnecessary.
+
+currently these operator test only try to preform allowed operations and test that the results are what we would expect. Most should be added in which we intentionally preform invalid operations like adding the wrong kind of edge to verify that the operator error control is working.
 
 ### HeapTests
-
+This file currently only contains the PushPopTest however most of the methods of the class need to be working properly for this behavior to work as well. We did have to test Increase and Decrease key methods separately though, which should be moved to its own test. Some additional situations we should test are when multiple objects have the same key (the desired behavior should be that whichever was added to the heap first is given priority.) as well as situations like peeking an empty heap
 ### CylcesTests
+This file contains the test for both CycleSolver and TarjanSCCSolver as both are related to cycles. The tests within it are
+
+- DAGTest
+- TarjanTest
+- CycleSolverTest
+- CycleCallbackTest
+
+the first and last tests are unnecessary and can be rolled into the general Tarjan test and CycleSolver test respectively. Beyond that however the test are fine. 
 
 ### ShortestPathTests
+
+currently this file only tests the one implemented shortest path algorithm for a DAG in the DAGShortestPath method. There should be a test case added where multiple paths to a node have the same cost. There should also be a test where we try and run this algorithm on a graph that isn't a DAG, as well as on an undirected graph
+, to verify its error control. Once the method to translate a path ID into a list of edge is implemented the test for that should go here as well.
