@@ -438,7 +438,13 @@ Similar to CycleSolver this is a static class primarily intended as a location f
 - public static float PathCost(IEnumerable<AbstractEdge> Path)
 - public static string PathAsString(IEnumerable<AbstractEdge> Path)
 - public static Dictionary<int,float> DAGShortestPAth(DirectedGraph graph, int startingNodeID, out Dictionary<int,string> bestPathIDsOut)
+- private static Dictionary<int,string> DAGRecursion(graphNode currentNode, List<DirectedEdges> currentPath, Dictionary<int,float> bestPathCost, Dictionary<int,float> bestPathIDs)
 
+The first two methods are used for working with paths. Determining the cost of a path is straight forward, translating a path to a string is done by joining the id's of each edge with "|"  
+
+The second two functions are what actual compute the shortest, with the final one being the internal function to handle the recursive aspect of the search 
+
+There was issues with the the list output lists becoming empty upon leaving the stack frame of the solve method. This was resolved be returning the result as a value type rather than a reference to a list. The standard for identifying a path as a value type is to us the PathAsString method. AbstractGraph should have a method added to translate a path ID into the actual list of edges the path contains.
 ## Exceptions
 
 During earlier development I was overly eager to throw exceptions during error/input handling. As such I anticipate many of the following exceptions will be candidates for removal. As the isn't much to say about these exceptions I will simply say wether I think they should be removed or not.
