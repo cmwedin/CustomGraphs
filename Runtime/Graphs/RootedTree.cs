@@ -9,7 +9,7 @@ namespace SadSapphicGames.CustomGraphs {
     public class RootedTree<TGraphType> : Tree<TGraphType> {
         public GraphNode<TGraphType> RootNode { get {
             // ! this is probably not efficient
-            // ! linear worst case (tree is a linked list) log_d(V) best case (Full d-ary tree)
+            // ! linear worst case (tree is a linked list)
             // ! should set a reference to this so we can get the root in constant time but would need to update that when operations that change the root happen
             var node = GetRandomNode();
             while(node.GetInEdges().Count != 0) {

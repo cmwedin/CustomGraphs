@@ -122,7 +122,7 @@ It would potentially prudent to combine the first two constructors into one for 
 The final constructor is the copy constructor. I will note there is some redundancy between this constructor and the abstract method 
 -public AbstractEdge Copy(AbstractEdge _edge)
 
-the reason for this was a problem when copying an edge whose type i didn't necessarily know (implement an AbstractGraph copy constructor rather than copy constructors for both Directed and Undirected graphs). The solution was to implement Copy as an abstract method of Edge. In retrospect there was an alternative solution using Activator.CreateInstance(_edge.GetType(), {constructor parameters}). I will discus this more in the review of the AbstractGraph Copy constructor.
+the reason for this was a problem when copying an edge whose type i didn't necessarily know (when trying to implement an AbstractGraph copy constructor rather than copy constructors for both Directed and Undirected graphs). The solution was to implement Copy as an abstract method of Edge. In retrospect there was an alternative solution using Activator.CreateInstance(_edge.GetType(), {constructor parameters}). I will discus this more in the review of the AbstractGraph Copy constructor.
 
 They contain the following Methods for accessing data from their parent graph
 - public GraphNode GetSourceNode()
@@ -177,8 +177,7 @@ this high level component contains one public property
 - public int Size {get => nodes.Keys.Count}
 
 and two private fields
-- protected Dictionary<int, GraphNode> n
-odes
+- protected Dictionary<int, GraphNode> nodes
 - protected Dictionary<string, AbstractEdge> edges
 
 these are all fine. As discussed in the low level component review it might be prudent for graphs to have a unique id, automatically generated upon instantiation.
@@ -207,7 +206,7 @@ Other abstract functions relating to edges are
 - public abstract bool TryAddEdge(AbstractEdge edgeToAdd)
 
 They also have the virtual method 
--public virtual bool TryAddEdge(int id1, int id2)
+- public virtual bool TryAddEdge(int id1, int id2)
 
 however this method just calls TryAddEdge(graphNode sourceNode, graphNode sinkNode) with the appropriate node after verifying they are in the graph.
 
@@ -264,7 +263,7 @@ the functions that take integer id's as parameters are QoL functions that simply
 - public bool HasPath(GraphNode node1, GraphNode node2)
 - public VisitNode(int id, List<int> visitedIDs)
 
-the search functions have been of limited use al typically there is algorithm specific work that needs to be done at each stage of the search making this generic version unsuitable for general use. It is useful in the HasPath functions however. The VisitNode function hasn't been used frequently but is a nice QoL function. Overall these methods are unlikely to see extensive use going forward, but I still recommend keeping them for their occasional convenience in testing.  
+the search functions have been of limited use as typically there is algorithm specific work that needs to be done at each stage of the search making this generic version unsuitable for general use. It is useful in the HasPath functions however. The VisitNode function hasn't been used frequently but is a nice QoL function. Overall these methods are unlikely to see extensive use going forward, but I still recommend keeping them for their occasional convenience in testing.  
 
 GetConnectedComponents on the other hand has never been used outside of testing and is of questionable efficiency, so i recommend it be removed.
   
@@ -311,13 +310,13 @@ when replacing an edge on the other hand the requirements are more nuanced. remo
 Currently trees do not prevent adding new nodes even though this breaks the tree condition as the new node would be disconnected from the rest of the tree. This will be rectified in the broader refactor to make the methods for adding nodes consistent with the methods for adding edges. 
 
 ### RootedTree : Tree
-A RootedTree is a tree that also satisfies the property that every node exactly one inEdge except for one, the root, which has zero. 
+A RootedTree is a tree that also satisfies the property that every node has exactly one inEdge; except for one, the root, which has zero. 
 A RootedTree does have one additional field not included in its parent. The property
 - public GraphNode RootNode { get  {...}}
   
-which calculate the root by picking a random node and moving up the graph until it reaches a node with no parent. This is not a particularly efficient method of calculating this as it takes linear time in the worst case (when the tree is equivalent to a linked list). Solutions to this would be an algorithm that finds the root more efficiently or an to store a reference to the root node and only run this function when that reference needs to be updates (this is how the heap class handles this). At the very least it should be made a method to make it clear that invoking it is a potentially significant time complexity consideration
+which calculate the root by picking a random node and moving up the graph until it reaches a node with no parent. This is not a particularly efficient method of calculating this as it takes linear time in the worst case (when the tree is equivalent to a linked list). Solutions to this would be an algorithm that finds the root more efficiently or to store a reference to the root node and only run this function when that reference needs to be updates (this is how the heap class handles this). At the very least it should be made a method to make it clear that invoking it is a potentially significant time complexity consideration
 
-As for the methods of RootedTree again none of the Constructors have any additional code. The TryAddEdge methods now require the specifically the source node be the node already in the graph and the sink node be the new node. 
+As for the methods of RootedTree again none of the Constructors have any additional code. The TryAddEdge methods now require the specifically the source node be the node already in the graph and the sink node be the new node. A change will need to be made to the TryReplaceEdge method to prevent a multiple roots, but this bay be a complicated change. The issue when swapping the nodes on an edge, some of the edge replacements will break the condition of a rooted tree, but in the end the new graph will restify it. However, if we restricted TryReplaceEdge from ever breaking the condition of a rooted tree then those individual swaps would not be able to be preformed. A potential solution to this would be to move TrySwapNodes from the AbstractEdge class to the AbstractGraph class and  decouple it from the TryReplaceEdge method, similar to how the TryReplaceEdge method was introduced to decouple removing and replacing an edge from the TryAddEdge and RemoveEdge methods.
 
 
 Methods new to this class are
