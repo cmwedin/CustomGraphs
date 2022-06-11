@@ -29,6 +29,10 @@ namespace SadSapphicGames.DataStructures{
         }
         
         public THeapType Peek() {
+            if(isEmpty) {
+                Debug.LogWarning("Peeked empty heap, returning default value");
+                return default(THeapType);
+            }
             return reverseObjID[rootNode.ID];
         }
         public void Push(THeapType inObject, float key) {
@@ -40,18 +44,19 @@ namespace SadSapphicGames.DataStructures{
             IDcounter++;
             if(isEmpty) {
                 Debug.Log("adding first node to the heap");
-                heapTree.AddNode(new GraphNode<float>(objectIDs[inObject],null,key));
-                rootNode = heapTree.RootNode;
+                heapTree.TryAddNode(new GraphNode<float>(objectIDs[inObject],key));
+                rootNode = heapTree.FindRootNode();
                 return;
             } else {
-                if(!heapTree.TryAddEdge(GetBottomNode(),new GraphNode<float>(objectIDs[inObject],null,key))){
+                if(!heapTree.TryAddEdge(new UndirectedEdge<float>(GetBottomNode().ID, objectIDs[inObject]))){
                     throw new SystemException("failed to add edge to next node");
                 }; 
+                heapTree.GetNode(objectIDs[inObject]).SetValue(key);
             }
             SiftUp(inObject);
             if(key < rootNode.Value) {
                 //? update root
-                rootNode = heapTree.RootNode;
+                rootNode = heapTree.FindRootNode();
             }
             Debug.Log("current heap tree info");
             heapTree.DebugMsg();
@@ -63,7 +68,7 @@ namespace SadSapphicGames.DataStructures{
                 return false;
             }
             outObject = Peek(); //placeholder 
-            DeleteRoot();
+            DeleteElement(outObject);
             Debug.Log("current heap tree info");
             heapTree.DebugMsg();
             return true;
@@ -111,31 +116,35 @@ namespace SadSapphicGames.DataStructures{
             }
             objNode.SetValue(newValue);
             SiftUp(obj);
-            if(objNode.Value < rootNode.Value) {rootNode = heapTree.RootNode;}
+            if(objNode.Value < rootNode.Value) {rootNode = heapTree.FindRootNode(); }
         }
-        private void DeleteRoot() {
-            GraphNode<float> newRoot = GetSmallestChild(rootNode);
-            DeleteElement(reverseObjID[rootNode.ID]);
-            rootNode = newRoot;
-        }
+        // private void DeleteRoot() {
+        //     GraphNode<float> newRoot = GetSmallestChild(rootNode);
+        //     DeleteElement(reverseObjID[rootNode.ID]);
+        //     rootNode = newRoot;
+        // }
         private void DeleteElement(THeapType obj) {
+            GraphNode<float> newRoot = null;
             var objNode = GetHeapNode(obj);
+            if(objNode == rootNode) {
+                newRoot = GetSmallestChild(rootNode);
+            }
             // if(objNode == rootNode) {throw new Exception("The root node must be deleted through DeleteRoot() not DeleteElement(THeapType obj)");}
             while(heapTree.GetChildren(objNode).Count != 0) {
                 var smallestChild = GetSmallestChild(objNode);
                 heapTree.GetEdge($"{objNode.ID},{smallestChild.ID}").TrySwapNodes();
             }
-            heapTree.RemoveNode(objNode);     
-            // throw new NotImplementedException();
+            heapTree.TryRemoveNode(objNode);
+            if(newRoot != null) rootNode = newRoot;     
         }
         private void SiftUp(THeapType obj) {
             var objNode = GetHeapNode(obj);
             // if(objNode == null) throw new SystemException("this shouldn't happen");
-            if( heapTree.GetParentNode(objNode) == null) {
+            if( heapTree.GetParentNodeOf(objNode) == null) {
                 Debug.LogWarning("object is already the root of the heap");
                 return;
             } else {
-                while (heapTree.GetParentNode(objNode) != null && objNode.Value < heapTree.GetParentNode(objNode).Value) {
+                while (heapTree.GetParentNodeOf(objNode) != null && objNode.Value < heapTree.GetParentNodeOf(objNode).Value) {
                     objNode.GetInEdges()[0].TrySwapNodes();
                 }
             }
@@ -153,9 +162,17 @@ namespace SadSapphicGames.DataStructures{
         }
 
         private GraphNode<float> GetHeapNode(THeapType obj) {
+            if(isEmpty) {
+                Debug.LogWarning("There are no nodes in the heap, returning null");
+                return null;
+            }
             return heapTree.GetNode(objectIDs[obj]);
         }
         private GraphNode<float> GetBottomNode() {
+            if(isEmpty) {
+                Debug.LogWarning("There are no nodes in the heap, returning null");
+                return null;
+            }
             // ? we know the graph has size N nodes
             // ? and every node but the bottom node should have d children
             // ? if N > d + 1 the bottom is a child of the root
