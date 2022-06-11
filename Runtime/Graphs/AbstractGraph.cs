@@ -70,7 +70,7 @@ namespace SadSapphicGames.CustomGraphs{
         // ? adjacency list constructor
         public AbstractGraph(Dictionary<int,List<int>> adjList) { //? O(V+E) time
             foreach (int id in adjList.Keys) { 
-                AddNode(id);
+                TryAddNode(new GraphNode<TGraphType>(id));
             }
             List<int[]> edgeList = new List<int[]>();
             
@@ -85,7 +85,7 @@ namespace SadSapphicGames.CustomGraphs{
         // ? list of edges and size constructor
         public AbstractGraph(int V, List<int[]> E) { //? O(V+E) time
             for (int id = 0; id < V; id++) {
-                AddNode(new GraphNode<TGraphType>(id, this));
+                TryAddNode(new GraphNode<TGraphType>(id));
             }
             InitializeEdges(E);
         }
@@ -98,18 +98,18 @@ namespace SadSapphicGames.CustomGraphs{
 
 // * Modification Methods
     // * abstract edge methods
-        public virtual bool TryAddEdge(int id1, int id2) { 
-            if(!nodes.ContainsKey(id1)) {
-                Debug.LogWarning($"A new node with id {id1} had to be created to add this edge");
-                AddNode(id1);
-            }
-            if(!nodes.ContainsKey(id2)) {
-                Debug.LogWarning($"A new node with id {id2} had to be created to add this edge");
-                AddNode(id2);
-            }
-            return TryAddEdge(GetNode(id1), GetNode(id2));
-        }
-        public abstract bool TryAddEdge(GraphNode<TGraphType> v1, GraphNode<TGraphType> v2);
+        // public virtual bool TryAddEdge(int id1, int id2) { 
+        //     if(!nodes.ContainsKey(id1)) {
+        //         Debug.LogWarning($"A new node with id {id1} had to be created to add this edge");
+        //         TryAddNode(new GraphNode<TGraphType>(id1));
+        //     }
+        //     if(!nodes.ContainsKey(id2)) {
+        //         Debug.LogWarning($"A new node with id {id2} had to be created to add this edge");
+        //         TryAddNode(new GraphNode<TGraphType>(id2));
+        //     }
+        //     return TryAddEdge(GetNode(id1), GetNode(id2));
+        // }
+        // public abstract bool TryAddEdge(GraphNode<TGraphType> v1, GraphNode<TGraphType> v2);
         
         public abstract bool TryAddEdge(AbstractEdge<TGraphType> edgeToAdd);
         public virtual bool TryReplaceEdge(AbstractEdge<TGraphType> oldEdge, AbstractEdge<TGraphType> newEdge) {
@@ -124,10 +124,10 @@ namespace SadSapphicGames.CustomGraphs{
                 return false;
             } else { //? the new edge is valid in principle to replace the old but still might have id's the graph doesnt
                 if(!nodes.ContainsKey(newEdge.SourceNodeID)) {
-                    AddNode(newEdge.SourceNodeID);
+                    TryAddNode(new GraphNode<TGraphType>(newEdge.SourceNodeID));
                 }
                 if(!nodes.ContainsKey(newEdge.SinkNodeID)) { 
-                    AddNode(newEdge.SinkNodeID);
+                    TryAddNode(new GraphNode<TGraphType>(newEdge.SinkNodeID));
                 }
             }
             
@@ -149,54 +149,55 @@ namespace SadSapphicGames.CustomGraphs{
         }
         protected abstract void InitializeEdges(List<int[]> edgeList);
         
-        public void RemoveEdge(AbstractEdge<TGraphType> edge) {
+        public virtual bool TryRemoveEdge(AbstractEdge<TGraphType> edge) {
             if(edge.ParentGraph != this) {
                 Debug.LogWarning("you are trying to remove and edge from a graph that isn't its parent");
-                return;
+                return false;
             }
             GetNode(edge.SourceNodeID).RemoveEdge(edge);
             GetNode(edge.SinkNodeID).RemoveEdge(edge);
             edges.Remove(edge.ID);
             edge = null;
-            return;
+            return true;
         }
-        public void AddNode(int nodeID) {
-            nodes.Add(nodeID, new GraphNode<TGraphType>(nodeID,this));
-        }
-        public void AddNode(GraphNode<TGraphType> node) {
-            if(nodes.ContainsKey(node.ID)) throw new NonUniqueIDException(node.ID);
+        // public virtual bool TryAddNode(int nodeID) {
+        //     nodes.Add(nodeID, new GraphNode<TGraphType>(nodeID));
+        //     return true;
+        // }
+        public virtual bool TryAddNode(GraphNode<TGraphType> node) {
+            if(nodes.ContainsKey(node.ID)) {
+                Debug.LogWarning("Graph already contains a node with this nodes ID");
+                return false;
+            }
             if(node.ParentGraph != null) {
                 Debug.LogWarning("This Node is already attached to a graph, it must be removed from its parent before it can be added to another graph");
-                return;
+                return false;
             }
-            if(node.EdgeIDs.Count != 0) {
-                Debug.LogWarning("node already has edges stored, clearing them");
-                node.ClearEdges();
+            if(node.GetEdgeIDs().Count != 0) {
+                Debug.LogWarning("node already has edges stored, it was most likely improperly removed from its previous graph");
+                return false;
             }
-            // ? old code before i decide it would be better to just clear out a nodes edges when adding it to a new graph
-            // foreach (var edgeID in nodeToAdd.edgeIDs) {
-            //         var edgeNodeIDs = edgeID.Split(",",2);
-            //         if(nodes.ContainsKey(Int32.Parse(edgeNodeIDs[1]))) {
-            //             AddEdge(Int32.Parse(edgeNodeIDs[0]),Int32.Parse(edgeNodeIDs[1]));
-            //         } else {
-            //             nodeToAdd.RemoveEdgeID(edgeID);
-            //     } }
             node.SetParent(this);
             nodes.Add(node.ID,node);
+            return true;
         }
-        public void RemoveNode(GraphNode<TGraphType> node) {
-            if(!(node.ParentGraph == this)) return;
-            foreach (var edgeID in node.EdgeIDs) {
-                RemoveEdge(GetEdge(edgeID));
+        public virtual bool TryRemoveNode(GraphNode<TGraphType> node) {
+            if(!(node.ParentGraph == this)) {
+                Debug.LogWarning("That node is not attached to this graph");
+                return false;
+            }
+            foreach (var edgeID in node.GetEdgeIDs()) {
+                TryRemoveEdge(GetEdge(edgeID));
             }
             nodes.Remove(node.ID);
             node = null;
+            return true;
         }
 // * Operator Overloads
         public static AbstractGraph<TGraphType> operator +(AbstractGraph<TGraphType> a,GraphNode<TGraphType> b) {
             AbstractGraph<TGraphType> output = a.Copy();
             GraphNode<TGraphType> bCopy = new GraphNode<TGraphType>(b); 
-            output.AddNode(bCopy);
+            output.TryAddNode(bCopy);
             return output;
         }
         public static AbstractGraph<TGraphType> operator -(AbstractGraph<TGraphType> a,GraphNode<TGraphType> b) {
@@ -206,7 +207,7 @@ namespace SadSapphicGames.CustomGraphs{
             }
             AbstractGraph<TGraphType> output = a.Copy();
             if(!a.HasNode(b)) return output;
-            output.RemoveNode(output.GetNode(b.ID));
+            output.TryRemoveNode(output.GetNode(b.ID));
             return output;
         }
         public static AbstractGraph<TGraphType> operator +(AbstractGraph<TGraphType> a,AbstractEdge<TGraphType> b) {
@@ -221,7 +222,7 @@ namespace SadSapphicGames.CustomGraphs{
                 return null;
             }
             AbstractGraph<TGraphType> output = a.Copy();
-            output.RemoveEdge(output.GetEdge(b.ID));
+            output.TryRemoveEdge(output.GetEdge(b.ID));
             return output;
         }
 // * Searches
@@ -232,10 +233,10 @@ namespace SadSapphicGames.CustomGraphs{
         public List<GraphNode<TGraphType>> DFS(GraphNode<TGraphType> startNode) {
             List<GraphNode<TGraphType>> connectedNodes = new List<GraphNode<TGraphType>>{startNode};
             List<int> visitedIDs = new List<int>{startNode.ID};
-            Stack<int> idsToVisit = new Stack<int>(startNode.NeighborIDs);
+            Stack<int> idsToVisit = new Stack<int>(startNode.GetNeighborIDs());
             while (idsToVisit.TryPop(out int nextID)) {        
                 if(VisitNode(nextID,visitedIDs)) {
-                    foreach (int id in GetNode(nextID).NeighborIDs) {
+                    foreach (int id in GetNode(nextID).GetNeighborIDs()) {
                         idsToVisit.Push(id);
                     }
                     connectedNodes.Add(GetNode(nextID));
@@ -255,10 +256,10 @@ namespace SadSapphicGames.CustomGraphs{
         {
             List<GraphNode<TGraphType>> connectedNodes = new List<GraphNode<TGraphType>>{node};
             List<int> visitedIDs = new List<int>{node.ID};
-            Queue<int> idsToVisit = new Queue<int>(node.NeighborIDs);
+            Queue<int> idsToVisit = new Queue<int>(node.GetNeighborIDs());
             while (idsToVisit.TryDequeue(out int nextID)) {        
                 if(VisitNode(nextID,visitedIDs)) {
-                    foreach (int id in GetNode(nextID).NeighborIDs) {
+                    foreach (int id in GetNode(nextID).GetNeighborIDs()) {
                         idsToVisit.Enqueue(id);
                     }
                     connectedNodes.Add(GetNode(nextID));
@@ -268,28 +269,28 @@ namespace SadSapphicGames.CustomGraphs{
             }
             return connectedNodes;
         }
-        // * Get Connected component sets
-        // ? a potentially useful observation is in an undirected graph connectedness forms an equivalence relation
-        public List<List<GraphNode<TGraphType>>> GetConnectedComponents(){ //? this type name is rather cumbersome
-            List<List<GraphNode<TGraphType>>> connectedComponents = new List<List<GraphNode<TGraphType>>>();
-            Stack<int> idStack = new Stack<int>();
-            foreach (int id in nodes.Keys) {
-                idStack.Push(id);
-            }
-            while(idStack.TryPop(out int nextID)) {
-                bool inComponent = false;
-                if(connectedComponents == new List<List<GraphNode<TGraphType>>>()) { //? if this was the first node in the stack just search
-                    connectedComponents.Add(DFS(nextID)); //?either search works
-                    continue;
-                }
-                foreach (var _class in connectedComponents) { //? if this node is in one of the components we have already searched move on to the next
-                    if(_class.Contains(GetNode(nextID))) 
-                        {inComponent = true;}
-                }
-                if(!inComponent) connectedComponents.Add(DFS(nextID)); //? if it isn't in any of them add a new one by searching from it
-            }
-            return connectedComponents;
-        }
+        // // * Get Connected component sets
+        // // ? a potentially useful observation is in an undirected graph connectedness forms an equivalence relation
+        // public List<List<GraphNode<TGraphType>>> GetConnectedComponents(){ //? this type name is rather cumbersome
+        //     List<List<GraphNode<TGraphType>>> connectedComponents = new List<List<GraphNode<TGraphType>>>();
+        //     Stack<int> idStack = new Stack<int>();
+        //     foreach (int id in nodes.Keys) {
+        //         idStack.Push(id);
+        //     }
+        //     while(idStack.TryPop(out int nextID)) {
+        //         bool inComponent = false;
+        //         if(connectedComponents == new List<List<GraphNode<TGraphType>>>()) { //? if this was the first node in the stack just search
+        //             connectedComponents.Add(DFS(nextID)); //?either search works
+        //             continue;
+        //         }
+        //         foreach (var _class in connectedComponents) { //? if this node is in one of the components we have already searched move on to the next
+        //             if(_class.Contains(GetNode(nextID))) 
+        //                 {inComponent = true;}
+        //         }
+        //         if(!inComponent) connectedComponents.Add(DFS(nextID)); //? if it isn't in any of them add a new one by searching from it
+        //     }
+        //     return connectedComponents;
+        // }
         public bool HasPath(int node1ID, int node2ID){ //? this is identical to asking if two nodes are in the same equivalence class
             return HasPath(GetNode(node1ID), GetNode(node2ID));
         }

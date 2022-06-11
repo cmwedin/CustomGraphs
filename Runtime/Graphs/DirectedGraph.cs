@@ -18,7 +18,7 @@ namespace SadSapphicGames.CustomGraphs {
         public  override AbstractGraph<TGraphType> Copy() {
             DirectedGraph<TGraphType> copyGraph = new DirectedGraph<TGraphType>();
             foreach (var _node in this.GetAllNodes()) {
-                copyGraph.AddNode(new GraphNode<TGraphType>(_node));
+                copyGraph.TryAddNode(new GraphNode<TGraphType>(_node));
             }      
             foreach (var _edge in this.GetAllEdges()) {
                 copyGraph.TryAddEdge(new DirectedEdge<TGraphType>(_edge));
@@ -28,30 +28,30 @@ namespace SadSapphicGames.CustomGraphs {
         protected override void InitializeEdges(List<int[]> edgeList) {
             foreach(var _edgeID in edgeList) {
                 if ((_edgeID.Length != 2) || !nodes.ContainsKey(_edgeID[0]) || !nodes.ContainsKey(_edgeID[1])) throw new System.Exception("invalid initial edge list");
-                var edge = new DirectedEdge<TGraphType>(GetNode(_edgeID[0]),GetNode(_edgeID[1]));
+                var edge = new DirectedEdge<TGraphType>(_edgeID[0],_edgeID[1]);
                 edges.Add(edge.ID,edge);
             }
         }  
   
-        public override bool TryAddEdge(GraphNode<TGraphType> v1, GraphNode<TGraphType> v2) {
-            if(v1.ParentGraph == null) {
-                Debug.LogWarning($"Node with ID {v1.ID} had to be added to graph before adding an edge from it");
-                this.AddNode(v1);}
-            if(v2.ParentGraph == null) {
-                Debug.LogWarning($"Node with ID {v2.ID} had to be added to graph before adding an edge to it");
-                this.AddNode(v2);}
-            if(v1.ParentGraph != v2.ParentGraph) {
-                Debug.LogWarning("Tried to add an edge between two node with different parents");
-                return false;
-            } else if (v1.ParentGraph != this) {
-                Debug.LogWarning("Trying to add an edge between a different graphs node");
-                return false;
-            } //? both node parents are the same and are this
-            var edge = new DirectedEdge<TGraphType>(v1,v2); //? we do this first so we can access its ID when adding it to the dict 
-            // Debug.Log($"adding edge {edge.ID}");
-            edges.Add(edge.ID,edge);
-            return true;
-        }
+        // public override bool TryAddEdge(GraphNode<TGraphType> v1, GraphNode<TGraphType> v2) {
+        //     if(v1.ParentGraph == null) {
+        //         Debug.LogWarning($"Node with ID {v1.ID} had to be added to graph before adding an edge from it");
+        //         this.TryAddNode(v1);}
+        //     if(v2.ParentGraph == null) {
+        //         Debug.LogWarning($"Node with ID {v2.ID} had to be added to graph before adding an edge to it");
+        //         this.TryAddNode(v2);}
+        //     if(v1.ParentGraph != v2.ParentGraph) {
+        //         Debug.LogWarning("Tried to add an edge between two node with different parents");
+        //         return false;
+        //     } else if (v1.ParentGraph != this) {
+        //         Debug.LogWarning("Trying to add an edge between a different graphs node");
+        //         return false;
+        //     } //? both node parents are the same and are this
+        //     var edge = new DirectedEdge<TGraphType>(v1.ID,v2.ID); //? we do this first so we can access its ID when adding it to the dict 
+        //     // Debug.Log($"adding edge {edge.ID}");
+        //     edges.Add(edge.ID,edge);
+        //     return true;
+        // }
 
         public override bool TryAddEdge(AbstractEdge<TGraphType> edge) {
             if(!(edge is DirectedEdge<TGraphType>)) {
@@ -67,8 +67,8 @@ namespace SadSapphicGames.CustomGraphs {
                 Debug.LogWarning("if it cannot be removed consider the copy method or orphan edge constructor");
                 return false;
             }
-            if(!nodes.ContainsKey(edge.SourceNodeID)) { AddNode(edge.SourceNodeID); }
-            if(!nodes.ContainsKey(edge.SinkNodeID)) { AddNode(edge.SinkNodeID); }
+            if(!nodes.ContainsKey(edge.SourceNodeID)) { TryAddNode(new GraphNode<TGraphType>(edge.SourceNodeID)); }
+            if(!nodes.ContainsKey(edge.SinkNodeID)) { TryAddNode(new GraphNode<TGraphType>(edge.SinkNodeID)); }
             edge.SetParent(this);
             GetNode(edge.SourceNodeID).AddEdge(edge);
             GetNode(edge.SinkNodeID).AddEdge(edge);

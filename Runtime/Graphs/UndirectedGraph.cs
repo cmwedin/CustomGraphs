@@ -17,7 +17,7 @@ namespace SadSapphicGames.CustomGraphs {
         public override AbstractGraph<TGraphType> Copy() {
             UndirectedGraph<TGraphType> copyGraph = new UndirectedGraph<TGraphType>();
             foreach (var _node in this.GetAllNodes()) {
-                copyGraph.AddNode(new GraphNode<TGraphType>(_node));
+                copyGraph.TryAddNode(new GraphNode<TGraphType>(_node));
             }      
             foreach (var _edge in this.GetAllEdges()) {
                 copyGraph.TryAddEdge(new UndirectedEdge<TGraphType>(_edge));
@@ -27,26 +27,26 @@ namespace SadSapphicGames.CustomGraphs {
         protected override void InitializeEdges(List<int[]> edgeList) {
             foreach(var _edgeID in edgeList) {
                 if ((_edgeID.Length != 2) || !nodes.ContainsKey(_edgeID[0]) || !nodes.ContainsKey(_edgeID[1])) throw new System.Exception("invalid initial edge list");
-                var edge = new UndirectedEdge<TGraphType>(GetNode(_edgeID[0]),GetNode(_edgeID[1]));
+                var edge = new UndirectedEdge<TGraphType>(_edgeID[0],_edgeID[1]);
                 edges.Add(edge.ID,edge);
             }
         }
 
-        public override bool TryAddEdge(GraphNode<TGraphType> v1, GraphNode<TGraphType> v2) {
-            if(v1.ParentGraph == null) {this.AddNode(v1);}
-            if(v2.ParentGraph == null) {this.AddNode(v2);}
-            if(v1.ParentGraph != v2.ParentGraph) {
-                Debug.LogWarning("Tried to add an edge between two node with different parents");
-                return false;
-            } else if (v1.ParentGraph != this) {
-                Debug.LogWarning("Trying to add an edge between a different graphs node");
-                return false;
-            } //? both node parents are the same and are this
-            var edge = new UndirectedEdge<TGraphType>(v1,v2); //? we do this first so we can access its ID when adding it to the dict 
-            // Debug.Log($"adding edge {edge.ID}");
-            edges.Add(edge.ID,edge);
-            return true;
-        }
+        // public override bool TryAddEdge(GraphNode<TGraphType> v1, GraphNode<TGraphType> v2) {
+        //     if(v1.ParentGraph == null) {this.TryAddNode(v1);}
+        //     if(v2.ParentGraph == null) {this.TryAddNode(v2);}
+        //     if(v1.ParentGraph != v2.ParentGraph) {
+        //         Debug.LogWarning("Tried to add an edge between two node with different parents");
+        //         return false;
+        //     } else if (v1.ParentGraph != this) {
+        //         Debug.LogWarning("Trying to add an edge between a different graphs node");
+        //         return false;
+        //     } //? both node parents are the same and are this
+        //     var edge = new UndirectedEdge<TGraphType>(v1,v2); //? we do this first so we can access its ID when adding it to the dict 
+        //     // Debug.Log($"adding edge {edge.ID}");
+        //     edges.Add(edge.ID,edge);
+        //     return true;
+        // }
 
 
 
@@ -64,8 +64,8 @@ namespace SadSapphicGames.CustomGraphs {
                 Debug.LogWarning("if it cannot be removed consider the copy method or orphan edge constructor");
                 return false;
             }
-            if(!nodes.ContainsKey(edgeToAdd.SourceNodeID)) { AddNode(edgeToAdd.SourceNodeID); }
-            if(!nodes.ContainsKey(edgeToAdd.SinkNodeID)) { AddNode(edgeToAdd.SinkNodeID); }
+            if(!nodes.ContainsKey(edgeToAdd.SourceNodeID)) { TryAddNode(new GraphNode<TGraphType>(edgeToAdd.SourceNodeID)); }
+            if(!nodes.ContainsKey(edgeToAdd.SinkNodeID)) { TryAddNode(new GraphNode<TGraphType>(edgeToAdd.SinkNodeID)); }
             edgeToAdd.SetParent(this);
             GetNode(edgeToAdd.SourceNodeID).AddEdge(edgeToAdd);
             GetNode(edgeToAdd.SinkNodeID).AddEdge(edgeToAdd);
