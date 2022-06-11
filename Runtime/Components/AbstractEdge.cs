@@ -29,16 +29,24 @@ namespace SadSapphicGames.CustomGraphs{
         //     return edge.ID;
         // }
         public GraphNode<TGraphType> GetSourceNode() {
+            if(ParentGraph == null) {
+                Debug.LogWarning("you must add this edge to a graph before getting its source node, returning null");
+                return null;
+            }
             return parentGraph.GetNode(sourceNodeID);
         }
 
         public GraphNode<TGraphType> GetSinkNode() {
+            if(ParentGraph == null) {
+                Debug.LogWarning("you must add this edge to a graph before getting its sink node, returning null");
+                return null;
+            }
             return parentGraph.GetNode(sinkNodeID);
         }
 
         public abstract GraphNode<TGraphType> GetOppositeNode(GraphNode<TGraphType> node); //? this function is the main point of distinction between Directed and Undirected
 // * Constructors
-        // ? orphan edge constructor (intended for use in adding edges by reference)
+        // ? Standard constructor
         public AbstractEdge(int _sourceID, int _sinkID, float weight = 1) {
             sourceNodeID = _sourceID;
             sinkNodeID = _sinkID;
@@ -46,16 +54,16 @@ namespace SadSapphicGames.CustomGraphs{
             this.parentGraph = null;
             this.weight = weight; 
         } 
-        // ? Standard constructor
-        public AbstractEdge(GraphNode<TGraphType> _sourceNode, GraphNode<TGraphType> _sinkNode, float weight = 1) {
-            sourceNodeID = _sourceNode.ID;
-            sinkNodeID = _sinkNode.ID;
-            id = $"{sourceNodeID},{sinkNodeID}";
-            this.parentGraph = _sourceNode.ParentGraph; //TODO this is insufficient
-            GetSourceNode().AddEdge(this);
-            GetSinkNode().AddEdge(this);
-            this.weight = weight;            
-        }
+
+        // public AbstractEdge(GraphNode<TGraphType> _sourceNode, GraphNode<TGraphType> _sinkNode, float weight = 1) {
+        //     sourceNodeID = _sourceNode.ID;
+        //     sinkNodeID = _sinkNode.ID;
+        //     id = $"{sourceNodeID},{sinkNodeID}";
+        //     this.parentGraph = _sourceNode.ParentGraph; //TODO this is insufficient
+        //     GetSourceNode().AddEdge(this);
+        //     GetSinkNode().AddEdge(this);
+        //     this.weight = weight;            
+        // }
 
         //? copy constructor
         public abstract AbstractEdge<TGraphType> Copy(); //? so we can access the copy constructor of abstract graphs
@@ -69,16 +77,20 @@ namespace SadSapphicGames.CustomGraphs{
         }
 // * Modification
         public void SetParent(AbstractGraph<TGraphType> newParent) {
-            if(parentGraph != null) {
+            if(ParentGraph != null) {
                 Debug.LogWarning("You must orphan this edge first before setting a new parent");
                 return;
             }
             parentGraph = newParent;
         }
         public bool TrySwapNodes() {
-            var oldSourceEdgeIDs = GetSourceNode().EdgeIDs;
+            if(ParentGraph == null) {
+                Debug.LogWarning("you must add this edge to a graph before attempting to swap its nodes");
+                return false;
+            }
+            var oldSourceEdgeIDs = GetSourceNode().GetEdgeIDs();
             oldSourceEdgeIDs.Remove(this.ID);
-            var oldSinkEdgeIDs = GetSinkNode().EdgeIDs;
+            var oldSinkEdgeIDs = GetSinkNode().GetEdgeIDs();
             oldSinkEdgeIDs.Remove(this.ID);
             (int oldSourceNodeID, int oldSinkNodeID) = (SourceNodeID, SinkNodeID);
             (int newSourceNodeID, int newSinkNodeID) = (SinkNodeID, SourceNodeID);
