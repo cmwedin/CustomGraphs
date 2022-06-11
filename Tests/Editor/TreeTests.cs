@@ -29,11 +29,11 @@ public class TreeTests
             {3, new List<int>{}},
             {4, new List<int>{}}
         });
-        Assert.IsFalse(actualTree.TryAddEdge(0,3));
-        Assert.IsFalse(actualTree.TryAddEdge(10,20));
+        Assert.IsFalse(actualTree.TryAddEdge(new UndirectedEdge<bool>(0,3)));
+        Assert.IsFalse(actualTree.TryAddEdge(new UndirectedEdge<bool>(10,20)));
 
-        Assert.IsTrue(actualTree.TryAddEdge(3,5));
-        Assert.IsTrue(actualTree.TryAddEdge(6,4));
+        Assert.IsTrue(actualTree.TryAddEdge(new UndirectedEdge<bool>(3,5)));
+        Assert.IsTrue(actualTree.TryAddEdge(new UndirectedEdge<bool>(6,4)));
     }
     [Test]
     public void ReplaceEdgeTest() {
@@ -73,13 +73,13 @@ public class TreeTests
             {3, new List<int>{}},
             {4, new List<int>{}}
         });
-        Assert.IsFalse(rootedTree.TryAddEdge(0,3));
-        Assert.IsFalse(rootedTree.TryAddEdge(10,20));
-        Assert.IsFalse(rootedTree.TryAddEdge(6,4));
+        Assert.IsFalse(rootedTree.TryAddEdge(new UndirectedEdge<bool>(0,3)));
+        Assert.IsFalse(rootedTree.TryAddEdge(new UndirectedEdge<bool>(10,20)));
+        Assert.IsFalse(rootedTree.TryAddEdge(new UndirectedEdge<bool>(6,4)));
 
-        Assert.IsTrue(rootedTree.TryAddEdge(3,5));
+        Assert.IsTrue(rootedTree.TryAddEdge(new UndirectedEdge<bool>(3,5)));
 
-        Assert.AreEqual(actual:rootedTree.RootNode, expected: rootedTree.GetNode(0));
+        Assert.AreEqual(actual:rootedTree.FindRootNode(), expected: rootedTree.GetNode(0));
         Assert.AreEqual(
             actual:rootedTree.GetLayer(0),
             expected: new List<GraphNode<bool>> {

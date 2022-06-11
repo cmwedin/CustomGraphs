@@ -42,6 +42,39 @@ public class GraphTests
         {1, new List<int>{0}},
         {2, new List<int>{1}}
     });
+
+    [Test]
+    public void TestGetNode() {
+        Assert.AreEqual(expected: 0, actual: trivialGraph.GetNode(0).ID);
+    }
+    
+    [Test] 
+    public void TestGetEdgeIDs() {
+        DirectedGraph<float> graph = new DirectedGraph<float> ( new Dictionary<int, List<int>> {
+            {0, new List<int>{1}},
+            {1, new List<int>{}}
+        });
+
+        Assert.AreEqual(expected: 1, actual:graph.GetNode(0).GetEdgeIDs().Count);
+    }
+    [Test]
+    public void TestGetDirectedOutEdges() {
+        DirectedGraph<float> graph = new DirectedGraph<float> ( new Dictionary<int, List<int>> {
+            {0, new List<int>{1}},
+            {1, new List<int>{}}
+        });
+
+        Assert.AreEqual(expected: 1, actual:graph.GetNode(0).GetOutEdges().Count);
+    }
+    [Test]
+    public void TestGetUndirectedOutEdges() {
+        UndirectedGraph<float> graph = new UndirectedGraph<float> ( new Dictionary<int, List<int>> {
+            {0, new List<int>{1}},
+            {1, new List<int>{}}
+        });
+
+        Assert.AreEqual(expected: 1, actual:graph.GetNode(0).GetOutEdges().Count);
+    }
     // A Test behaves as an ordinary method
     [Test]
     public void TestTrivialGraph() {
@@ -77,15 +110,6 @@ public class GraphTests
                 childNodes.GetNode(4)},
             actual:childNodes.BFS(0));
         
-    }
-    [Test]
-    public void TestConnectedComponents() {
-        Assert.AreEqual(
-            expected:new List<List<GraphNode<bool>>>{
-                new List<GraphNode<bool>> {islands.GetNode(3),islands.GetNode(2)},
-                new List<GraphNode<bool>> {islands.GetNode(1),islands.GetNode(0)}
-            },
-            actual:islands.GetConnectedComponents());
     }
     [Test]
     public void TestHasPath() {

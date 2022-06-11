@@ -30,11 +30,19 @@ namespace SadSapphicGames.CustomGraphs
 // ! Methods -------
 // * Field Accessors 
         public ReadOnlyCollection<AbstractEdge<TGraphType>> GetOutEdges() {
+            if(parentGraph == null) {
+                Debug.LogWarning("This node does not have a parent to get its out edges from, returning null");
+                return null;
+            }
             List<AbstractEdge<TGraphType>> output = ParentGraph.GetEdgeList(outEdgeIDs);
             return output.AsReadOnly();
         }
 
         public ReadOnlyCollection<AbstractEdge<TGraphType>> GetInEdges() {
+            if(parentGraph == null) {
+                Debug.LogWarning("This node does not have a parent to get its in edges from, returning null");
+                return null;
+            }
             List<AbstractEdge<TGraphType>> output = ParentGraph.GetEdgeList(inEdgeIDs);
             return output.AsReadOnly();
         }
@@ -86,7 +94,10 @@ namespace SadSapphicGames.CustomGraphs
                 Debug.LogWarning("This node must be added to a graph before it can have edges added");
                 return;
             }
-            if(outEdgeIDs.Contains(_edge.ID) || inEdgeIDs.Contains(_edge.ID)) return;
+            if(outEdgeIDs.Contains(_edge.ID) || inEdgeIDs.Contains(_edge.ID)) {
+                Debug.LogWarning($"node already contains and edge with id {_edge.ID}");
+                return;
+            }
             if(_edge.SinkNodeID == this.ID) { inEdgeIDs.Add(_edge.ID);} //? if this node is a sink add it to in edges
             if(_edge.GetOppositeNode(this) != this){outEdgeIDs.Add(_edge.ID);} //? if the other node is accessible add it to out edge (and undirected edge will be both) 
         }     

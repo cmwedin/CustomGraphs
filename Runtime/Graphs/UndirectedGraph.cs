@@ -28,6 +28,9 @@ namespace SadSapphicGames.CustomGraphs {
             foreach(var _edgeID in edgeList) {
                 if ((_edgeID.Length != 2) || !nodes.ContainsKey(_edgeID[0]) || !nodes.ContainsKey(_edgeID[1])) throw new System.Exception("invalid initial edge list");
                 var edge = new UndirectedEdge<TGraphType>(_edgeID[0],_edgeID[1]);
+                edge.SetParent(this);
+                GetNode(edge.SourceNodeID).AddEdge(edge);
+                GetNode(edge.SinkNodeID).AddEdge(edge);
                 edges.Add(edge.ID,edge);
             }
         }

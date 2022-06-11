@@ -22,7 +22,7 @@ namespace SadSapphicGames.CustomGraphs {
             }
             if(node != GetSourceNode() && node != GetSinkNode()) throw new NotAttachedToEdgeException();
             else if(node == GetSourceNode()) return GetSinkNode();
-            else return null;
+            else return node;
         }
     }
 }

@@ -29,6 +29,9 @@ namespace SadSapphicGames.CustomGraphs {
             foreach(var _edgeID in edgeList) {
                 if ((_edgeID.Length != 2) || !nodes.ContainsKey(_edgeID[0]) || !nodes.ContainsKey(_edgeID[1])) throw new System.Exception("invalid initial edge list");
                 var edge = new DirectedEdge<TGraphType>(_edgeID[0],_edgeID[1]);
+                edge.SetParent(this);
+                GetNode(edge.SourceNodeID).AddEdge(edge);
+                GetNode(edge.SinkNodeID).AddEdge(edge);
                 edges.Add(edge.ID,edge);
             }
         }  
@@ -67,8 +70,18 @@ namespace SadSapphicGames.CustomGraphs {
                 Debug.LogWarning("if it cannot be removed consider the copy method or orphan edge constructor");
                 return false;
             }
-            if(!nodes.ContainsKey(edge.SourceNodeID)) { TryAddNode(new GraphNode<TGraphType>(edge.SourceNodeID)); }
-            if(!nodes.ContainsKey(edge.SinkNodeID)) { TryAddNode(new GraphNode<TGraphType>(edge.SinkNodeID)); }
+            if(!nodes.ContainsKey(edge.SourceNodeID)) { 
+                if(!TryAddNode(new GraphNode<TGraphType>(edge.SourceNodeID))) {
+                    Debug.LogWarning($"Graph does not contain node {edge.SourceNodeID} and it could not be added to the graph");
+                    return false;
+                }
+            }
+            if(!nodes.ContainsKey(edge.SinkNodeID)) { 
+                if(!TryAddNode(new GraphNode<TGraphType>(edge.SinkNodeID))) {
+                    Debug.LogWarning($"Graph does not contain node {edge.SinkNodeID} and it could not be added to the graph");
+                    return false;
+                }
+            }
             edge.SetParent(this);
             GetNode(edge.SourceNodeID).AddEdge(edge);
             GetNode(edge.SinkNodeID).AddEdge(edge);
