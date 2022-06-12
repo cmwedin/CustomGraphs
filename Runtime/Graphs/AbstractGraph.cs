@@ -69,9 +69,7 @@ namespace SadSapphicGames.CustomGraphs{
         }
         // ? adjacency list constructor
         public AbstractGraph(Dictionary<int,List<int>> adjList) { //? O(V+E) time
-            foreach (int id in adjList.Keys) { 
-                TryAddNode(new GraphNode<TGraphType>(id));
-            }
+            InitializeNodes(adjList.Keys.ToList());
             List<int[]> edgeList = new List<int[]>();
             
             foreach (int id in nodes.Keys) {
@@ -84,9 +82,11 @@ namespace SadSapphicGames.CustomGraphs{
         }
         // ? list of edges and size constructor
         public AbstractGraph(int V, List<int[]> E) { //? O(V+E) time
+            var _nodeIDs = new List<int>();
             for (int id = 0; id < V; id++) {
-                TryAddNode(new GraphNode<TGraphType>(id));
+                _nodeIDs.Add(id);
             }
+            InitializeNodes(_nodeIDs);
             InitializeEdges(E);
         }
         // TODO adjacency matrix constructor
@@ -148,6 +148,13 @@ namespace SadSapphicGames.CustomGraphs{
             return true;
         }
         protected abstract void InitializeEdges(List<int[]> edgeList);
+        protected virtual void InitializeNodes(List<int> _nodeIDs) {
+            foreach (var id in _nodeIDs) {  
+                var node = new GraphNode<TGraphType>(id);
+                node.SetParent(this);
+                nodes.Add(node.ID, node);                
+            }
+        }
         
         public virtual bool TryRemoveEdge(AbstractEdge<TGraphType> edge) {
             if(edge.ParentGraph != this) {

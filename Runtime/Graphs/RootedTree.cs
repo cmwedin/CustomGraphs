@@ -109,7 +109,10 @@ namespace SadSapphicGames.CustomGraphs {
                     Debug.LogWarning($"you are trying to add a new in edge to node {edge.SinkNodeID}. A node in a rooted tree can only have one parent / in edge");
                     return false;
                 } else if(nodes.ContainsKey(edge.SourceNodeID) && !nodes.ContainsKey(edge.SinkNodeID)) { 
-                    TryAddNode(new GraphNode<TGraphType>(edge.SinkNodeID)); 
+                    var node = new GraphNode<TGraphType>(edge.SinkNodeID); 
+                    node.SetParent(this);
+                    nodes.Add(node.ID, node);
+                    
                     edge.SetParent(this);
                     GetNode(edge.SourceNodeID).AddEdge(edge);
                     GetNode(edge.SinkNodeID).AddEdge(edge);

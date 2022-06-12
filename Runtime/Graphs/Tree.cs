@@ -67,14 +67,19 @@ namespace SadSapphicGames.CustomGraphs {
                 return false;
             } else {
                 if(!nodes.ContainsKey(edge.SourceNodeID) && nodes.ContainsKey(edge.SinkNodeID)) { 
-                    TryAddNode(new GraphNode<TGraphType>(edge.SourceNodeID)); 
+                    var node = new GraphNode<TGraphType>(edge.SourceNodeID); 
+                    node.SetParent(this);
+                    nodes.Add(node.ID, node);
                     edge.SetParent(this);
                     GetNode(edge.SourceNodeID).AddEdge(edge);
                     GetNode(edge.SinkNodeID).AddEdge(edge);
                     edges.Add(edge.ID, edge);
                     return true;
                 } else if(nodes.ContainsKey(edge.SourceNodeID) && !nodes.ContainsKey(edge.SinkNodeID)) { 
-                    TryAddNode(new GraphNode<TGraphType>(edge.SinkNodeID)); 
+                    var node = new GraphNode<TGraphType>(edge.SinkNodeID); 
+                    node.SetParent(this);
+                    nodes.Add(node.ID, node);
+
                     edge.SetParent(this);
                     GetNode(edge.SourceNodeID).AddEdge(edge);
                     GetNode(edge.SinkNodeID).AddEdge(edge);
