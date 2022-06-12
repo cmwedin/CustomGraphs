@@ -18,8 +18,11 @@ namespace SadSapphicGames.CustomGraphs{
         protected Dictionary<string, AbstractEdge<TGraphType>> edges = new Dictionary<string, AbstractEdge<TGraphType>>();
 
 // ! Methods -----
-// * Member Accessors
+// * Field Accessors
 
+        public bool HasNode(GraphNode<TGraphType> node) {
+            return GetAllNodes().Contains(node); 
+        }
         public GraphNode<TGraphType> GetNode(int ID) {
             if(!nodes.ContainsKey(ID)) {
                 Debug.LogWarning($"node {ID} not found in graph");
@@ -39,8 +42,16 @@ namespace SadSapphicGames.CustomGraphs{
         public List<int> GetAllNodeIDs() {
             return nodes.Keys.ToList(); //? this should be a new object? 
         }
-        public bool HasNode(GraphNode<TGraphType> node) {
-            return GetAllNodes().Contains(node); 
+        public List<GraphNode<TGraphType>> GetNodeList(List<int> nodeIDs) {
+            List<GraphNode<TGraphType>> output = new List<GraphNode<TGraphType>>();
+            foreach (var id in nodeIDs) {
+                output.Add(GetNode(id));
+            }
+            return output;
+        }
+    // * Edge Accessors
+        public bool HasEdge(string id) {
+            return edges.Keys.Contains(id);
         }
         public AbstractEdge<TGraphType> GetEdge(int sourceID, int sinkID) {
             return GetEdge($"{sourceID},{sinkID}");
@@ -51,6 +62,12 @@ namespace SadSapphicGames.CustomGraphs{
                 return null;
             }
             return edges[ID];
+        }
+        public AbstractEdge<TGraphType> GetRandomEdge() {
+            var allEdges = GetAllEdges();
+            var random = new System.Random();
+            int index  = random.Next(allEdges.Count);
+            return allEdges[index];
         }
         public List<AbstractEdge<TGraphType>> GetAllEdges() {
             return edges.Values.ToList();
@@ -114,7 +131,7 @@ namespace SadSapphicGames.CustomGraphs{
             }
         }
 
-        // * Modification Methods
+// * Modification Methods
         // * abstract edge methods
         // public virtual bool TryAddEdge(int id1, int id2) { 
         //     if(!nodes.ContainsKey(id1)) {
