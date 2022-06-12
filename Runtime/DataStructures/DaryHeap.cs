@@ -14,7 +14,7 @@ namespace SadSapphicGames.DataStructures{
     // ? since this isn't intended for general use and I mostly need it for pathfinding I'm only going to implement a min heap 
     public class D_aryHeap<THeapType> {
         private GraphNode<float> rootNode;
-        private int childCapacity; // ? the D in D-ary
+        private readonly int childCapacity; // ? the D in D-ary
         private RootedTree<float> heapTree = new RootedTree<float>();
         private Dictionary<THeapType,int> objectIDs = new Dictionary<THeapType, int>();
         private Dictionary<int,THeapType> reverseObjID = new Dictionary<int, THeapType>();
@@ -26,6 +26,12 @@ namespace SadSapphicGames.DataStructures{
 // * Constructors
         public D_aryHeap(int D) {
             childCapacity = D;
+        }
+        public D_aryHeap(int D, Dictionary<THeapType, float> initialValues) {
+            childCapacity = D;
+            foreach (var obj in initialValues.Keys) {
+                Push(obj,initialValues[obj]);
+            }
         }
         
         public THeapType Peek() {
