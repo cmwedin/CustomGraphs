@@ -66,7 +66,9 @@ namespace SadSapphicGames.CustomGraphs{
         // }
 
         //? copy constructor
-        public abstract AbstractEdge<TGraphType> Copy(); //? so we can access the copy constructor of abstract graphs
+        public AbstractEdge<TGraphType> Copy() {
+            return (AbstractEdge<TGraphType>)Activator.CreateInstance(this.GetType(), (AbstractEdge<TGraphType>)this);
+        }
         public AbstractEdge(AbstractEdge<TGraphType> _edge) {
             //? we ignore the only reference type member of an edge and consider the new edge to be an orphan
             this.sinkNodeID = _edge.SinkNodeID;

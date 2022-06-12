@@ -14,10 +14,6 @@ namespace SadSapphicGames.CustomGraphs
         public UndirectedEdge(int _sourceID, int _sinkID, float weight = 1) : base(_sourceID, _sinkID, weight) {
         }
 
-        public override AbstractEdge<TGraphType> Copy() {
-            return new UndirectedEdge<TGraphType>(this);
-        }
-
         public override GraphNode<TGraphType> GetOppositeNode(GraphNode<TGraphType> node) {
             if(ParentGraph == null) {
                 Debug.LogWarning("You must assign this edge to a graph before getting the nodes attached to it, returning null");
