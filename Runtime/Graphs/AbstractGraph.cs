@@ -80,6 +80,10 @@ namespace SadSapphicGames.CustomGraphs{
             foreach(var ID in IDs) {output.Add(edges[ID]);}
             return output;
         }
+        public List<AbstractEdge<TGraphType>> GetPathFromString(string pathID) {
+            var edgeIDs = pathID.Split("|");
+            return GetEdgeList(edgeIDs.ToList());
+        }
 // * Constructors
         // ? Empty Graph Constructor
         public AbstractGraph() {

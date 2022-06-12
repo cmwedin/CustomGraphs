@@ -130,6 +130,6 @@ public class GraphTests
     [Test]
     public void SortTest() {
         var sortedNodes = TopologicalSort<bool>.Sort(unsorted);
-        Assert.AreEqual(expected: unsorted.GetNode(2), actual: sortedNodes[0]);
+        Assert.AreEqual(expected: 0, actual: sortedNodes[unsorted.GetNode(2)]);
     }
 }

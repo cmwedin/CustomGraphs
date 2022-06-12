@@ -3,13 +3,13 @@ using UnityEngine;
 
 namespace SadSapphicGames.CustomGraphs {
     public static class TopologicalSort<TGraphType> {
-        public static Dictionary<int,GraphNode<TGraphType>> Sort(DirectedGraph<TGraphType> graph) {
+        public static Dictionary<GraphNode<TGraphType>,int> Sort(DirectedGraph<TGraphType> graph) {
             if(!TarjanSCCSolver<TGraphType>.CheckDAG(graph)) {
                 Debug.LogWarning("only a DAG can be Top-Sorted");
                 return null;
             }
             Dictionary<int,int> nodeDegrees = new Dictionary<int, int>();
-            Dictionary<int,GraphNode<TGraphType>> sortedNodes = new Dictionary<int, GraphNode<TGraphType>>();
+            Dictionary<GraphNode<TGraphType>,int> sortedNodes = new Dictionary<GraphNode<TGraphType>,int>();
             Queue<GraphNode<TGraphType>> sortQ = new Queue<GraphNode<TGraphType>>();
             
             foreach(var node in graph.GetAllNodes()) {
@@ -19,7 +19,7 @@ namespace SadSapphicGames.CustomGraphs {
             
             int i = 0;
             while(sortQ.TryDequeue(out GraphNode<TGraphType> nextNode)) {
-                sortedNodes.Add(i,nextNode);
+                sortedNodes.Add(nextNode,i);
                 foreach(var edge in nextNode.GetOutEdges()) {
                     var neighbor = edge.GetOppositeNode(nextNode);
                     nodeDegrees[neighbor.ID]--;
