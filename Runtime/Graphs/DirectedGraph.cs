@@ -13,18 +13,10 @@ namespace SadSapphicGames.CustomGraphs {
 
         public DirectedGraph(int V, List<int[]> E) : base(V, E) {
         }
+        public DirectedGraph(AbstractGraph<TGraphType> _graph) : base(_graph) {
 
-
-        public  override AbstractGraph<TGraphType> Copy() {
-            DirectedGraph<TGraphType> copyGraph = new DirectedGraph<TGraphType>();
-            foreach (var _node in this.GetAllNodes()) {
-                copyGraph.TryAddNode(new GraphNode<TGraphType>(_node));
-            }      
-            foreach (var _edge in this.GetAllEdges()) {
-                copyGraph.TryAddEdge(new DirectedEdge<TGraphType>(_edge));
-            }
-            return copyGraph;
         }
+
         protected override void InitializeEdges(List<int[]> edgeList) {
             foreach(var _edgeID in edgeList) {
                 if ((_edgeID.Length != 2) || !nodes.ContainsKey(_edgeID[0]) || !nodes.ContainsKey(_edgeID[1])) throw new System.Exception("invalid initial edge list");

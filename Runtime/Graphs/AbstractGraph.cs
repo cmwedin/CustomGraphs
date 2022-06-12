@@ -94,10 +94,28 @@ namespace SadSapphicGames.CustomGraphs{
             throw new NotImplementedException();
         }
         //? copy "constructor"
-        public abstract AbstractGraph<TGraphType> Copy();
+        public AbstractGraph<TGraphType> Copy() {
+            return (AbstractGraph<TGraphType>)Activator.CreateInstance(this.GetType(),(AbstractGraph<TGraphType>)this);
+        }
 
-// * Modification Methods
-    // * abstract edge methods
+        public AbstractGraph(AbstractGraph<TGraphType> _graph) {
+            if(this.GetType() != _graph.GetType()) throw new SystemException("illegal argument, the graph to copy must be the same type as the new graph");
+            var nodeData = new Dictionary<int,TGraphType>();
+            foreach (var node in _graph.nodes.Values) {
+                nodeData.Add(node.ID,node.Value);
+            }
+            InitializeNodes(nodeData);
+            foreach (var edge in _graph.edges.Values) {
+                var copiedEdge = (AbstractEdge<TGraphType>)Activator.CreateInstance(edge.GetType(),(AbstractEdge<TGraphType>)edge);
+                copiedEdge.SetParent(this);
+                GetNode(copiedEdge.SourceNodeID).AddEdge(copiedEdge);
+                GetNode(copiedEdge.SinkNodeID).AddEdge(copiedEdge);
+                this.edges.Add(copiedEdge.ID,copiedEdge);
+            }
+        }
+
+        // * Modification Methods
+        // * abstract edge methods
         // public virtual bool TryAddEdge(int id1, int id2) { 
         //     if(!nodes.ContainsKey(id1)) {
         //         Debug.LogWarning($"A new node with id {id1} had to be created to add this edge");
@@ -110,7 +128,7 @@ namespace SadSapphicGames.CustomGraphs{
         //     return TryAddEdge(GetNode(id1), GetNode(id2));
         // }
         // public abstract bool TryAddEdge(GraphNode<TGraphType> v1, GraphNode<TGraphType> v2);
-        
+
         public abstract bool TryAddEdge(AbstractEdge<TGraphType> edgeToAdd);
         public virtual bool TryReplaceEdge(AbstractEdge<TGraphType> oldEdge, AbstractEdge<TGraphType> newEdge) {
             if(newEdge.GetType() != oldEdge.GetType()) {
@@ -153,6 +171,12 @@ namespace SadSapphicGames.CustomGraphs{
                 var node = new GraphNode<TGraphType>(id);
                 node.SetParent(this);
                 nodes.Add(node.ID, node);                
+            }
+        }
+        protected void InitializeNodes(Dictionary<int, TGraphType> nodeData) {
+            InitializeNodes(nodeData.Keys.ToList());
+            foreach (var id in nodeData.Keys) {
+                GetNode(id).SetValue(nodeData[id]);
             }
         }
         
