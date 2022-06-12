@@ -218,7 +218,10 @@ namespace SadSapphicGames.CustomGraphs{
                 return false;
             }
             foreach (var edgeID in node.GetEdgeIDs()) {
-                TryRemoveEdge(GetEdge(edgeID));
+                var edge = GetEdge(edgeID);
+                GetNode(edge.SourceNodeID).RemoveEdge(edge);
+                GetNode(edge.SinkNodeID).RemoveEdge(edge);
+                edges.Remove(edge.ID);
             }
             nodes.Remove(node.ID);
             node = null;
