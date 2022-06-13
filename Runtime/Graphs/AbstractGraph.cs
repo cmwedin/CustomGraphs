@@ -268,7 +268,9 @@ namespace SadSapphicGames.CustomGraphs{
         public static AbstractGraph<TGraphType> operator +(AbstractGraph<TGraphType> a,AbstractEdge<TGraphType> b) {
             AbstractGraph<TGraphType> output = a.Copy();
             AbstractEdge<TGraphType> bCopy = b.Copy();
-            output.TryAddEdge(bCopy);
+            if(!output.TryAddEdge(bCopy)){
+                throw new SystemException("Failed to add edge to copied graph");
+            }
             return output;
         }
         public static AbstractGraph<TGraphType> operator -(AbstractGraph<TGraphType> a,AbstractEdge<TGraphType> b) {
@@ -277,7 +279,9 @@ namespace SadSapphicGames.CustomGraphs{
                 return null;
             }
             AbstractGraph<TGraphType> output = a.Copy();
-            output.TryRemoveEdge(output.GetEdge(b.ID));
+            if(!output.TryRemoveEdge(output.GetEdge(b.ID))) {
+                throw new SystemException("failed to remove node from copied graph");
+            }
             return output;
         }
 // * Searches

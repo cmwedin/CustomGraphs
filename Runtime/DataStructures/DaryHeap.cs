@@ -161,8 +161,10 @@ namespace SadSapphicGames.DataStructures{
             if( heapTree.GetChildren(objNode).Count == 0) {
                 Debug.LogWarning("object is already the bottom-most node");
                 return;
-            } else while (objNode.Value > GetSmallestChild(objNode).Value) {
-                heapTree.GetEdge($"{objNode.ID},{GetSmallestChild(objNode).ID}").TrySwapNodes();
+            } else {
+                while (heapTree.GetChildren(objNode).Count != 0 && objNode.Value > GetSmallestChild(objNode).Value) {
+                    heapTree.GetEdge($"{objNode.ID},{GetSmallestChild(objNode).ID}").TrySwapNodes();
+                } 
             }
             // throw new NotImplementedException();
         }

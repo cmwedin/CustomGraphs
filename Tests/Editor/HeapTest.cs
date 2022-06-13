@@ -19,7 +19,7 @@ public class HeapTest
         heap.Push(new Foo("foo 1"), 30);
         heap.Push(new Foo("foo 2"), 20);
         heap.Push(new Foo("foo 3"), 10);
-        heap.Push(new Foo("foo 4"), 15);
+        heap.Push(new Foo("foo 4"), 10);
 
         Foo outFoo;
         Assert.IsTrue(heap.TryPop(out outFoo));
@@ -28,14 +28,6 @@ public class HeapTest
         Assert.IsTrue(heap.TryPop(out outFoo));
         Assert.AreEqual(actual:outFoo.bar, expected: "foo 4");
 
-        Foo refFoo = new Foo("foo 5");
-        heap.Push(refFoo,23);
-        heap.IncreaseKey(refFoo,35);
-        heap.DecreaseKey(refFoo,19);
-        
-        Assert.IsTrue(heap.TryPop(out outFoo));
-        Assert.AreEqual(actual:outFoo.bar, expected: "foo 5");
-
         Assert.IsTrue(heap.TryPop(out outFoo));
         Assert.AreEqual(actual:outFoo.bar, expected: "foo 2");
 
@@ -43,5 +35,23 @@ public class HeapTest
         Assert.AreEqual(actual:outFoo.bar, expected: "foo 1");
 
         Assert.IsFalse(heap.TryPop(out outFoo));
+    }
+    [Test]
+    public void ChangeKeyTest() { 
+        D_aryHeap<int> heap = new D_aryHeap<int>(2, new Dictionary<int, float>{
+            {1,10},
+            {2,20},
+            {3,30}
+        });
+
+        heap.IncreaseKey(1,50);
+        heap.DecreaseKey(3,10);
+        int outInt;
+        Assert.IsTrue(heap.TryPop(out outInt));
+        Assert.AreEqual(expected:3, actual:outInt); 
+        Assert.IsTrue(heap.TryPop(out outInt));
+        Assert.AreEqual(expected:2, actual:outInt); 
+        Assert.IsTrue(heap.TryPop(out outInt));
+        Assert.AreEqual(expected:1, actual:outInt); 
     }
 }

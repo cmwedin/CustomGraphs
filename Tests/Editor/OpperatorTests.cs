@@ -13,46 +13,7 @@ internal class Bar {
 }
 
 public class OperatorTests {
-    [Test]
-    public void ReplaceEdgeTest(){
-        DirectedGraph<bool> graphA = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
-            {0, new List<int>{1}}, 
-            {1, new List<int>{2}},
-            {2, new List<int>{0}} 
-        });
-        UndirectedGraph<bool> graphB = new UndirectedGraph<bool>( new Dictionary<int, List<int>> {
-            {3, new List<int>{4}},
-            {4, new List<int>{5}},
-            {5, new List<int>{}} 
-        });
-        Assert.IsFalse(graphA.TryReplaceEdge(graphA.GetEdge("0,1"),new UndirectedEdge<bool>(0,2)));
-        Assert.IsFalse(graphA.TryReplaceEdge(graphA.GetEdge("0,1"),graphA.GetEdge("1,2")));
 
-        
-        Assert.IsTrue(graphA.TryReplaceEdge(graphA.GetEdge("0,1"),new DirectedEdge<bool>(0,2)));
-        Assert.IsFalse(graphA.HasPath(0,1));     
-
-    }
-    [Test]
-    public void SwapEdgeNodesTest(){
-        DirectedGraph<bool> graphA = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
-            {0, new List<int>{1}}, 
-            {1, new List<int>{2}},
-            {2, new List<int>{0}} 
-        });
-        UndirectedGraph<bool> graphB = new UndirectedGraph<bool>( new Dictionary<int, List<int>> {
-            {3, new List<int>{4}},
-            {4, new List<int>{5}},
-            {5, new List<int>{}} 
-        });
-        Assert.IsTrue(graphA.GetEdge("0,1").TrySwapNodes());
-        // Assert.IsFalse(graphA.HasPath(0,1));
-        graphA.DebugMsg();
-
-        Assert.IsTrue(graphB.GetEdge("3,4").TrySwapNodes());
-       graphB.DebugMsg();     
-
-    }
     [Test]
     public void CopyTests() {
         DirectedGraph<bool> graphA = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
@@ -198,6 +159,14 @@ public class OperatorTests {
 
         Assert.IsNull(graphA - new DirectedEdge<bool>(0,2));
         Assert.IsNull(graphB - new UndirectedEdge<bool>(0,2));
-
+    }
+    [Test]
+    public void IllegalOperationTest() {
+        DirectedGraph<bool> graphA = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
+            {0, new List<int>{1}}, 
+            {1, new List<int>{2}},
+            {2, new List<int>{0}} 
+        });
+        Assert.Throws<System.SystemException>(delegate{ var newGraph = graphA + new UndirectedEdge<bool>(0,2);});            
     }
 }

@@ -6,17 +6,18 @@ using UnityEngine.TestTools;
 using SadSapphicGames.CustomGraphs;
 
 public class ShortestPathTests {
-    DirectedGraph<bool> DAGraph = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
-        {0, new List<int>{1}}, 
-        {1, new List<int>{2,4}},
-        {2, new List<int>{3}},
-        {3, new List<int>{4}},
-        {4, new List<int>{}} 
-
-    });
     // A Test behaves as an ordinary method
     [Test]
     public void DAGShortestPathTest() {
+        
+        DirectedGraph<bool> DAGraph = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
+            {0, new List<int>{1}}, 
+            {1, new List<int>{2,4}},
+            {2, new List<int>{3}},
+            {3, new List<int>{4}},
+            {4, new List<int>{}} 
+
+        });
         var shortestPathsCosts = ShortestPath<bool>.DAGShortestPath(DAGraph, 0,out var shortestPaths);
 
         Assert.AreEqual(expected: 3, actual: shortestPathsCosts[3]);
@@ -29,5 +30,27 @@ public class ShortestPathTests {
             expected: "0,1|1,4",
             actual: shortestPaths[4]
         );
+    }
+    [Test]
+    public void DAGShortestPathIllegalArgumentTest () {
+        DirectedGraph<bool> trivialCycle = new DirectedGraph<bool>( new Dictionary<int, List<int>>{
+            {0, new List<int>{1}},
+            {1, new List<int>{0}}
+        });
+        Assert.Throws<SadSapphicGames.CustomGraphs.NotDAGException>(delegate{ ShortestPath<bool>.DAGShortestPath(trivialCycle,0,out var empty);});
+    }
+    [Test]
+    public void DAGEqualCostPaths() {
+        DirectedGraph<bool> graph = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
+            {0,new List<int>{1,2}},
+            {1,new List<int>{3}},
+            {2,new List<int>{3}},
+            {3,new List<int>{}},
+        });
+        var shortestPathsCosts = ShortestPath<bool>.DAGShortestPath(graph,0,out var shortestPaths);
+        Assert.AreEqual(expected:2, actual:shortestPathsCosts[3]);
+        Assert.AreEqual(
+            actual: shortestPaths[3],  
+            expected: "0,1|1,3");
     }
 }

@@ -21,6 +21,26 @@ public class TreeTests
             undirectedTree + new UndirectedEdge<bool>(3,4)));
     }
     [Test]
+    public void TryAddNodeTest() {
+        Tree<bool> tree = new Tree<bool>();
+
+        Assert.IsTrue(tree.TryAddNode(new GraphNode<bool>(0)));
+        Assert.IsFalse(tree.TryAddNode(new GraphNode<bool>(1)));
+    }
+        public void TryRemoveNodeTest() {
+        Tree<bool> tree = new Tree<bool>(new Dictionary<int, List<int>>{
+            {0, new List<int> {1,2}},
+            {1, new List<int> {}},
+            {2, new List<int> {3}},
+            {3, new List<int> {}},
+        });
+
+        Assert.IsFalse(tree.TryRemoveNode(new GraphNode<bool>(0)));
+        Assert.IsTrue(tree.TryRemoveNode(new GraphNode<bool>(1)));
+        Assert.IsFalse(tree.TryRemoveNode(new GraphNode<bool>(2)));
+        Assert.IsTrue(tree.TryRemoveNode(new GraphNode<bool>(3)));
+    }
+    [Test]
     public void AddEdgeTest() {
         Tree<bool> actualTree = new Tree<bool>( new Dictionary<int, List<int>> {
             {0, new List<int>{1,2}},
