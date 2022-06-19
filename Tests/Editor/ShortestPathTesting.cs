@@ -69,6 +69,8 @@ public class ShortestPathTests {
             {3,new List<int>{4,0}},
             {4,new List<int>{1}}
         });
+
+        // ? Directed Graph Test
         var bestPathCost = ShortestPath<bool>.DijkstraShortestPath(directedGraph.GetNode(0), out var bestPathIDs);
         Assert.AreEqual(expected:0, actual: bestPathCost[directedGraph.GetNode(0)]);
         Assert.AreEqual(expected:1, actual: bestPathCost[directedGraph.GetNode(1)]);
@@ -94,6 +96,34 @@ public class ShortestPathTests {
         Assert.AreEqual(
             expected:"0,1|1,3|3,4",
             actual:bestPathIDs[directedGraph.GetNode(4)]
+        );
+
+        //? UndirectedGraphTest
+        bestPathCost = ShortestPath<bool>.DijkstraShortestPath(undirectedGraph.GetNode(0), out bestPathIDs);
+        Assert.AreEqual(expected:0, actual: bestPathCost[undirectedGraph.GetNode(0)]);
+        Assert.AreEqual(expected:1, actual: bestPathCost[undirectedGraph.GetNode(1)]);
+        Assert.AreEqual(expected:1, actual: bestPathCost[undirectedGraph.GetNode(2)]);
+        Assert.AreEqual(expected:1, actual: bestPathCost[undirectedGraph.GetNode(3)]);
+        Assert.AreEqual(expected:2, actual: bestPathCost[undirectedGraph.GetNode(4)]);
+        Assert.AreEqual(
+            expected:"",
+            actual:bestPathIDs[undirectedGraph.GetNode(0)]
+        );
+        Assert.AreEqual(
+            expected:"0,1",
+            actual:bestPathIDs[undirectedGraph.GetNode(1)]
+        );
+        Assert.AreEqual(
+            expected:"0,2",
+            actual:bestPathIDs[undirectedGraph.GetNode(2)]
+        );
+        Assert.AreEqual(
+            expected:"3,0",
+            actual:bestPathIDs[undirectedGraph.GetNode(3)]
+        );
+        Assert.AreEqual(
+            expected:"0,1|4,1",
+            actual:bestPathIDs[undirectedGraph.GetNode(4)]
         );
     }
 }
