@@ -53,4 +53,28 @@ public class ShortestPathTests {
             actual: shortestPaths[3],  
             expected: "0,1|1,3");
     }
+    [Test]
+    public void DijkstraTest() {
+        DirectedGraph<bool> directedGraph = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
+            {0, new List<int>{1,2}},
+            {1, new List<int>{2,3}},
+            {2, new List<int>{3}},
+            {3,new List<int>{4,0}},
+            {4,new List<int>{1}}
+        });
+        UndirectedGraph<bool> undirectedGraph = new UndirectedGraph<bool>( new Dictionary<int, List<int>> {
+            {0, new List<int>{1,2}},
+            {1, new List<int>{2,3}},
+            {2, new List<int>{3}},
+            {3,new List<int>{4,0}},
+            {4,new List<int>{1}}
+        });
+        var bestPathCost = ShortestPath<bool>.DijkstraShortestPath(directedGraph.GetNode(0), out var bestPathIDs);
+        Assert.AreEqual(expected:0, actual: bestPathCost[directedGraph.GetNode(0)]);
+        Assert.AreEqual(expected:1, actual: bestPathCost[directedGraph.GetNode(1)]);
+        Assert.AreEqual(expected:1, actual: bestPathCost[directedGraph.GetNode(2)]);
+        Assert.AreEqual(expected:2, actual: bestPathCost[directedGraph.GetNode(3)]);
+        Assert.AreEqual(expected:3, actual: bestPathCost[directedGraph.GetNode(4)]);
+
+    }
 }

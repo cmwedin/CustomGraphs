@@ -77,12 +77,12 @@ namespace SadSapphicGames.CustomGraphs
 
         public static Dictionary<GraphNode<TGraphType>, float> DijkstraShortestPath(
             GraphNode<TGraphType> startNode,
-            out Dictionary<GraphNode<TGraphType>, List<AbstractEdge<TGraphType>>> bestPaths
+            out Dictionary<GraphNode<TGraphType>, string> bestPathIDs
         ) {
             var graph = startNode.ParentGraph;
             if(graph == null) {
                 Debug.LogWarning("This node is not attached to a graph, returning null");
-                bestPaths = null;
+                bestPathIDs = null;
                 return null;
             }
             
@@ -90,8 +90,10 @@ namespace SadSapphicGames.CustomGraphs
             // List<AbstractEdge<TGraphType>> currentPath = new List<AbstractEdge<TGraphType>>();
             List<AbstractEdge<TGraphType>> visitedEdges = new List<AbstractEdge<TGraphType>>();
             Dictionary<GraphNode<TGraphType>, float> bestPathCost = new Dictionary<GraphNode<TGraphType>, float>();
-            bestPaths = new Dictionary<GraphNode<TGraphType>, List<AbstractEdge<TGraphType>>>();
-            int D = Mathf.RoundToInt(graph.GetAllEdges().Count/graph.GetAllNodes().Count);
+            var bestPaths = new Dictionary<GraphNode<TGraphType>, List<AbstractEdge<TGraphType>>>();
+            bestPathIDs = new Dictionary<GraphNode<TGraphType>, string>();
+            int D = Mathf.Clamp(Mathf.FloorToInt(graph.GetAllEdges().Count/graph.GetAllNodes().Count),2,int.MaxValue);
+            Debug.Log($"optimal heap degree for this graph is {D}");
             D_aryHeap<GraphNode<TGraphType>> heap = new D_aryHeap<GraphNode<TGraphType>>(D);
             foreach(var node in graph.GetAllNodes()) {
                 bestPathCost.Add(node,float.PositiveInfinity);
@@ -102,23 +104,31 @@ namespace SadSapphicGames.CustomGraphs
             
         // ? Algorithm body
             while (heap.TryPop(out var currentNode)) {
+                Debug.Log($"evaluating node {currentNode.ID}");
                 foreach (var edge in currentNode.GetOutEdges()) {
                     if(visitedEdges.Contains(edge)) continue;
                     if(edge.Weight < 0) {
                         Debug.LogWarning($"edge {edge.ID} has weight {edge.Weight}, Dijkstra's Algorithm cannot be run on graphs with negative edge weights. Returning null");
-                        bestPaths = null;
+                        bestPathIDs = null;
                         return null;
                     } else { //? this else is for readability, not needed
+                        Debug.Log($"evaluating edge {edge.ID}");
                         visitedEdges.Add(edge);
                         var oppositeNode = edge.GetOppositeNode(currentNode); 
+
                         if(bestPathCost[oppositeNode] == float.PositiveInfinity) { //? if this is our first time reaching this node
-                            bestPaths[oppositeNode] = bestPaths[currentNode];
+                            Debug.Log($"this is the first time reaching node {oppositeNode.ID}");
+                            bestPaths[oppositeNode] = new List<AbstractEdge<TGraphType>>(bestPaths[currentNode]);
                             bestPaths[oppositeNode].Add(edge);
+                            Debug.Log($"initializing best path to {PathAsString(bestPaths[oppositeNode])}");
+                            bestPathIDs[oppositeNode] = PathAsString(bestPaths[oppositeNode]);
                             bestPathCost[oppositeNode] = PathCost(bestPaths[oppositeNode]);
                             heap.Push(oppositeNode,bestPathCost[oppositeNode]);
                         } else if(bestPathCost[currentNode] + edge.Weight < bestPathCost[oppositeNode]) { //? if this path to this node is better than the previous
-                            bestPaths[oppositeNode] = bestPaths[currentNode];
+                            Debug.Log($"better path to node {oppositeNode.ID} found with cost {bestPathCost[currentNode] + edge.Weight}, previous best path cost was {bestPathCost[oppositeNode]}");
+                            bestPaths[oppositeNode] = new List<AbstractEdge<TGraphType>>(bestPaths[currentNode]);
                             bestPaths[oppositeNode].Add(edge);
+                            bestPathIDs[oppositeNode] = PathAsString(bestPaths[oppositeNode]);
                             bestPathCost[oppositeNode] = PathCost(bestPaths[oppositeNode]);
                             heap.DecreaseKey(oppositeNode,bestPathCost[oppositeNode]);
                         } else { //? our previous path to this node was better than this one, this section is for readability
