@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using SadSapphicGames.DataStructures;
 
 namespace SadSapphicGames.CustomGraphs
 {
@@ -56,12 +57,12 @@ namespace SadSapphicGames.CustomGraphs
                         bestPathIDs[oppNode.ID] = PathAsString(currentPath);
                     } else { continue;}
                 } else {
-                    Debug.Log($"reached node {oppNode.ID} for first time"); //! the shows up for node 1
+                    Debug.Log($"reached node {oppNode.ID} for first time"); 
                     Debug.Log("initializing best path");
                     bestPathIDs[oppNode.ID] = PathAsString(currentPath);
                     Debug.Log($"initializing best cost to {PathCost(currentPath)}");
-                    bestPathCost[oppNode.ID] = PathCost(currentPath); //! presumably this breaks the if?
-                    Debug.Log("continuing recursion");  //! this code forward isn't running
+                    bestPathCost[oppNode.ID] = PathCost(currentPath); 
+                    Debug.Log("continuing recursion");
                     DAGRecursion(
                         oppNode,
                         currentPath,
@@ -73,6 +74,62 @@ namespace SadSapphicGames.CustomGraphs
             }
             return bestPathIDs;
         }
+
+        public static Dictionary<GraphNode<TGraphType>, float> DijkstraShortestPath(
+            GraphNode<TGraphType> startNode,
+            out Dictionary<GraphNode<TGraphType>, List<AbstractEdge<TGraphType>>> bestPaths
+        ) {
+            var graph = startNode.ParentGraph;
+            if(graph == null) {
+                Debug.LogWarning("This node is not attached to a graph, returning null");
+                bestPaths = null;
+                return null;
+            }
+            
+        // ? initialization
+            // List<AbstractEdge<TGraphType>> currentPath = new List<AbstractEdge<TGraphType>>();
+            List<AbstractEdge<TGraphType>> visitedEdges = new List<AbstractEdge<TGraphType>>();
+            Dictionary<GraphNode<TGraphType>, float> bestPathCost = new Dictionary<GraphNode<TGraphType>, float>();
+            bestPaths = new Dictionary<GraphNode<TGraphType>, List<AbstractEdge<TGraphType>>>();
+            int D = Mathf.RoundToInt(graph.GetAllEdges().Count/graph.GetAllNodes().Count);
+            D_aryHeap<GraphNode<TGraphType>> heap = new D_aryHeap<GraphNode<TGraphType>>(D);
+            foreach(var node in graph.GetAllNodes()) {
+                bestPathCost.Add(node,float.PositiveInfinity);
+                bestPaths.Add(node, new List<AbstractEdge<TGraphType>>());
+            }
+            bestPathCost[startNode] = 0;
+            heap.Push(startNode,0);
+            
+        // ? Algorithm body
+            while (heap.TryPop(out var currentNode)) {
+                foreach (var edge in currentNode.GetOutEdges()) {
+                    if(visitedEdges.Contains(edge)) continue;
+                    if(edge.Weight < 0) {
+                        Debug.LogWarning($"edge {edge.ID} has weight {edge.Weight}, Dijkstra's Algorithm cannot be run on graphs with negative edge weights. Returning null");
+                        bestPaths = null;
+                        return null;
+                    } else { //? this else is for readability, not needed
+                        visitedEdges.Add(edge);
+                        var oppositeNode = edge.GetOppositeNode(currentNode); 
+                        if(bestPathCost[oppositeNode] == float.PositiveInfinity) { //? if this is our first time reaching this node
+                            bestPaths[oppositeNode] = bestPaths[currentNode];
+                            bestPaths[oppositeNode].Add(edge);
+                            bestPathCost[oppositeNode] = PathCost(bestPaths[oppositeNode]);
+                            heap.Push(oppositeNode,bestPathCost[oppositeNode]);
+                        } else if(bestPathCost[currentNode] + edge.Weight < bestPathCost[oppositeNode]) { //? if this path to this node is better than the previous
+                            bestPaths[oppositeNode] = bestPaths[currentNode];
+                            bestPaths[oppositeNode].Add(edge);
+                            bestPathCost[oppositeNode] = PathCost(bestPaths[oppositeNode]);
+                            heap.DecreaseKey(oppositeNode,bestPathCost[oppositeNode]);
+                        } else { //? our previous path to this node was better than this one, this section is for readability
+                            continue;
+                        }
+                    }
+                }
+            }
+            return bestPathCost;
+        }
+
 
         // public static Dictionary<int,float> DijkstraShortestPath(AbstractGraph<TGraphType> graph, int startingNodeID,out Dictionary<int,string> bestPaths) {
         //     var startingNode = graph.GetNode(startingNodeID);
