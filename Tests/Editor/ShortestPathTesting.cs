@@ -75,6 +75,25 @@ public class ShortestPathTests {
         Assert.AreEqual(expected:1, actual: bestPathCost[directedGraph.GetNode(2)]);
         Assert.AreEqual(expected:2, actual: bestPathCost[directedGraph.GetNode(3)]);
         Assert.AreEqual(expected:3, actual: bestPathCost[directedGraph.GetNode(4)]);
-
+        Assert.AreEqual(
+            expected:"",
+            actual:bestPathIDs[directedGraph.GetNode(0)]
+        );
+        Assert.AreEqual(
+            expected:"0,1",
+            actual:bestPathIDs[directedGraph.GetNode(1)]
+        );
+        Assert.AreEqual(
+            expected:"0,2",
+            actual:bestPathIDs[directedGraph.GetNode(2)]
+        );
+        Assert.AreEqual(
+            expected:"0,1|1,3",
+            actual:bestPathIDs[directedGraph.GetNode(3)]
+        );
+        Assert.AreEqual(
+            expected:"0,1|1,3|3,4",
+            actual:bestPathIDs[directedGraph.GetNode(4)]
+        );
     }
 }

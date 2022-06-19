@@ -98,6 +98,7 @@ namespace SadSapphicGames.CustomGraphs
             foreach(var node in graph.GetAllNodes()) {
                 bestPathCost.Add(node,float.PositiveInfinity);
                 bestPaths.Add(node, new List<AbstractEdge<TGraphType>>());
+                bestPathIDs.Add(node,"");
             }
             bestPathCost[startNode] = 0;
             heap.Push(startNode,0);
