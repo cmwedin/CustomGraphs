@@ -85,6 +85,9 @@ namespace SadSapphicGames.CustomGraphs{
             }
             parentGraph = newParent;
         }
+        public void SetWeight(float newWeight) {
+            weight = newWeight;
+        }
         public bool TrySwapNodes() {
             if(ParentGraph == null) {
                 Debug.LogWarning("you must add this edge to a graph before attempting to swap its nodes");

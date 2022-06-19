@@ -54,7 +54,7 @@ public class ShortestPathTests {
             expected: "0,1|1,3");
     }
     [Test]
-    public void DijkstraTest() {
+    public void DijkstraBasicTest() {
         DirectedGraph<bool> directedGraph = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
             {0, new List<int>{1,2}},
             {1, new List<int>{2,3}},
@@ -124,6 +124,44 @@ public class ShortestPathTests {
         Assert.AreEqual(
             expected:"0,1|4,1",
             actual:bestPathIDs[undirectedGraph.GetNode(4)]
+        );
+    }
+    [Test]
+    public void DijkstraWeightedEdgeTest() {
+        DirectedGraph<bool> directedGraph = new DirectedGraph<bool>( new Dictionary<int, List<int>> {
+            {0, new List<int>{1,2}},
+            {1, new List<int>{2}},
+            {2, new List<int>{3}},
+            {3,new List<int>{4,0}},
+            {4,new List<int>{1}}
+        });
+        directedGraph.GetEdge("0,2").SetWeight(50);
+
+        var bestPathCost = ShortestPath<bool>.DijkstraShortestPath(directedGraph.GetNode(0), out var bestPathIDs);
+        Assert.AreEqual(expected:0, actual: bestPathCost[directedGraph.GetNode(0)]);
+        Assert.AreEqual(expected:1, actual: bestPathCost[directedGraph.GetNode(1)]);
+        Assert.AreEqual(expected:2, actual: bestPathCost[directedGraph.GetNode(2)]);
+        Assert.AreEqual(expected:3, actual: bestPathCost[directedGraph.GetNode(3)]);
+        Assert.AreEqual(expected:4, actual: bestPathCost[directedGraph.GetNode(4)]);
+        Assert.AreEqual(
+            expected:"",
+            actual:bestPathIDs[directedGraph.GetNode(0)]
+        );
+        Assert.AreEqual(
+            expected:"0,1",
+            actual:bestPathIDs[directedGraph.GetNode(1)]
+        );
+        Assert.AreEqual(
+            expected:"0,1|1,2",
+            actual:bestPathIDs[directedGraph.GetNode(2)]
+        );
+        Assert.AreEqual(
+            expected:"0,1|1,2|2,3",
+            actual:bestPathIDs[directedGraph.GetNode(3)]
+        );
+        Assert.AreEqual(
+            expected:"0,1|1,2|2,3|3,4",
+            actual:bestPathIDs[directedGraph.GetNode(4)]
         );
     }
 }
